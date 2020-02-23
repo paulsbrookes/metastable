@@ -1,0 +1,217 @@
+from scipy.interpolate import interp1d
+from copy import deepcopy
+from qutip import *
+from tqdm import tqdm
+import time
+import numpy as np
+import pandas as pd
+import quimb as qu
+from scipy.optimize import root
+import matplotlib.pyplot as plt
+
+
+def fixed_point_tracker_duffing(fd_array, params, alpha0=0, fill_value=None, threshold=1e-4,
+                                columns=['a'], crosscheck_frame=None):
+    amplitude_array = np.zeros([fd_array.shape[0], 1], dtype=complex)
+    trip = False
+    for idx, fd in tqdm(enumerate(fd_array)):
+        if not trip:
+            params_instance = deepcopy(params)
+            params_instance.fd = fd
+            alpha_fixed = locate_fixed_point_mf_duffing(params_instance, alpha0=[alpha0.real, alpha0.imag])
+            if alpha_fixed is None:
+                amplitude_array[idx, :] = [fill_value]
+            else:
+                amplitude_array[idx, :] = [alpha_fixed]
+                alpha0 = alpha_fixed
+    amplitude_frame = pd.DataFrame(amplitude_array, index=fd_array, columns=columns)
+    amplitude_frame.sort_index(inplace=True)
+    return amplitude_frame
+
+
+def mf_characterise_duffing(base_params, fd_array):
+    alpha0 = 0
+    mf_amplitude_frame_bright = fixed_point_tracker_duffing(np.flip(fd_array, axis=0), base_params, alpha0=alpha0)
+    mf_amplitude_frame_dim = fixed_point_tracker_duffing(fd_array, base_params, alpha0=alpha0, columns=['a_dim'],
+                                                         crosscheck_frame=mf_amplitude_frame_bright)
+    mf_amplitude_frame_bright.columns = ['a_bright']
+    mf_amplitude_frame = pd.concat([mf_amplitude_frame_bright, mf_amplitude_frame_dim], axis=1)
+
+    overlap_find = ~np.isclose(mf_amplitude_frame['a_bright'].values, mf_amplitude_frame['a_dim'].values)
+
+    if not np.any(overlap_find):
+        mf_amplitude_frame = pd.DataFrame(mf_amplitude_frame.values[:, 0], index=mf_amplitude_frame.index,
+                                          columns=['a'])
+    else:
+        start_idx = np.where(overlap_find)[0][0]
+        end_idx = np.where(overlap_find)[0][-1]
+
+        mf_amplitude_frame['a_bright'].iloc[0:start_idx] = None
+        mf_amplitude_frame['a_dim'].iloc[end_idx + 1:] = None
+
+    return mf_amplitude_frame
+
+
+def dalpha_calc_mf_duffing(alpha, params):
+    dalpha = params.eps - 1j * (params.fc - params.fd) * alpha - 2 * 1j * params.chi * alpha * np.abs(
+        alpha) ** 2 - 0.5 * params.kappa * alpha
+    return dalpha
+
+
+def classical_eom_mf_duffing(x, params):
+    alpha = x[0] + 1j * x[1]
+    dalpha = dalpha_calc_mf_duffing(alpha, params)
+    dx = np.array([dalpha.real, dalpha.imag])
+    return dx
+
+
+def locate_fixed_point_mf_duffing(params, alpha0=(0, 0)):
+    x0 = np.array([alpha0[0], alpha0[1]])
+    res = root(classical_eom_mf_duffing, x0, args=(params,), method='hybr')
+    if res.success:
+        alpha = res.x[0] + 1j * res.x[1]
+    else:
+        alpha = None
+    return alpha
+
+
+class Parameters:
+    def __init__(self, fc=None, Ej=None, g=None, Ec=None, eps=None, fd=None, kappa=None, gamma=None, t_levels=None,
+                 c_levels=None, gamma_phi=None, kappa_phi=None, n_t=None, n_c=None):
+        self.fc = fc
+        self.Ej = Ej
+        self.eps = eps
+        self.g = g
+        self.Ec = Ec
+        self.gamma = gamma
+        self.kappa = kappa
+        self.t_levels = t_levels
+        self.c_levels = c_levels
+        self.fd = fd
+        self.gamma_phi = gamma_phi
+        self.kappa_phi = kappa_phi
+        self.n_t = n_t
+        self.n_c = n_c
+        self.labels = ['f_d', 'eps', 'E_j', 'f_c', 'g', 'kappa', 'kappa_phi', 'gamma', 'gamma_phi', 'E_c', 'n_t', 'n_c']
+
+    def copy(self):
+        params = Parameters(self.fc, self.Ej, self.g, self.Ec, self.eps, self.fd, self.kappa, self.gamma, self.t_levels,
+                            self.c_levels, self.gamma_phi, self.kappa_phi, self.n_t, self.n_c)
+        return params
+
+
+def ham_duffing_gen(params):
+    a = destroy(params.c_levels)
+    H = (params.fc - params.fd) * a.dag() * a + params.chi * a.dag() * a.dag() * a * a + 1j * params.eps * (a.dag() - a)
+    return H
+
+
+def c_ops_duffing_gen(params):
+    a = destroy(params.c_levels)
+    c_ops = [np.sqrt((1 + params.n_c) * params.kappa) * a]
+    if params.n_c > 0.0:
+        c_ops.append(np.sqrt(params.n_c * params.kappa) * a.dag())
+    return c_ops
+
+
+def state_cut_gen(params, results_all=None, threshold=0.1, extend=0.001,
+                  iterations=2, prune_threshold=0.23, fd_mf_limits=[10.4, 10.5],
+                  backend='slepc', sigma=0.001, k=2, n_frequencies=21):
+    if results_all is None:
+        fd_array = np.linspace(fd_mf_limits[0], fd_mf_limits[1], 2001)
+        mf_amplitude_frame = mf_characterise_duffing(params, fd_array)
+        fd_lower = mf_amplitude_frame.dropna().index[0] - extend
+        fd_upper = mf_amplitude_frame.dropna().index[-1] + extend
+        fd_array = np.linspace(fd_lower, fd_upper, n_frequencies)
+    else:
+        fd_array = _new_frequencies_gen(results_all.index, np.abs(results_all['rate_ad'].values), threshold=threshold)
+
+    for i in range(iterations):
+        print('epsilon = %f, iteration = %i, number of frequencies = %i' % (params.eps, i, fd_array.shape[0]))
+        for fd_idx, fd in tqdm(enumerate(fd_array)):
+            params.fd = fd
+            ham = ham_duffing_gen(params)
+            c_ops = c_ops_duffing_gen(params)
+            L = liouvillian(ham, c_ops)
+            try:
+                rates, states = _eigensolver_wrapper(L.data, backend=backend, sigma=sigma, k=k)
+                # rates, states = L.eigenstates(eigvals=2, sort='high', sparse=True, tol=0.1, maxiter=1e5)
+                states = [vector_to_operator(state) for state in states]
+                states = [state for state in states]
+                states = [state + state.dag() for state in states]
+                states[0] /= states[0].tr()
+                rates *= 2 * np.pi * 1000
+                results = [[rates[0], rates[1], states[0], states[1]]]
+                results = pd.DataFrame(results, columns=['rate_ss', 'rate_ad', 'state_ss', 'state_ad'],
+                                       index=[params.fd])
+                if results_all is None:
+                    results_all = results
+                else:
+                    results_all = pd.concat([results_all, results])
+            except Exception as e:
+                print(e, params.fd, params.eps)
+        results_all.sort_index(inplace=True)
+        if prune_threshold is not None:
+            mask = -1 / results_all.rate_ad.real > prune_threshold
+            results_all = results_all[mask]
+        if i < iterations - 1:
+            fd_array = _new_frequencies_gen(results_all.index, np.abs(results_all['rate_ad'].values),
+                                            threshold=threshold)
+
+    results_all.index.name = 'fd'
+
+    return results_all
+
+
+def _derivative(x, y, n_derivative=1):
+    derivatives = np.zeros(y.size - 1)
+    positions = np.zeros(x.size - 1)
+    for index in np.arange(y.size - 1):
+        grad = (y[index + 1] - y[index]) / (x[index + 1] - x[index])
+        position = np.mean([x[index], x[index + 1]])
+        derivatives[index] = grad
+        positions[index] = position
+
+    if n_derivative > 1:
+        positions, derivatives = _derivative(positions, derivatives, n_derivative - 1)
+
+    return positions, derivatives
+
+
+def _moving_average(interval, window_size):
+    window = np.ones(int(window_size)) / float(window_size)
+    averages = np.convolve(interval, window, 'same')
+    return averages[window_size - 1: averages.size]
+
+
+def _new_frequencies_gen(x, y, threshold=10.0):
+    n_points = len(y)
+    curvature_positions, curvatures = _derivative(x, y, 2)
+    abs_curvatures = np.abs(curvatures)
+    mean_curvatures = _moving_average(abs_curvatures, 2)
+    midpoint_curvatures = np.concatenate((np.array([abs_curvatures[0]]), mean_curvatures))
+    midpoint_curvatures = np.concatenate((midpoint_curvatures, np.array([abs_curvatures[n_points - 3]])))
+    midpoint_transmissions = _moving_average(y, 2)
+    midpoint_curvatures_normed = midpoint_curvatures / midpoint_transmissions
+    midpoints = _moving_average(x, 2)
+    intervals = np.diff(x)
+    num_of_sections_required = np.ceil(intervals * np.sqrt(midpoint_curvatures_normed / threshold)).astype(int)
+    new_fd_points = np.array([])
+    for index in np.arange(n_points - 1):
+        multi_section = np.linspace(x[index], x[index + 1], num_of_sections_required[index] + 1)
+        new_fd_points = np.concatenate((new_fd_points, multi_section))
+    unique_set = set(new_fd_points) - set(x)
+    new_fd_points_unique = np.array(list(unique_set))
+    return new_fd_points_unique
+
+
+def _eigensolver_wrapper(L, backend='slepc', sigma=0.001, k=2):
+    rates, states = qu.eig(L, k=k, backend=backend, sigma=sigma)
+    rates = np.flip(rates)
+    states = np.flip(states, axis=1)
+    states_Qobj = [Qobj(states[:, i]) for i in range(states.shape[1])]
+    c_levels = int(np.sqrt(states_Qobj[0].shape[0]))
+    dims = [[[c_levels], [c_levels]], [1, 1]]
+    for state in states_Qobj:
+        state.dims = dims
+    return rates, states_Qobj

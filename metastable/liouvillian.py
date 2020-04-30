@@ -116,15 +116,16 @@ def c_ops_duffing_gen(params):
 
 def state_cut_gen(params, results_all=None, threshold=0.1, extend=0.001,
                   iterations=2, prune_threshold=0.23, fd_mf_limits=[10.4, 10.5],
-                  backend='slepc', sigma=0.001, k=2, n_frequencies=21):
-    if results_all is None:
-        fd_array = np.linspace(fd_mf_limits[0], fd_mf_limits[1], 2001)
-        mf_amplitude_frame = mf_characterise_duffing(params, fd_array)
-        fd_lower = mf_amplitude_frame.dropna().index[0] - extend
-        fd_upper = mf_amplitude_frame.dropna().index[-1] + extend
-        fd_array = np.linspace(fd_lower, fd_upper, n_frequencies)
-    else:
-        fd_array = _new_frequencies_gen(results_all.index, np.abs(results_all['rate_ad'].values), threshold=threshold)
+                  backend='slepc', sigma=0.001, k=2, n_frequencies=21, fd_array=None):
+    if fd_array is None:
+        if results_all is None:
+            fd_array = np.linspace(fd_mf_limits[0], fd_mf_limits[1], 2001)
+            mf_amplitude_frame = mf_characterise_duffing(params, fd_array)
+            fd_lower = mf_amplitude_frame.dropna().index[0] - extend
+            fd_upper = mf_amplitude_frame.dropna().index[-1] + extend
+            fd_array = np.linspace(fd_lower, fd_upper, n_frequencies)
+        else:
+            fd_array = _new_frequencies_gen(results_all.index, np.abs(results_all['rate_ad'].values), threshold=threshold)
 
     for i in range(iterations):
         print('epsilon = %f, iteration = %i, number of frequencies = %i' % (params.eps, i, fd_array.shape[0]))
@@ -140,7 +141,6 @@ def state_cut_gen(params, results_all=None, threshold=0.1, extend=0.001,
                 states = [state for state in states]
                 states = [state + state.dag() for state in states]
                 states[0] /= states[0].tr()
-                rates *= 2 * np.pi * 1000
                 results = [[rates[0], rates[1], states[0], states[1]]]
                 results = pd.DataFrame(results, columns=['rate_ss', 'rate_ad', 'state_ss', 'state_ad'],
                                        index=[params.fd])
@@ -215,3 +215,60 @@ def _eigensolver_wrapper(L, backend='slepc', sigma=0.001, k=2):
     for state in states_Qobj:
         state.dims = dims
     return rates, states_Qobj
+
+
+def ham_gen(params):
+    a = destroy(params['c_levels'])
+    H = (params['fc'] - params['fd']) * a.dag() * a + params['chi'] * a.dag() * a.dag() * a * a + 1j * params['eps'] * (
+                a.dag() - a)
+    return H
+
+
+def c_ops_gen(params):
+    a = destroy(params['c_levels'])
+    c_ops = [np.sqrt((1 + params['n_c']) * params['kappa']) * a]
+    if params['n_c'] > 0.0:
+        c_ops.append(np.sqrt(params['n_c'] * params['kappa']) * a.dag())
+    return c_ops
+
+
+def calc_liouvillian_eigenstates(L, backend='slepc', sigma=0.001, k=2):
+    rates, states_raw = qu.eig(L.data, k=k, backend=backend, sigma=sigma)
+    rates = np.flip(rates)
+    states_raw = np.flip(states_raw, axis=1)
+    states_vec = [Qobj(states_raw[:, i]) for i in range(states_raw.shape[1])]
+
+    c_levels = int(np.sqrt(states_vec[0].shape[0]))
+    dims = [[[c_levels], [c_levels]], [1, 1]]
+    for state in states_vec:
+        state.dims = dims
+
+    states = [vector_to_operator(state) for state in states_vec]
+    states = [state + state.dag() for state in states]
+    states[0] /= states[0].tr()
+
+    return rates, states
+
+
+def task(params, k=2, backend='scipy', sigma=0.001):
+    ham = ham_gen(params)
+    c_ops = c_ops_gen(params)
+    L = liouvillian(ham, c_ops)
+    rates, states = calc_liouvillian_eigenstates(L, k=k, backend=backend, sigma=sigma)
+    return rates, states
+
+
+def liouvillian_eigenstate_sweep(params, sweep_param_name, sweep_param_values, k=2, backend='scipy', sigma=0.001):
+    columns = ['rate_' + str(n) for n in range(k)] + ['state_' + str(n) for n in range(k)]
+    content = []
+    for idx, value in tqdm(enumerate(sweep_param_values)):
+        params_instance = params.copy()
+        params_instance[sweep_param_name] = value
+        try:
+            rates, states = task(params_instance, k=k, backend=backend, sigma=sigma)
+        except Exception as e:
+            print(e, params.fd, params.eps)
+        content += [list(rates) + states]
+    results = pd.DataFrame(content, columns=columns, index=sweep_param_values)
+    results.index.name = sweep_param_name
+    return results

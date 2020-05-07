@@ -116,7 +116,7 @@ def c_ops_duffing_gen(params):
 
 def state_cut_gen(params, results_all=None, threshold=0.1, extend=0.001,
                   iterations=2, prune_threshold=0.23, fd_mf_limits=[10.4, 10.5],
-                  backend='slepc', sigma=0.001, k=2, n_frequencies=21, fd_array=None):
+                  backend='slepc', sigma=-0.001, k=2, n_frequencies=21, fd_array=None):
     if fd_array is None:
         if results_all is None:
             fd_array = np.linspace(fd_mf_limits[0], fd_mf_limits[1], 2001)
@@ -133,7 +133,7 @@ def state_cut_gen(params, results_all=None, threshold=0.1, extend=0.001,
             params.fd = fd
             ham = ham_duffing_gen(params)
             c_ops = c_ops_duffing_gen(params)
-            L = liouvillian(ham, c_ops)
+            L = -liouvillian(ham, c_ops)
             try:
                 rates, states = _eigensolver_wrapper(L.data, backend=backend, sigma=sigma, k=k)
                 # rates, states = L.eigenstates(eigvals=2, sort='high', sparse=True, tol=0.1, maxiter=1e5)
@@ -205,7 +205,7 @@ def _new_frequencies_gen(x, y, threshold=10.0):
     return new_fd_points_unique
 
 
-def _eigensolver_wrapper(L, backend='slepc', sigma=0.001, k=2):
+def _eigensolver_wrapper(L, backend='slepc', sigma=-0.001, k=2):
     rates, states = qu.eig(L, k=k, backend=backend, sigma=sigma)
     rates = np.flip(rates)
     states = np.flip(states, axis=1)
@@ -232,10 +232,10 @@ def c_ops_gen(params):
     return c_ops
 
 
-def calc_liouvillian_eigenstates(L, backend='slepc', sigma=0.001, k=2):
+def calc_liouvillian_eigenstates(L, backend='slepc', sigma=-0.001, k=2):
     rates, states_raw = qu.eig(L.data, k=k, backend=backend, sigma=sigma)
-    rates = np.flip(rates)
-    states_raw = np.flip(states_raw, axis=1)
+    #rates = np.flip(rates)
+    #states_raw = np.flip(states_raw, axis=1)
     states_vec = [Qobj(states_raw[:, i]) for i in range(states_raw.shape[1])]
 
     c_levels = int(np.sqrt(states_vec[0].shape[0]))
@@ -250,15 +250,15 @@ def calc_liouvillian_eigenstates(L, backend='slepc', sigma=0.001, k=2):
     return rates, states
 
 
-def task(params, k=2, backend='scipy', sigma=0.001):
+def task(params, k=2, backend='scipy', sigma=-0.001):
     ham = ham_gen(params)
     c_ops = c_ops_gen(params)
-    L = liouvillian(ham, c_ops)
+    L = -liouvillian(ham, c_ops)
     rates, states = calc_liouvillian_eigenstates(L, k=k, backend=backend, sigma=sigma)
     return rates, states
 
 
-def liouvillian_eigenstate_sweep(params, sweep_param_name, sweep_param_values, k=2, backend='scipy', sigma=0.001):
+def liouvillian_eigenstate_sweep(params, sweep_param_name, sweep_param_values, k=2, backend='scipy', sigma=-0.001):
     columns = ['rate_' + str(n) for n in range(k)] + ['state_' + str(n) for n in range(k)]
     content = []
     for idx, value in tqdm(enumerate(sweep_param_values)):
@@ -272,3 +272,45 @@ def liouvillian_eigenstate_sweep(params, sweep_param_name, sweep_param_values, k
     results = pd.DataFrame(content, columns=columns, index=sweep_param_values)
     results.index.name = sweep_param_name
     return results
+
+
+def calc_metastable_states(rho_ss, rho_ad, x_limits=[-2, 2], n_x_points=21, offset=1e-10):
+    rho_ad /= np.sqrt((rho_ad ** 2).tr())
+    x_array = np.linspace(x_limits[0], x_limits[1], n_x_points)
+    lowest_occupations = np.zeros(x_array.shape)
+    for idx, x in enumerate(x_array):
+        lowest_occupations[idx] = lowest_occupation_calc(x, rho_ss, rho_ad, offset)
+    x_metastable_estimates = x_array[np.where((lowest_occupations[1:] * lowest_occupations[:-1]) < 0)]
+    assert x_metastable_estimates.shape[0] == 2
+    x_divider = np.mean(x_metastable_estimates)
+
+    res_1 = scipy.optimize.root_scalar(lowest_occupation_calc, bracket=(x_limits[0], x_divider),
+                                       method='bisect', args=(rho_ss, rho_ad, offset))
+
+    res_2 = scipy.optimize.root_scalar(lowest_occupation_calc, bracket=(x_divider, x_limits[1]),
+                                       method='bisect', args=(rho_ss, rho_ad, offset))
+
+    rho_1 = rho_ss + res_1.root * rho_ad
+    rho_2 = rho_ss + res_2.root * rho_ad
+    rho_array = np.array([rho_1, rho_2], dtype=object)
+    coeffs = np.array([res_1.root, res_2.root])
+    a = destroy(rho_ss.dims[0][0])
+    a_list = [np.abs(expect(a, rho)) for rho in rho_array]
+    rho_array = rho_array[np.argsort(a_list)]
+    coeffs = coeffs[np.argsort(a_list)]
+
+    p_d = -coeffs[0] / (coeffs[1] - coeffs[0])
+    p_b = coeffs[1] / (coeffs[1] - coeffs[0])
+
+    occupations = np.array([p_d, p_b])
+
+    packaged_results = pd.DataFrame([np.hstack((rho_array, occupations))], columns=['rho_d', 'rho_b', 'p_d', 'p_b'])
+
+    return packaged_results
+
+
+def calc_metastable_task(states, **kwargs):
+    rho_ss = states[0]
+    rho_ad = states[1]
+    out = calc_metastable_states(rho_ss, rho_ad, **kwargs)
+    return out

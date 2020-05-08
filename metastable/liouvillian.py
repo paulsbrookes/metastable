@@ -283,7 +283,11 @@ def calc_metastable_states(rho_ss, rho_ad, x_limits=[-2, 2], n_x_points=21, offs
     for idx, x in enumerate(x_array):
         lowest_occupations[idx] = lowest_occupation_calc(x, rho_ss, rho_ad, offset)
     x_metastable_estimates = x_array[np.where((lowest_occupations[1:] * lowest_occupations[:-1]) < 0)]
-    assert x_metastable_estimates.shape[0] == 2
+    if x_metastable_estimates.shape[0] != 2:
+        print('Could not find two coefficient estimates.')
+        packaged_results = pd.DataFrame([[None, None, None, None]], columns=['rho_d', 'rho_b', 'p_d', 'p_b'])
+        return packaged_results
+
     x_divider = np.mean(x_metastable_estimates)
 
     res_1 = scipy.optimize.root_scalar(lowest_occupation_calc, bracket=(x_limits[0], x_divider),
@@ -311,8 +315,19 @@ def calc_metastable_states(rho_ss, rho_ad, x_limits=[-2, 2], n_x_points=21, offs
     return packaged_results
 
 
-def calc_metastable_task(states, **kwargs):
-    rho_ss = states[0]
-    rho_ad = states[1]
-    out = calc_metastable_states(rho_ss, rho_ad, **kwargs)
-    return out
+def calc_metastable_task(liouvillian_eigenstates, **kwargs):
+    rho_ss = liouvillian_eigenstates['state_ss'].iloc[0]
+    rho_ad = liouvillian_eigenstates['state_ad'].iloc[0]
+    metastable_states = calc_metastable_states(rho_ss, rho_ad, **kwargs)
+    metastable_states.index = liouvillian_eigenstates.index
+    return metastable_states
+
+
+def calc_overlap_column(frame):
+    overlaps = []
+    for rho_d, rho_b in zip(frame['rho_d'], frame['rho_b']):
+        if (rho_d is not None) and (rho_b is not None):
+            overlaps.append((rho_d * rho_b).tr())
+        else:
+            overlaps.append(None)
+    return overlaps

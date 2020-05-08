@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 import quimb as qu
 from scipy.optimize import root
+import scipy
+from .calc_metastable_occupation import lowest_occupation_calc
 import matplotlib.pyplot as plt
 
 

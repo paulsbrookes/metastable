@@ -1,40 +1,38 @@
-from scipy.interpolate import interp1d
-from copy import deepcopy
 from qutip import *
 from tqdm import tqdm
-import time
 import numpy as np
 import pandas as pd
 import quimb as qu
 from scipy.optimize import root
 import scipy
 from .calc_metastable_occupation import lowest_occupation_calc
-import matplotlib.pyplot as plt
 
 
-def fixed_point_tracker_duffing(fd_array, params, alpha0=0, fill_value=None, threshold=1e-4,
-                                columns=['a'], crosscheck_frame=None):
-    amplitude_array = np.zeros([fd_array.shape[0], 1], dtype=complex)
+def fixed_point_tracker_duffing(params_frame, alpha0=0, fill_value=None, threshold=1e-4, crosscheck_frame=None,
+                                columns=['a']):
     trip = False
-    for idx, fd in tqdm(enumerate(fd_array)):
+    index = params_frame.index
+    amplitude_array = np.zeros([len(index), 1], dtype=complex)
+    for i, idx in tqdm(enumerate(index)):
+        params = params_frame.loc[idx]
         if not trip:
-            params_instance = deepcopy(params)
-            params_instance.fd = fd
-            alpha_fixed = locate_fixed_point_mf_duffing(params_instance, alpha0=[alpha0.real, alpha0.imag])
+            alpha_fixed = locate_fixed_point_mf_duffing(params, alpha0=[alpha0.real, alpha0.imag])
             if alpha_fixed is None:
-                amplitude_array[idx, :] = [fill_value]
+                amplitude_array[i, :] = [fill_value]
             else:
-                amplitude_array[idx, :] = [alpha_fixed]
+                amplitude_array[i, :] = [alpha_fixed]
                 alpha0 = alpha_fixed
-    amplitude_frame = pd.DataFrame(amplitude_array, index=fd_array, columns=columns)
+
+    amplitude_frame = pd.DataFrame(amplitude_array, index=params_frame.index, columns=columns)
     amplitude_frame.sort_index(inplace=True)
     return amplitude_frame
 
 
-def mf_characterise_duffing(base_params, fd_array):
+def mf_characterise_duffing(params_frame):
     alpha0 = 0
-    mf_amplitude_frame_bright = fixed_point_tracker_duffing(np.flip(fd_array, axis=0), base_params, alpha0=alpha0)
-    mf_amplitude_frame_dim = fixed_point_tracker_duffing(fd_array, base_params, alpha0=alpha0, columns=['a_dim'],
+    reversed_params_frame = params_frame.iloc[::-1]
+    mf_amplitude_frame_bright = fixed_point_tracker_duffing(reversed_params_frame, alpha0=alpha0)
+    mf_amplitude_frame_dim = fixed_point_tracker_duffing(params_frame, alpha0=alpha0, columns=['a_dim'],
                                                          crosscheck_frame=mf_amplitude_frame_bright)
     mf_amplitude_frame_bright.columns = ['a_bright']
     mf_amplitude_frame = pd.concat([mf_amplitude_frame_bright, mf_amplitude_frame_dim], axis=1)

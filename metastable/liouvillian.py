@@ -1,13 +1,15 @@
-from scipy.interpolate import interp1d
 from copy import deepcopy
 from qutip import *
 from tqdm import tqdm
-import time
 import numpy as np
 import pandas as pd
-import quimb as qu
 from scipy.optimize import root
-import matplotlib.pyplot as plt
+
+
+try:
+    import quimb as qu
+except:
+    print('Quimb not available.')
 
 
 def fixed_point_tracker_duffing(fd_array, params, alpha0=0, fill_value=None, threshold=1e-4,
@@ -267,7 +269,7 @@ def liouvillian_eigenstate_sweep(params, sweep_param_name, sweep_param_values, k
         try:
             rates, states = task(params_instance, k=k, backend=backend, sigma=sigma)
         except Exception as e:
-            print(e, params.fd, params.eps)
+            print(e, params['fd'], params['eps'])
         content += [list(rates) + states]
     results = pd.DataFrame(content, columns=columns, index=sweep_param_values)
     results.index.name = sweep_param_name

@@ -3,7 +3,7 @@ from qutip import parallel_map, wigner, tracedist, qload, fock_dm, tensor, destr
 import numpy as np
 
 
-def metastable_calc(rho_ss, rho_ad, x_limits=[-2,2], n_x_points=21, offset=1e-6):
+def metastable_calc(rho_ss, rho_ad, x_limits=[-2,2], n_x_points=21, offset=1e-6, return_coeffs=False):
     rho_ad /= np.sqrt((rho_ad**2).tr())
     x_array = np.linspace(x_limits[0],x_limits[1],n_x_points)
     lowest_occupations = np.zeros(x_array.shape)
@@ -22,18 +22,23 @@ def metastable_calc(rho_ss, rho_ad, x_limits=[-2,2], n_x_points=21, offset=1e-6)
     rho_1 = rho_ss + res_1.root*rho_ad
     rho_2 = rho_ss + res_2.root*rho_ad
     rho_list = np.array([rho_1, rho_2], dtype=object)
+    coeff_list = np.array([res_1.root, res_2.root])
     a = destroy(rho_ss.dims[0][0])
     a_list = [np.abs(expect(a,rho)) for rho in rho_list]
     rho_list = rho_list[np.argsort(a_list)]
-    return rho_list[0], rho_list[1]
+    coeff_list = coeff_list[np.argsort(a_list)]
+    if return_coeffs:
+        return rho_list, coeff_list
+    else:
+        return rho_list
 
 
-def metastable_calc_task(states):
+def metastable_calc_task(states, kwargs={}):
     rho_ss = states[0]
     rho_ad = states[1]
-    rho_d, rho_b = metastable_calc(rho_ss, rho_ad)
-    metastable_states = [rho_d, rho_b]
-    return metastable_states
+    out = metastable_calc(rho_ss, rho_ad, **kwargs)
+    #metastable_states = [rho_d, rho_b]
+    return out
 
 
 def lowest_occupation_calc(x, rho_ss, rho_ad, offset):

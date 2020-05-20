@@ -5,36 +5,40 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import root
 
-
 try:
     import quimb as qu
 except:
     print('Quimb not available.')
 
+import scipy
+from .calc_metastable_occupation import lowest_occupation_calc
 
-def fixed_point_tracker_duffing(fd_array, params, alpha0=0, fill_value=None, threshold=1e-4,
-                                columns=['a'], crosscheck_frame=None):
-    amplitude_array = np.zeros([fd_array.shape[0], 1], dtype=complex)
+
+def fixed_point_tracker_duffing(params_frame, alpha0=0, fill_value=None, threshold=1e-4, crosscheck_frame=None,
+                                columns=['a']):
     trip = False
-    for idx, fd in tqdm(enumerate(fd_array)):
+    index = params_frame.index
+    amplitude_array = np.zeros([len(index), 1], dtype=complex)
+    for i, idx in tqdm(enumerate(index)):
+        params = params_frame.loc[idx]
         if not trip:
-            params_instance = deepcopy(params)
-            params_instance.fd = fd
-            alpha_fixed = locate_fixed_point_mf_duffing(params_instance, alpha0=[alpha0.real, alpha0.imag])
+            alpha_fixed = locate_fixed_point_mf_duffing(params, alpha0=[alpha0.real, alpha0.imag])
             if alpha_fixed is None:
-                amplitude_array[idx, :] = [fill_value]
+                amplitude_array[i, :] = [fill_value]
             else:
-                amplitude_array[idx, :] = [alpha_fixed]
+                amplitude_array[i, :] = [alpha_fixed]
                 alpha0 = alpha_fixed
-    amplitude_frame = pd.DataFrame(amplitude_array, index=fd_array, columns=columns)
+
+    amplitude_frame = pd.DataFrame(amplitude_array, index=params_frame.index, columns=columns)
     amplitude_frame.sort_index(inplace=True)
     return amplitude_frame
 
 
-def mf_characterise_duffing(base_params, fd_array):
+def mf_characterise_duffing(params_frame):
     alpha0 = 0
-    mf_amplitude_frame_bright = fixed_point_tracker_duffing(np.flip(fd_array, axis=0), base_params, alpha0=alpha0)
-    mf_amplitude_frame_dim = fixed_point_tracker_duffing(fd_array, base_params, alpha0=alpha0, columns=['a_dim'],
+    reversed_params_frame = params_frame.iloc[::-1]
+    mf_amplitude_frame_bright = fixed_point_tracker_duffing(reversed_params_frame, alpha0=alpha0)
+    mf_amplitude_frame_dim = fixed_point_tracker_duffing(params_frame, alpha0=alpha0, columns=['a_dim'],
                                                          crosscheck_frame=mf_amplitude_frame_bright)
     mf_amplitude_frame_bright.columns = ['a_bright']
     mf_amplitude_frame = pd.concat([mf_amplitude_frame_bright, mf_amplitude_frame_dim], axis=1)
@@ -118,7 +122,7 @@ def c_ops_duffing_gen(params):
 
 def state_cut_gen(params, results_all=None, threshold=0.1, extend=0.001,
                   iterations=2, prune_threshold=0.23, fd_mf_limits=[10.4, 10.5],
-                  backend='slepc', sigma=0.001, k=2, n_frequencies=21, fd_array=None):
+                  backend='slepc', sigma=-0.001, k=2, n_frequencies=21, fd_array=None):
     if fd_array is None:
         if results_all is None:
             fd_array = np.linspace(fd_mf_limits[0], fd_mf_limits[1], 2001)
@@ -135,7 +139,7 @@ def state_cut_gen(params, results_all=None, threshold=0.1, extend=0.001,
             params.fd = fd
             ham = ham_duffing_gen(params)
             c_ops = c_ops_duffing_gen(params)
-            L = liouvillian(ham, c_ops)
+            L = -liouvillian(ham, c_ops)
             try:
                 rates, states = _eigensolver_wrapper(L.data, backend=backend, sigma=sigma, k=k)
                 # rates, states = L.eigenstates(eigvals=2, sort='high', sparse=True, tol=0.1, maxiter=1e5)
@@ -207,7 +211,7 @@ def _new_frequencies_gen(x, y, threshold=10.0):
     return new_fd_points_unique
 
 
-def _eigensolver_wrapper(L, backend='slepc', sigma=0.001, k=2):
+def _eigensolver_wrapper(L, backend='slepc', sigma=-0.001, k=2):
     rates, states = qu.eig(L, k=k, backend=backend, sigma=sigma)
     rates = np.flip(rates)
     states = np.flip(states, axis=1)
@@ -234,10 +238,10 @@ def c_ops_gen(params):
     return c_ops
 
 
-def calc_liouvillian_eigenstates(L, backend='slepc', sigma=0.001, k=2):
+def calc_liouvillian_eigenstates(L, backend='slepc', sigma=-0.001, k=2):
     rates, states_raw = qu.eig(L.data, k=k, backend=backend, sigma=sigma)
-    rates = np.flip(rates)
-    states_raw = np.flip(states_raw, axis=1)
+    #rates = np.flip(rates)
+    #states_raw = np.flip(states_raw, axis=1)
     states_vec = [Qobj(states_raw[:, i]) for i in range(states_raw.shape[1])]
 
     c_levels = int(np.sqrt(states_vec[0].shape[0]))
@@ -252,15 +256,15 @@ def calc_liouvillian_eigenstates(L, backend='slepc', sigma=0.001, k=2):
     return rates, states
 
 
-def task(params, k=2, backend='scipy', sigma=0.001):
+def task(params, k=2, backend='scipy', sigma=-0.001):
     ham = ham_gen(params)
     c_ops = c_ops_gen(params)
-    L = liouvillian(ham, c_ops)
+    L = -liouvillian(ham, c_ops)
     rates, states = calc_liouvillian_eigenstates(L, k=k, backend=backend, sigma=sigma)
     return rates, states
 
 
-def liouvillian_eigenstate_sweep(params, sweep_param_name, sweep_param_values, k=2, backend='scipy', sigma=0.001):
+def liouvillian_eigenstate_sweep(params, sweep_param_name, sweep_param_values, k=2, backend='scipy', sigma=-0.001):
     columns = ['rate_' + str(n) for n in range(k)] + ['state_' + str(n) for n in range(k)]
     content = []
     for idx, value in tqdm(enumerate(sweep_param_values)):
@@ -274,3 +278,60 @@ def liouvillian_eigenstate_sweep(params, sweep_param_name, sweep_param_values, k
     results = pd.DataFrame(content, columns=columns, index=sweep_param_values)
     results.index.name = sweep_param_name
     return results
+
+
+def calc_metastable_states(rho_ss, rho_ad, x_limits=[-2, 2], n_x_points=21, offset=1e-10):
+    rho_ad /= np.sqrt((rho_ad ** 2).tr())
+    x_array = np.linspace(x_limits[0], x_limits[1], n_x_points)
+    lowest_occupations = np.zeros(x_array.shape)
+    for idx, x in enumerate(x_array):
+        lowest_occupations[idx] = lowest_occupation_calc(x, rho_ss, rho_ad, offset)
+    x_metastable_estimates = x_array[np.where((lowest_occupations[1:] * lowest_occupations[:-1]) < 0)]
+    if x_metastable_estimates.shape[0] != 2:
+        print('Could not find two coefficient estimates.')
+        packaged_results = pd.DataFrame([[None, None, None, None]], columns=['rho_d', 'rho_b', 'p_d', 'p_b'])
+        return packaged_results
+
+    x_divider = np.mean(x_metastable_estimates)
+
+    res_1 = scipy.optimize.root_scalar(lowest_occupation_calc, bracket=(x_limits[0], x_divider),
+                                       method='bisect', args=(rho_ss, rho_ad, offset))
+
+    res_2 = scipy.optimize.root_scalar(lowest_occupation_calc, bracket=(x_divider, x_limits[1]),
+                                       method='bisect', args=(rho_ss, rho_ad, offset))
+
+    rho_1 = rho_ss + res_1.root * rho_ad
+    rho_2 = rho_ss + res_2.root * rho_ad
+    rho_array = np.array([rho_1, rho_2], dtype=object)
+    coeffs = np.array([res_1.root, res_2.root])
+    a = destroy(rho_ss.dims[0][0])
+    a_list = [np.abs(expect(a, rho)) for rho in rho_array]
+    rho_array = rho_array[np.argsort(a_list)]
+    coeffs = coeffs[np.argsort(a_list)]
+
+    p_d = -coeffs[0] / (coeffs[1] - coeffs[0])
+    p_b = coeffs[1] / (coeffs[1] - coeffs[0])
+
+    occupations = np.array([p_d, p_b])
+
+    packaged_results = pd.DataFrame([np.hstack((rho_array, occupations))], columns=['rho_d', 'rho_b', 'p_d', 'p_b'])
+
+    return packaged_results
+
+
+def calc_metastable_task(liouvillian_eigenstates, **kwargs):
+    rho_ss = liouvillian_eigenstates['state_ss'].iloc[0]
+    rho_ad = liouvillian_eigenstates['state_ad'].iloc[0]
+    metastable_states = calc_metastable_states(rho_ss, rho_ad, **kwargs)
+    metastable_states.index = liouvillian_eigenstates.index
+    return metastable_states
+
+
+def calc_overlap_column(frame):
+    overlaps = []
+    for rho_d, rho_b in zip(frame['rho_d'], frame['rho_b']):
+        if (rho_d is not None) and (rho_b is not None):
+            overlaps.append((rho_d * rho_b).tr())
+        else:
+            overlaps.append(None)
+    return overlaps

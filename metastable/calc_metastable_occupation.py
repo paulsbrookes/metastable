@@ -21,11 +21,13 @@ def metastable_calc(rho_ss, rho_ad, x_limits=[-2,2], n_x_points=21, offset=1e-6,
 
     rho_1 = rho_ss + res_1.root*rho_ad
     rho_2 = rho_ss + res_2.root*rho_ad
-    rho_list = np.array([rho_1, rho_2], dtype=object)
+    #rho_list = np.array([rho_1, rho_2], dtype=object)
+    rho_list = [rho_1, rho_2]
     coeff_list = np.array([res_1.root, res_2.root])
     a = destroy(rho_ss.dims[0][0])
     a_list = [np.abs(expect(a,rho)) for rho in rho_list]
-    rho_list = rho_list[np.argsort(a_list)]
+    #rho_list = rho_list[np.argsort(a_list)]
+    rho_list = [rho_list[idx] for idx in np.argsort(a_list)]
     coeff_list = coeff_list[np.argsort(a_list)]
     if return_coeffs:
         return rho_list, coeff_list

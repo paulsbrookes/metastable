@@ -13,8 +13,16 @@ def calc_b_from_duffing(delta=0, chi=0, kappa=0):
     Y_B_1 = (1.0 / 3.0) * (2 + (1 - 3 * Omega ** (-2)) ** (0.5))
     Y_B_2 = (1.0 / 3.0) * (2 - (1 - 3 * Omega ** (-2)) ** (0.5))
     beta_1, beta_2 = calc_beta_limits(delta_omega, Gamma)
-    b_1 = -(beta_1 ** 0.5) * (2 * Y_B_1) ** (-1) * (1 - 2 * (Omega ** 2) * Y_B_1 + Omega ** 2)
-    b_2 = -(beta_2 ** 0.5) * (2 * Y_B_2) ** (-1) * (1 - 2 * (Omega ** 2) * Y_B_2 + Omega ** 2)
+    b_1 = (
+        -(beta_1**0.5)
+        * (2 * Y_B_1) ** (-1)
+        * (1 - 2 * (Omega**2) * Y_B_1 + Omega**2)
+    )
+    b_2 = (
+        -(beta_2**0.5)
+        * (2 * Y_B_2) ** (-1)
+        * (1 - 2 * (Omega**2) * Y_B_2 + Omega**2)
+    )
     return np.array([b_1, b_2])
 
 
@@ -40,17 +48,33 @@ def dykman_calc(delta=0, chi=0, eps=0, kappa=0, n_c=0, kappa_phi=0, components=F
     D_B_1 = Omega ** (-1) * ((n + 0.5) + 0.5 * chi_ph * (1 - Y_B_1))
     D_B_2 = Omega ** (-1) * ((n + 0.5) + 0.5 * chi_ph * (1 - Y_B_2))
 
-    b_1 = -(beta_1 ** 0.5) * (2 * Y_B_1) ** (-1) * (1 - 2 * (Omega ** 2) * Y_B_1 + Omega ** 2)
-    b_2 = -(beta_2 ** 0.5) * (2 * Y_B_2) ** (-1) * (1 - 2 * (Omega ** 2) * Y_B_2 + Omega ** 2)
+    b_1 = (
+        -(beta_1**0.5)
+        * (2 * Y_B_1) ** (-1)
+        * (1 - 2 * (Omega**2) * Y_B_1 + Omega**2)
+    )
+    b_2 = (
+        -(beta_2**0.5)
+        * (2 * Y_B_2) ** (-1)
+        * (1 - 2 * (Omega**2) * Y_B_2 + Omega**2)
+    )
 
     eta_1 = beta - beta_1
     eta_2 = beta - beta_2
 
-    C_1 = np.abs(delta_omega) * (b_1 * eta_1 / 2) ** 0.5 / (np.pi * beta_1 ** 0.25)
-    C_2 = np.abs(delta_omega) * (b_2 * eta_2 / 2) ** 0.5 / (np.pi * beta_2 ** 0.25)
+    C_1 = np.abs(delta_omega) * (b_1 * eta_1 / 2) ** 0.5 / (np.pi * beta_1**0.25)
+    C_2 = np.abs(delta_omega) * (b_2 * eta_2 / 2) ** 0.5 / (np.pi * beta_2**0.25)
 
-    R_A_1 = np.sqrt(2) * (np.abs(eta_1) ** 1.5) / (3 * D_B_1 * (np.abs(b_1) ** 0.5) * (beta_1 ** 0.75))
-    R_A_2 = np.sqrt(2) * (np.abs(eta_2) ** 1.5) / (3 * D_B_2 * (np.abs(b_2) ** 0.5) * (beta_2 ** 0.75))
+    R_A_1 = (
+        np.sqrt(2)
+        * (np.abs(eta_1) ** 1.5)
+        / (3 * D_B_1 * (np.abs(b_1) ** 0.5) * (beta_1**0.75))
+    )
+    R_A_2 = (
+        np.sqrt(2)
+        * (np.abs(eta_2) ** 1.5)
+        / (3 * D_B_2 * (np.abs(b_2) ** 0.5) * (beta_2**0.75))
+    )
 
     if components:
         return np.array([[C_1, R_A_1 / lam], [C_2, R_A_2 / lam]])
@@ -87,7 +111,7 @@ def calc_dykman_params(delta, chi, eps=None, kappa=None):
     delta_omega = 2 * chi - delta
     lam = chi / delta_omega
     if eps is not None:
-        beta = 2 * lam * eps ** 2 / delta_omega ** 2
+        beta = 2 * lam * eps**2 / delta_omega**2
     else:
         beta = None
     if kappa is not None:
@@ -105,5 +129,5 @@ def calc_beta_limits(delta_omega, Gamma):
 
 
 def potential_func(delta_P, b, beta_limit, eta):
-    U = b * delta_P ** 3 / 3 - eta * delta_P / (np.sqrt(beta_limit * 2))
+    U = b * delta_P**3 / 3 - eta * delta_P / (np.sqrt(beta_limit * 2))
     return U

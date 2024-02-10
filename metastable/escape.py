@@ -54,7 +54,7 @@ class EscapeModel:
         self,
         maxiter: int = 50,
         magnitude: float = 10.0,
-        dp : int = 5,
+        dp: int = 5,
         tol: float = 1e-10,
         method: str = "hybr",
         n_seeking: int = 3,

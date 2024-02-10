@@ -1,10 +1,10 @@
-import scipy
 import sympy
+import random
 import autograd.numpy as np
 from scipy.optimize import root
 from metastable.dykman import *
 from tqdm import tqdm
-from typing import Type, NamedTuple, List
+from typing import NamedTuple, List
 from time import perf_counter
 
 
@@ -54,26 +54,34 @@ class EscapeModel:
 
 
 def estimate_fixed_points(
-    model: EscapeModel,
-    max_iter: int = 50,
-    magnitude: float = 10,
-    dp: int = 5,
-    tol: float = 1e-10,
-    method: str = "hybr",
-    n_seeking: int = 3,
+        model: EscapeModel,
+        max_iter: int = 50,
+        magnitude: float = 10,
+        dp: int = 5,
+        tol: float = 1e-10,
+        method: str = "hybr",
+        n_seeking: int = 3,
+        initial_guesses: list = None,  # New parameter for initial guesses
 ):
+    if initial_guesses is None:
+        initial_guesses = [np.zeros(2)]  # Default to zero vector if none provided
+
     fixed_points = set()
     idx = 0
     n_found = 0
     while idx < max_iter and n_found < n_seeking:
         idx += 1
-        y0 = magnitude * np.random.randn(2)
-        res = root(model.y_dot_classical_func, y0, tol=tol, method=method)
+        # Choose a random initial guess from the list and add noise
+        base_guess = random.choice(initial_guesses)
+        y0 = base_guess + magnitude * np.random.randn(2)
+        res = root(model.y_dot_classical_func, y0, tol=tol, method=method, jac=model.jacobian_classical_func)
         if res.success:
+            # Round the solution to specified decimal places and update the set of fixed points
             fixed_points = fixed_points.union(set([tuple(np.round(res.x, dp))]))
             n_found = len(fixed_points)
-    fixed_points = np.array(list(fixed_points))
-    return fixed_points
+
+    # Convert the set of fixed points into a list before returning
+    return list(fixed_points)
 
 
 class OptimizationResult(NamedTuple):
@@ -138,22 +146,25 @@ def find_epsilon_transition(
     delta: float,
     chi: float,
     kappa: float,
-    tol=0.01,
+    tol=0.001,
     maxiter=100,
-    n_occupation_min_estimate: float = 10.0,
-    n_occupation_max_estimate: float = 10.0
 ):
 
+    observed_points = []
+
     fixed_points_min = estimate_fixed_points(
-        EscapeModel(epsilon_min, delta, chi, kappa)
+        EscapeModel(epsilon_min, delta, chi, kappa),
+        magnitude=10.0,
+        method="hybr"
     )
     fixed_points_max = estimate_fixed_points(
-        EscapeModel(epsilon_max, delta, chi, kappa)
+        EscapeModel(epsilon_max, delta, chi, kappa),
+        magnitude=10.0,
+        method="hybr"
     )
 
-    print(np.linalg.norm(fixed_points_min, ord=2))
-    print(np.linalg.norm(fixed_points_max, ord=2))
-
+    observed_points += fixed_points_min
+    observed_points += fixed_points_max
 
     if not (len(fixed_points_min), len(fixed_points_max)) in [(1, 3), (3, 1)]:
         raise ValueError(
@@ -164,16 +175,15 @@ def find_epsilon_transition(
     iter_count = 0
     while epsilon_max - epsilon_min > tol and iter_count < maxiter:
         epsilon_mid = (epsilon_min + epsilon_max) / 2
-        # n_occupation_mid_estimate = np.linalg.norm(fixed_points_min, ord=2) + np.linalg.norm(fixed_points_max, ord=2)
         fixed_points_mid = estimate_fixed_points(
             EscapeModel(epsilon_mid, delta, chi, kappa),
-            magnitude=5
-            # magnitude=np.sqrt(n_occupation_mid_estimate)
+            magnitude=2.0,
+            initial_guesses=observed_points,
+            method="lm",
+            tol=1e-7
         )
-
-        print(
-            f"Iteration {iter_count}: Epsilon = {epsilon_mid}, Fixed Points = {len(fixed_points_mid)}, Occupation: {np.linalg.norm(fixed_points_mid, ord=2, axis=1)}."
-        )
+        observed_points += fixed_points_mid
+        print(f"Iteration: {iter_count}, N fixed points: {len(fixed_points_mid)}, epsilon: {epsilon_mid}, fixed_points: {fixed_points_mid}")
 
         if len(fixed_points_mid) == len(fixed_points_min):
             epsilon_min = epsilon_mid
@@ -192,7 +202,7 @@ def find_epsilon_transition(
 
 
 epsilon = 1e1
-kappa = 0.01
+kappa = 0.3
 delta = 7.8
 chi = -0.1
 t_end = 8

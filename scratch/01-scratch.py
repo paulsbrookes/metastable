@@ -177,9 +177,9 @@ def find_epsilon_transition(
         epsilon_mid = (epsilon_min + epsilon_max) / 2
         fixed_points_mid = estimate_fixed_points(
             EscapeModel(epsilon_mid, delta, chi, kappa),
-            magnitude=2.0,
-            initial_guesses=observed_points,
-            method="lm",
+            magnitude=10.0,
+            # initial_guesses=observed_points,
+            method="hybr",
             tol=1e-7
         )
         observed_points += fixed_points_mid
@@ -201,22 +201,42 @@ def find_epsilon_transition(
     return (epsilon_min + epsilon_max) / 2
 
 
-def calculate_beta_12(kappa_rescaled: float):
-    """Calculates the bifurcation points in terms of the rescaled power parameter beta."""
+def calculate_beta_12(kappa_rescaled: float) -> float:
+    """Calculates the rescaled power parameter at the bifurcation points from the rescaled decay rate."""
     beta_1 = (2 / 27) * (1 + 9 * kappa_rescaled ** 2 - (1 - 3 * kappa_rescaled ** 2) ** (3 / 2))
     beta_2 = (2 / 27) * (1 + 9 * kappa_rescaled ** 2 + (1 - 3 * kappa_rescaled ** 2) ** (3 / 2))
     return beta_1, beta_2
+
+
+def calculate_kappa_rescaled(kappa: float, delta: float) -> float:
+    """Calculates the rescaled decay rate from the original parameters."""
+    kappa_rescaled = kappa / (2*np.abs(delta))
+    return kappa_rescaled
+
+
+def map_beta_to_epsilon(beta: float, delta: float, chi: float) -> float:
+    lambda_ = abs(chi / delta)
+    epsilon = delta * np.sqrt(beta / (2 * lambda_))
+    return epsilon
 
 
 epsilon = 1e1
 kappa = 0.3
 delta = 7.8
 chi = -0.1
-t_end = 8
+
+
+
+
+kappa_rescaled = calculate_kappa_rescaled(kappa, delta)
+beta_1, beta_2 = calculate_beta_12(kappa_rescaled)
+epsilon_1 = map_beta_to_epsilon(beta_1, delta, chi)
+epsilon_2 = map_beta_to_epsilon(beta_2, delta, chi)
+print(beta_1, beta_2)
+print(epsilon_1, epsilon_2)
 
 n_occupation_estimate = epsilon**2 / (delta**2 + kappa**2)
 
-print(-(epsilon**2) * chi / (2 * delta**3))
 
 
 epsilon_min = 0.0

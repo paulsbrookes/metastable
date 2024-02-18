@@ -2,7 +2,7 @@ import sympy
 import autograd.numpy as np
 import matplotlib.pyplot as plt
 
-from src.metastable.dykman import *
+from metastable.dykman import *
 from typing import List, Tuple
 from numpy.typing import NDArray
 from concurrent.futures import ProcessPoolExecutor

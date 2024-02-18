@@ -88,118 +88,6 @@ class OptimizationResult(NamedTuple):
     success: bool
 
 
-def optimize_fixed_point(
-    y0: np.ndarray,
-    model: EscapeModel,
-    tol: float = 1e-15,
-    method: str = "krylov",
-    maxiter: int = 10,
-) -> OptimizationResult:
-    """
-    Attempts to refine a single fixed point estimate.
-
-    Parameters:
-    - y0: The initial estimate to refine.
-    - model: An instance of EscapeModel containing the function to optimize.
-    - tol: Tolerance for the optimization.
-    - method: The method used by scipy.optimize.root.
-    - maxiter: Maximum number of iterations.
-
-    Returns:
-    - An OptimizationResult namedtuple containing the refined estimate (or the original estimate if optimization failed) and a boolean indicating success.
-    """
-    success = False
-    idx = 0
-    while idx < maxiter and not success:
-        res = root(model.y_dot_classical_func, y0, tol=tol, method=method)
-        success = res.success
-        if success:
-            return OptimizationResult(estimate=res.x, success=True)
-        idx += 1
-    return OptimizationResult(estimate=np.full(y0.shape, np.nan), success=False)
-
-
-def refine_fixed_points(
-    estimates: np.ndarray,
-    model: EscapeModel,
-    tol: float = 1e-15,
-    method: str = "krylov",
-    maxiter: int = 10,
-):
-    refined: List[np.array] = []
-    for point_idx in tqdm(range(estimates.shape[0])):
-        y0 = estimates[point_idx]
-        result = optimize_fixed_point(y0, model, tol, method, maxiter)
-        if not result.success:
-            print(f"Failed to refine point {point_idx}.")
-        else:
-            refined.append(result.estimate)
-    precision = -int(np.log10(tol) + 2)
-    n_unique = len(set(tuple(np.round(arr, decimals=precision)) for arr in refined))
-    return refined, n_unique
-
-
-def find_epsilon_transition(
-    epsilon_min: float,
-    epsilon_max: float,
-    delta: float,
-    chi: float,
-    kappa: float,
-    tol=0.001,
-    maxiter=100,
-):
-
-    observed_points = []
-
-    fixed_points_min = estimate_fixed_points(
-        EscapeModel(epsilon_min, delta, chi, kappa),
-        magnitude=10.0,
-        method="hybr"
-    )
-    fixed_points_max = estimate_fixed_points(
-        EscapeModel(epsilon_max, delta, chi, kappa),
-        magnitude=10.0,
-        method="hybr"
-    )
-
-    observed_points += fixed_points_min
-    observed_points += fixed_points_max
-
-    if not (len(fixed_points_min), len(fixed_points_max)) in [(1, 3), (3, 1)]:
-        raise ValueError(
-            f"Number of fixed points at epsilon_min and epsilon_max is found to be {len(fixed_points_min)} and "
-            f"{len(fixed_points_max)}."
-        )
-
-    iter_count = 0
-    while epsilon_max - epsilon_min > tol and iter_count < maxiter:
-        epsilon_mid = (epsilon_min + epsilon_max) / 2
-        fixed_points_mid = estimate_fixed_points(
-            EscapeModel(epsilon_mid, delta, chi, kappa),
-            magnitude=10.0,
-            # initial_guesses=observed_points,
-            method="hybr",
-            tol=1e-7
-        )
-        observed_points += fixed_points_mid
-        print(f"Iteration: {iter_count}, N fixed points: {len(fixed_points_mid)}, epsilon: {epsilon_mid}, fixed_points: {fixed_points_mid}")
-
-        if len(fixed_points_mid) == len(fixed_points_min):
-            epsilon_min = epsilon_mid
-            fixed_points_min = fixed_points_mid
-        elif len(fixed_points_mid) == len(fixed_points_max):
-            epsilon_max = epsilon_mid
-            fixed_points_max = fixed_points_mid
-        else:
-            raise ValueError(
-                f"The number of fixed points at epsilon_mid = {len(fixed_points_mid)}."
-            )
-
-        iter_count += 1
-
-    return (epsilon_min + epsilon_max) / 2
-
-
 def calculate_beta_12(kappa_rescaled: float) -> float:
     """Calculates the rescaled power parameter at the bifurcation points from the rescaled decay rate."""
     beta_1 = (2 / 27) * (1 + 9 * kappa_rescaled ** 2 - (1 - 3 * kappa_rescaled ** 2) ** (3 / 2))
@@ -228,36 +116,53 @@ def solve_weak_nonlinearity(epsilon, delta, kappa) -> Tuple[float, float]:
     return x1, x2
 
 
-def solve_strong_nonlinearity(epsilon: float, delta: float, chi: float) -> Tuple[float, float]:
-    x_2 = (4.0*epsilon/chi)**(1.0/3.0)
-    x_1 = -kappa*x_2/delta
-    return x_1, x_2
+def solve_strong_nonlinearity(epsilon: float, delta: float, kappa: float, chi: float) -> List[Tuple[float, float]]:
+    # Calculate the roots of the cubic equation
+    x_2_candidates = np.roots([chi / 2.0, 0.0, delta, -2.0 * epsilon])
+
+    # Calculate the discriminant of the cubic equation
+    discriminant = -4 * (chi / 2.0) * delta ** 3 - 27 * ((chi / 2.0) ** 2) * (-2.0 * epsilon) ** 2
+
+    # Filter out the real roots
+    real_roots = [root.real for root in x_2_candidates if np.isreal(root)]
+
+    # Check the number of real roots is as expected based on the discriminant
+    expected_real_roots_count = 3 if discriminant > 0 else 1
+    actual_real_roots_count = len(real_roots)
+
+    if actual_real_roots_count != expected_real_roots_count:
+        raise ValueError(
+            f"The number of real roots was found to be {actual_real_roots_count}, but we expected {expected_real_roots_count}.")
+
+    # Calculate x_1 for each real root x_2 and return tuples of (x_1, x_2)
+    x_1_x_2_pairs = [(-kappa * x_2 / delta, x_2) for x_2 in real_roots]
+
+    return x_1_x_2_pairs
 
 
-
-
-kappa = 1.0
+epsilon = 17.0
+kappa = 2.5
 delta = 7.8
 chi = -0.1
-
 
 
 kappa_rescaled = calculate_kappa_rescaled(kappa, delta)
 beta_1, beta_2 = calculate_beta_12(kappa_rescaled)
 epsilon_1 = map_beta_to_epsilon(beta_1, delta, chi)
 epsilon_2 = map_beta_to_epsilon(beta_2, delta, chi)
-print(beta_1, beta_2)
-print(epsilon_1, epsilon_2)
 
 
+print(f"epsilon_1: {epsilon_1}, epsilon_2: {epsilon_2}, epsilon: {epsilon}")
 
 
-epsilon_min = 15.0
-epsilon_max = 25.0
+model = EscapeModel(epsilon=epsilon, delta=delta, chi=chi, kappa=kappa)
 
-start = perf_counter()
-epsilon_transition = find_epsilon_transition(
-    epsilon_min, epsilon_max, delta, chi, kappa
-)
-print("Time taken:", perf_counter()-start)
-print(f"Transition occurs approximately at epsilon = {epsilon_transition}.")
+
+strong_nonlinearity_estimates = solve_strong_nonlinearity(epsilon=epsilon, delta=delta, kappa=kappa, chi=chi)
+weak_nonlinearity_estimates = solve_weak_nonlinearity(epsilon=epsilon, delta=delta, kappa=kappa)
+
+print("weak estimates: ", weak_nonlinearity_estimates)
+print("strong estimates: ", strong_nonlinearity_estimates)
+fixed_points = estimate_fixed_points(model, initial_guesses=strong_nonlinearity_estimates, magnitude=10, method="krylov")
+print("found points: ", fixed_points)
+

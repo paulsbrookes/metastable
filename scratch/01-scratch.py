@@ -1,8 +1,7 @@
 import sympy
 import random
 import autograd.numpy as np
-from scipy.optimize import root
-from metastable.dykman import *
+from src.metastable.dykman import *
 from tqdm import tqdm
 from typing import NamedTuple, List, Tuple
 from time import perf_counter
@@ -51,16 +50,15 @@ class EscapeModel:
         )(*y)
 
 
-
 def estimate_fixed_points(
-        model: EscapeModel,
-        max_iter: int = 50,
-        magnitude: float = 10,
-        dp: int = 5,
-        tol: float = 1e-10,
-        method: str = "hybr",
-        n_seeking: int = 3,
-        initial_guesses: list = None,  # New parameter for initial guesses
+    model: EscapeModel,
+    max_iter: int = 50,
+    magnitude: float = 10,
+    dp: int = 5,
+    tol: float = 1e-10,
+    method: str = "hybr",
+    n_seeking: int = 3,
+    initial_guesses: list = None,  # New parameter for initial guesses
 ):
     if initial_guesses is None:
         initial_guesses = [np.zeros(2)]  # Default to zero vector if none provided
@@ -73,7 +71,13 @@ def estimate_fixed_points(
         # Choose a random initial guess from the list and add noise
         base_guess = random.choice(initial_guesses)
         y0 = base_guess + magnitude * np.random.randn(2)
-        res = root(model.y_dot_classical_func, y0, tol=tol, method=method, jac=model.jacobian_classical_func)
+        res = root(
+            model.y_dot_classical_func,
+            y0,
+            tol=tol,
+            method=method,
+            jac=model.jacobian_classical_func,
+        )
         if res.success:
             # Round the solution to specified decimal places and update the set of fixed points
             fixed_points = fixed_points.union(set([tuple(np.round(res.x, dp))]))
@@ -152,14 +156,10 @@ def find_epsilon_transition(
     observed_points = []
 
     fixed_points_min = estimate_fixed_points(
-        EscapeModel(epsilon_min, delta, chi, kappa),
-        magnitude=10.0,
-        method="hybr"
+        EscapeModel(epsilon_min, delta, chi, kappa), magnitude=10.0, method="hybr"
     )
     fixed_points_max = estimate_fixed_points(
-        EscapeModel(epsilon_max, delta, chi, kappa),
-        magnitude=10.0,
-        method="hybr"
+        EscapeModel(epsilon_max, delta, chi, kappa), magnitude=10.0, method="hybr"
     )
 
     observed_points += fixed_points_min
@@ -179,10 +179,12 @@ def find_epsilon_transition(
             magnitude=10.0,
             # initial_guesses=observed_points,
             method="hybr",
-            tol=1e-7
+            tol=1e-7,
         )
         observed_points += fixed_points_mid
-        print(f"Iteration: {iter_count}, N fixed points: {len(fixed_points_mid)}, epsilon: {epsilon_mid}, fixed_points: {fixed_points_mid}")
+        print(
+            f"Iteration: {iter_count}, N fixed points: {len(fixed_points_mid)}, epsilon: {epsilon_mid}, fixed_points: {fixed_points_mid}"
+        )
 
         if len(fixed_points_mid) == len(fixed_points_min):
             epsilon_min = epsilon_mid
@@ -202,14 +204,18 @@ def find_epsilon_transition(
 
 def calculate_beta_12(kappa_rescaled: float) -> float:
     """Calculates the rescaled power parameter at the bifurcation points from the rescaled decay rate."""
-    beta_1 = (2 / 27) * (1 + 9 * kappa_rescaled ** 2 - (1 - 3 * kappa_rescaled ** 2) ** (3 / 2))
-    beta_2 = (2 / 27) * (1 + 9 * kappa_rescaled ** 2 + (1 - 3 * kappa_rescaled ** 2) ** (3 / 2))
+    beta_1 = (2 / 27) * (
+        1 + 9 * kappa_rescaled**2 - (1 - 3 * kappa_rescaled**2) ** (3 / 2)
+    )
+    beta_2 = (2 / 27) * (
+        1 + 9 * kappa_rescaled**2 + (1 - 3 * kappa_rescaled**2) ** (3 / 2)
+    )
     return beta_1, beta_2
 
 
 def calculate_kappa_rescaled(kappa: float, delta: float) -> float:
     """Calculates the rescaled decay rate from the original parameters."""
-    kappa_rescaled = kappa / (2*np.abs(delta))
+    kappa_rescaled = kappa / (2 * np.abs(delta))
     return kappa_rescaled
 
 
@@ -228,18 +234,17 @@ def solve_weak_nonlinearity(epsilon, delta, kappa) -> Tuple[float, float]:
     return x1, x2
 
 
-def solve_strong_nonlinearity(epsilon: float, delta: float, chi: float) -> Tuple[float, float]:
-    x_2 = (4.0*epsilon/chi)**(1.0/3.0)
-    x_1 = -kappa*x_2/delta
+def solve_strong_nonlinearity(
+    epsilon: float, delta: float, chi: float
+) -> Tuple[float, float]:
+    x_2 = (4.0 * epsilon / chi) ** (1.0 / 3.0)
+    x_1 = -kappa * x_2 / delta
     return x_1, x_2
-
-
 
 
 kappa = 1.0
 delta = 7.8
 chi = -0.1
-
 
 
 kappa_rescaled = calculate_kappa_rescaled(kappa, delta)
@@ -250,8 +255,6 @@ print(beta_1, beta_2)
 print(epsilon_1, epsilon_2)
 
 
-
-
 epsilon_min = 15.0
 epsilon_max = 25.0
 
@@ -259,5 +262,5 @@ start = perf_counter()
 epsilon_transition = find_epsilon_transition(
     epsilon_min, epsilon_max, delta, chi, kappa
 )
-print("Time taken:", perf_counter()-start)
+print("Time taken:", perf_counter() - start)
 print(f"Transition occurs approximately at epsilon = {epsilon_transition}.")

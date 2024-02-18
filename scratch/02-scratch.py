@@ -1,12 +1,8 @@
 import sympy
 import random
 import autograd.numpy as np
-from scipy.optimize import root
-from metastable.dykman import *
-from tqdm import tqdm
+from src.metastable.dykman import *
 from typing import NamedTuple, List, Tuple
-from time import perf_counter
-
 
 x1, x2, p1, p2 = sympy.symbols("x1 x2 p1 p2")
 sym = (x1, x2, p1, p2)
@@ -51,16 +47,15 @@ class EscapeModel:
         )(*y)
 
 
-
 def estimate_fixed_points(
-        model: EscapeModel,
-        max_iter: int = 50,
-        magnitude: float = 10,
-        dp: int = 5,
-        tol: float = 1e-10,
-        method: str = "hybr",
-        n_seeking: int = 3,
-        initial_guesses: list = None,  # New parameter for initial guesses
+    model: EscapeModel,
+    max_iter: int = 50,
+    magnitude: float = 10,
+    dp: int = 5,
+    tol: float = 1e-10,
+    method: str = "hybr",
+    n_seeking: int = 3,
+    initial_guesses: list = None,  # New parameter for initial guesses
 ):
     if initial_guesses is None:
         initial_guesses = [np.zeros(2)]  # Default to zero vector if none provided
@@ -73,7 +68,13 @@ def estimate_fixed_points(
         # Choose a random initial guess from the list and add noise
         base_guess = random.choice(initial_guesses)
         y0 = base_guess + magnitude * np.random.randn(2)
-        res = root(model.y_dot_classical_func, y0, tol=tol, method=method, jac=model.jacobian_classical_func)
+        res = root(
+            model.y_dot_classical_func,
+            y0,
+            tol=tol,
+            method=method,
+            jac=model.jacobian_classical_func,
+        )
         if res.success:
             # Round the solution to specified decimal places and update the set of fixed points
             fixed_points = fixed_points.union(set([tuple(np.round(res.x, dp))]))
@@ -90,14 +91,18 @@ class OptimizationResult(NamedTuple):
 
 def calculate_beta_12(kappa_rescaled: float) -> float:
     """Calculates the rescaled power parameter at the bifurcation points from the rescaled decay rate."""
-    beta_1 = (2 / 27) * (1 + 9 * kappa_rescaled ** 2 - (1 - 3 * kappa_rescaled ** 2) ** (3 / 2))
-    beta_2 = (2 / 27) * (1 + 9 * kappa_rescaled ** 2 + (1 - 3 * kappa_rescaled ** 2) ** (3 / 2))
+    beta_1 = (2 / 27) * (
+        1 + 9 * kappa_rescaled**2 - (1 - 3 * kappa_rescaled**2) ** (3 / 2)
+    )
+    beta_2 = (2 / 27) * (
+        1 + 9 * kappa_rescaled**2 + (1 - 3 * kappa_rescaled**2) ** (3 / 2)
+    )
     return beta_1, beta_2
 
 
 def calculate_kappa_rescaled(kappa: float, delta: float) -> float:
     """Calculates the rescaled decay rate from the original parameters."""
-    kappa_rescaled = kappa / (2*np.abs(delta))
+    kappa_rescaled = kappa / (2 * np.abs(delta))
     return kappa_rescaled
 
 
@@ -116,12 +121,16 @@ def solve_weak_nonlinearity(epsilon, delta, kappa) -> Tuple[float, float]:
     return x1, x2
 
 
-def solve_strong_nonlinearity(epsilon: float, delta: float, kappa: float, chi: float) -> List[Tuple[float, float]]:
+def solve_strong_nonlinearity(
+    epsilon: float, delta: float, kappa: float, chi: float
+) -> List[Tuple[float, float]]:
     # Calculate the roots of the cubic equation
     x_2_candidates = np.roots([chi / 2.0, 0.0, delta, -2.0 * epsilon])
 
     # Calculate the discriminant of the cubic equation
-    discriminant = -4 * (chi / 2.0) * delta ** 3 - 27 * ((chi / 2.0) ** 2) * (-2.0 * epsilon) ** 2
+    discriminant = (
+        -4 * (chi / 2.0) * delta**3 - 27 * ((chi / 2.0) ** 2) * (-2.0 * epsilon) ** 2
+    )
 
     # Filter out the real roots
     real_roots = [root.real for root in x_2_candidates if np.isreal(root)]
@@ -132,7 +141,8 @@ def solve_strong_nonlinearity(epsilon: float, delta: float, kappa: float, chi: f
 
     if actual_real_roots_count != expected_real_roots_count:
         raise ValueError(
-            f"The number of real roots was found to be {actual_real_roots_count}, but we expected {expected_real_roots_count}.")
+            f"The number of real roots was found to be {actual_real_roots_count}, but we expected {expected_real_roots_count}."
+        )
 
     # Calculate x_1 for each real root x_2 and return tuples of (x_1, x_2)
     x_1_x_2_pairs = [(-kappa * x_2 / delta, x_2) for x_2 in real_roots]
@@ -158,11 +168,16 @@ print(f"epsilon_1: {epsilon_1}, epsilon_2: {epsilon_2}, epsilon: {epsilon}")
 model = EscapeModel(epsilon=epsilon, delta=delta, chi=chi, kappa=kappa)
 
 
-strong_nonlinearity_estimates = solve_strong_nonlinearity(epsilon=epsilon, delta=delta, kappa=kappa, chi=chi)
-weak_nonlinearity_estimates = solve_weak_nonlinearity(epsilon=epsilon, delta=delta, kappa=kappa)
+strong_nonlinearity_estimates = solve_strong_nonlinearity(
+    epsilon=epsilon, delta=delta, kappa=kappa, chi=chi
+)
+weak_nonlinearity_estimates = solve_weak_nonlinearity(
+    epsilon=epsilon, delta=delta, kappa=kappa
+)
 
 print("weak estimates: ", weak_nonlinearity_estimates)
 print("strong estimates: ", strong_nonlinearity_estimates)
-fixed_points = estimate_fixed_points(model, initial_guesses=strong_nonlinearity_estimates, magnitude=10, method="krylov")
+fixed_points = estimate_fixed_points(
+    model, initial_guesses=strong_nonlinearity_estimates, magnitude=10, method="krylov"
+)
 print("found points: ", fixed_points)
-

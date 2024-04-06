@@ -3,7 +3,7 @@ from numpy.typing import NDArray
 from itertools import product
 
 
-def neighbour_average(array: NDArray[np.float64], *indexes) -> float:
+def neighbour_average(array: NDArray[np.float64], *indexes) -> NDArray:
     """Find the mean values of all elements of an N-dimensional array including and neighboring the given indexes.
     NaN values are ignored."""
 

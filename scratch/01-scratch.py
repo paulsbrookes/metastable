@@ -1,266 +1,147 @@
-import sympy
-import random
-import autograd.numpy as np
-from src.metastable.dykman import *
-from tqdm import tqdm
-from typing import NamedTuple, List, Tuple
-from time import perf_counter
+import numpy as np
+from numpy.typing import NDArray
 
 
-x1, x2, p1, p2 = sympy.symbols("x1 x2 p1 p2")
-sym = (x1, x2, p1, p2)
+from metastable.state import FixedPointMap
+from metastable.eom import EOM, Params
 
 
-class EscapeModel:
+def calculate_saddle_point_incoming_quantum_vector(
+    classical_saddle_point: NDArray[float], params: Params
+) -> NDArray[float]:
+    """At the saddle point, calculate the incoming vector which has non-zero quantum components."""
 
-    def __init__(self, epsilon: float, delta: float, chi: float, kappa: float = 1):
-        self.epsilon = epsilon
-        self.delta = delta
-        self.chi = chi
-        self.kappa = kappa
+    eom = EOM(params=params)
 
-        self.H = (
-            kappa * (p1**2 + p2**2)
-            - kappa * (x1 * p1 + x2 * p2)
-            - delta * (x1 * p2 - x2 * p1)
-            - (chi / 2) * (x1**2 + x2**2 - p1**2 - p2**2) * (x1 * p2 - x2 * p1)
-            - 2 * epsilon * p1
-        )
-        dx1_over_dt = sympy.diff(self.H, p1)
-        dx2_over_dt = sympy.diff(self.H, p2)
-        dp1_over_dt = -sympy.diff(self.H, x1)
-        dp2_over_dt = -sympy.diff(self.H, x2)
+    classical_jacobian = eom.jacobian_classical_func(classical_saddle_point)
+    classical_eigenvalues, classical_eigenvectors = np.linalg.eig(classical_jacobian)
+    assert (
+        np.prod(classical_eigenvalues) < 0
+    ), f"{classical_saddle_point} is not a saddle point."
 
-        self.y_dot_expr = sympy.Matrix(
-            [dx1_over_dt, dx2_over_dt, dp1_over_dt, dp2_over_dt]
-        )
-        self.jacobian_expr = self.y_dot_expr.jacobian(sym)
-        self.y_dot_func = lambda y: sympy.lambdify(sym, self.y_dot_expr)(*y)[:, 0]
-        self.jacobian_func = lambda y: sympy.lambdify(sym, self.jacobian_expr)(*y)
+    keldysh_saddle_point = extend_to_keldysh_state(classical_saddle_point)
+    keldysh_jacobian = eom.jacobian_func(keldysh_saddle_point)
+    keldysh_eigenvalues, keldysh_eigenvectors = np.linalg.eig(keldysh_jacobian)
 
-        self.y_dot_classical_expr = sympy.Matrix(
-            self.y_dot_expr.subs([(p1, 0), (p2, 0)])[0:2]
-        )
-        self.jacobian_classical_expr = self.y_dot_classical_expr.jacobian(sym[:2])
-        self.y_dot_classical_func = lambda y: sympy.lambdify(
-            sym[:2], self.y_dot_classical_expr
-        )(*y)[:, 0]
-        self.jacobian_classical_func = lambda y: sympy.lambdify(
-            sym[:2], self.jacobian_classical_expr
-        )(*y)
-
-
-def estimate_fixed_points(
-    model: EscapeModel,
-    max_iter: int = 50,
-    magnitude: float = 10,
-    dp: int = 5,
-    tol: float = 1e-10,
-    method: str = "hybr",
-    n_seeking: int = 3,
-    initial_guesses: list = None,  # New parameter for initial guesses
-):
-    if initial_guesses is None:
-        initial_guesses = [np.zeros(2)]  # Default to zero vector if none provided
-
-    fixed_points = set()
-    idx = 0
-    n_found = 0
-    while idx < max_iter and n_found < n_seeking:
-        idx += 1
-        # Choose a random initial guess from the list and add noise
-        base_guess = random.choice(initial_guesses)
-        y0 = base_guess + magnitude * np.random.randn(2)
-        res = root(
-            model.y_dot_classical_func,
-            y0,
-            tol=tol,
-            method=method,
-            jac=model.jacobian_classical_func,
-        )
-        if res.success:
-            # Round the solution to specified decimal places and update the set of fixed points
-            fixed_points = fixed_points.union(set([tuple(np.round(res.x, dp))]))
-            n_found = len(fixed_points)
-
-    # Convert the set of fixed points into a list before returning
-    return list(fixed_points)
-
-
-class OptimizationResult(NamedTuple):
-    estimate: np.ndarray
-    success: bool
-
-
-def optimize_fixed_point(
-    y0: np.ndarray,
-    model: EscapeModel,
-    tol: float = 1e-15,
-    method: str = "krylov",
-    maxiter: int = 10,
-) -> OptimizationResult:
-    """
-    Attempts to refine a single fixed point estimate.
-
-    Parameters:
-    - y0: The initial estimate to refine.
-    - model: An instance of EscapeModel containing the function to optimize.
-    - tol: Tolerance for the optimization.
-    - method: The method used by scipy.optimize.root.
-    - maxiter: Maximum number of iterations.
-
-    Returns:
-    - An OptimizationResult namedtuple containing the refined estimate (or the original estimate if optimization failed) and a boolean indicating success.
-    """
-    success = False
-    idx = 0
-    while idx < maxiter and not success:
-        res = root(model.y_dot_classical_func, y0, tol=tol, method=method)
-        success = res.success
-        if success:
-            return OptimizationResult(estimate=res.x, success=True)
-        idx += 1
-    return OptimizationResult(estimate=np.full(y0.shape, np.nan), success=False)
-
-
-def refine_fixed_points(
-    estimates: np.ndarray,
-    model: EscapeModel,
-    tol: float = 1e-15,
-    method: str = "krylov",
-    maxiter: int = 10,
-):
-    refined: List[np.array] = []
-    for point_idx in tqdm(range(estimates.shape[0])):
-        y0 = estimates[point_idx]
-        result = optimize_fixed_point(y0, model, tol, method, maxiter)
-        if not result.success:
-            print(f"Failed to refine point {point_idx}.")
-        else:
-            refined.append(result.estimate)
-    precision = -int(np.log10(tol) + 2)
-    n_unique = len(set(tuple(np.round(arr, decimals=precision)) for arr in refined))
-    return refined, n_unique
-
-
-def find_epsilon_transition(
-    epsilon_min: float,
-    epsilon_max: float,
-    delta: float,
-    chi: float,
-    kappa: float,
-    tol=0.001,
-    maxiter=100,
-):
-
-    observed_points = []
-
-    fixed_points_min = estimate_fixed_points(
-        EscapeModel(epsilon_min, delta, chi, kappa), magnitude=10.0, method="hybr"
+    incoming_vector_mask = keldysh_eigenvalues < 0
+    quantum_vector_mask = ~np.isclose(
+        np.linalg.norm(keldysh_eigenvectors[2:, :], axis=0), 0.0
     )
-    fixed_points_max = estimate_fixed_points(
-        EscapeModel(epsilon_max, delta, chi, kappa), magnitude=10.0, method="hybr"
-    )
+    incoming_quantum_vector_mask = incoming_vector_mask & quantum_vector_mask
+    assert (
+        np.sum(incoming_quantum_vector_mask) == 1
+    ), f"We expect only a single incoming quantum vector. Found: {np.sum(incoming_quantum_vector_mask)}."
 
-    observed_points += fixed_points_min
-    observed_points += fixed_points_max
+    incoming_quantum_vector = keldysh_eigenvectors[
+        np.where(incoming_quantum_vector_mask)[0][0]
+    ]
 
-    if not (len(fixed_points_min), len(fixed_points_max)) in [(1, 3), (3, 1)]:
-        raise ValueError(
-            f"Number of fixed points at epsilon_min and epsilon_max is found to be {len(fixed_points_min)} and "
-            f"{len(fixed_points_max)}."
-        )
+    return incoming_quantum_vector
 
-    iter_count = 0
-    while epsilon_max - epsilon_min > tol and iter_count < maxiter:
-        epsilon_mid = (epsilon_min + epsilon_max) / 2
-        fixed_points_mid = estimate_fixed_points(
-            EscapeModel(epsilon_mid, delta, chi, kappa),
-            magnitude=10.0,
-            # initial_guesses=observed_points,
-            method="hybr",
-            tol=1e-7,
-        )
-        observed_points += fixed_points_mid
-        print(
-            f"Iteration: {iter_count}, N fixed points: {len(fixed_points_mid)}, epsilon: {epsilon_mid}, fixed_points: {fixed_points_mid}"
-        )
-
-        if len(fixed_points_mid) == len(fixed_points_min):
-            epsilon_min = epsilon_mid
-            fixed_points_min = fixed_points_mid
-        elif len(fixed_points_mid) == len(fixed_points_max):
-            epsilon_max = epsilon_mid
-            fixed_points_max = fixed_points_mid
-        else:
-            raise ValueError(
-                f"The number of fixed points at epsilon_mid = {len(fixed_points_mid)}."
-            )
-
-        iter_count += 1
-
-    return (epsilon_min + epsilon_max) / 2
+    # quantum_vector_indices = np.where(
+    #     ~np.isclose(np.linalg.norm(keldysh_eigenvectors[2:, :], axis=0), 0)
+    # )[0]
+    # incoming_quantum_vector_indices = quantum_vector_indices[
+    #     np.where(keldysh_eigenvalues[quantum_vector_indices] < 0)[0]
+    # ]
+    #
+    # if incoming_quantum_vector_indices.shape[0] != 1:
+    #     raise Exception("Number of incoming quantum vectors != 1.")
+    #
+    # incoming_quantum_vector_idx = incoming_quantum_vector_indices[0]
+    # incoming_quantum_vector = keldysh_eigenvectors[:, incoming_quantum_vector_idx]
+    #
+    # return incoming_quantum_vector
 
 
-def calculate_beta_12(kappa_rescaled: float) -> float:
-    """Calculates the rescaled power parameter at the bifurcation points from the rescaled decay rate."""
-    beta_1 = (2 / 27) * (
-        1 + 9 * kappa_rescaled**2 - (1 - 3 * kappa_rescaled**2) ** (3 / 2)
-    )
-    beta_2 = (2 / 27) * (
-        1 + 9 * kappa_rescaled**2 + (1 - 3 * kappa_rescaled**2) ** (3 / 2)
-    )
-    return beta_1, beta_2
+def extend_to_keldysh_state(classical_state: NDArray[float]):
+    return np.hstack([classical_state, [0.0, 0.0]])
 
 
-def calculate_kappa_rescaled(kappa: float, delta: float) -> float:
-    """Calculates the rescaled decay rate from the original parameters."""
-    kappa_rescaled = kappa / (2 * np.abs(delta))
-    return kappa_rescaled
-
-
-def map_beta_to_epsilon(beta: float, delta: float, chi: float) -> float:
-    lambda_ = abs(chi / delta)
-    epsilon = delta * np.sqrt(beta / (2 * lambda_))
-    return epsilon
-
-
-def solve_weak_nonlinearity(epsilon, delta, kappa) -> Tuple[float, float]:
-    """Solves for x1 and x2 in the limit of weak effective nonlinearity i.e. the occupation multiplied by the nonlinearity
-    is small relative to other terms.
-    """
-    x1 = (-2 * epsilon * kappa) / (delta**2 + kappa**2)
-    x2 = (2 * epsilon * delta) / (delta**2 + kappa**2)
-    return x1, x2
-
-
-def solve_strong_nonlinearity(
-    epsilon: float, delta: float, chi: float
-) -> Tuple[float, float]:
-    x_2 = (4.0 * epsilon / chi) ** (1.0 / 3.0)
-    x_1 = -kappa * x_2 / delta
-    return x_1, x_2
-
-
-kappa = 1.0
-delta = 7.8
-chi = -0.1
-
-
-kappa_rescaled = calculate_kappa_rescaled(kappa, delta)
-beta_1, beta_2 = calculate_beta_12(kappa_rescaled)
-epsilon_1 = map_beta_to_epsilon(beta_1, delta, chi)
-epsilon_2 = map_beta_to_epsilon(beta_2, delta, chi)
-print(beta_1, beta_2)
-print(epsilon_1, epsilon_2)
-
-
-epsilon_min = 15.0
-epsilon_max = 25.0
-
-start = perf_counter()
-epsilon_transition = find_epsilon_transition(
-    epsilon_min, epsilon_max, delta, chi, kappa
+fixed_point_map = FixedPointMap.load("map.npz")
+epsilon_idx = 30
+kappa_idx = 10
+params = Params(
+    epsilon=fixed_point_map.epsilon_linspace[epsilon_idx],
+    kappa=fixed_point_map.kappa_linspace[kappa_idx],
+    delta=fixed_point_map.delta,
+    chi=fixed_point_map.chi,
 )
-print("Time taken:", perf_counter() - start)
-print(f"Transition occurs approximately at epsilon = {epsilon_transition}.")
+eom = EOM(params=params)
+classical_saddle_point = fixed_point_map.fixed_points[epsilon_idx, kappa_idx, 0]
+incoming_quantum_vector = calculate_saddle_point_incoming_quantum_vector(
+    classical_saddle_point, params
+)
+print(incoming_quantum_vector)
+
+
+# print(classical_saddle_point)
+# classical_jacobian = eom.jacobian_classical_func(classical_saddle_point)
+#
+# # Calculate the eigenvalues and eigenvectors
+# eigenvalues, eigenvectors = np.linalg.eig(classical_jacobian)
+#
+#
+# keldysh_saddle_point = extend_to_keldysh_state(classical_saddle_point)
+# keldysh_jacobian = eom.jacobian_func(keldysh_saddle_point)
+#
+#
+#
+# # Calculate the eigenvalues and eigenvectors
+# eigenvalues, eigenvectors = np.linalg.eig(keldysh_jacobian)
+#
+#
+#
+#
+#
+#
+# quantum_vector_indices = np.where(
+#     ~np.isclose(np.linalg.norm(eigenvectors[2:, :], axis=0), 0)
+# )[0]
+# incoming_quantum_vector_indices = quantum_vector_indices[
+#     np.where(eigenvalues[quantum_vector_indices] < 0)[0]
+# ]
+#
+# if incoming_quantum_vector_indices.shape[0] != 1:
+#     raise Exception("Number of incoming quantum vectors != 1.")
+#
+# incoming_quantum_vector_idx = incoming_quantum_vector_indices[0]
+# incoming_quantum_vector = eigenvectors[:, incoming_quantum_vector_idx]
+#
+# print(incoming_quantum_vector)
+
+
+# model = EscapeModel(epsilon, delta, chi)
+# model.find_fixed_points()
+# model.classify_fixed_points()
+# model.obtain_incoming_quantum_vector()
+#
+# unstable_point = np.hstack([model.fixed_points[1], [0, 0]])
+# unstable_jac = model.jacobian_func(unstable_point)
+# unstable_eigenvalues, unstable_eigenvectors = np.linalg.eig(unstable_jac)
+# unstable_incoming_vectors = unstable_eigenvectors[:, [1, 2]]
+# unstable_outgoing_vectors = unstable_eigenvectors[:, [0, 3]]
+# plane_vectors = unstable_incoming_vectors
+# out_of_plane_vectors = unstable_outgoing_vectors.T
+# unstable_out_of_plane_vectors = np.array([remove_plane_component(v, plane_vectors) for v in out_of_plane_vectors])
+#
+# stable_point = np.hstack([model.fixed_points[2], [0, 0]])
+# stable_jac = model.jacobian_func(stable_point)
+# stable_eigenvalues, stable_eigenvectors = np.linalg.eig(stable_jac)
+# stable_incoming_vectors = np.array([(stable_eigenvectors[:, 0] + stable_eigenvectors[:, 1]).real,
+#                                     (1j * stable_eigenvectors[:, 0] - 1j * stable_eigenvectors[:, 1]).real]).T
+# stable_outgoing_vectors = np.array([(stable_eigenvectors[:, 2] + stable_eigenvectors[:, 3]).real,
+#                                     (1j * stable_eigenvectors[:, 2] - 1j * stable_eigenvectors[:, 3]).real]).T
+# plane_vectors = stable_outgoing_vectors
+# out_of_plane_vectors = stable_incoming_vectors.T
+# stable_out_of_plane_vectors = np.array([remove_plane_component(v, plane_vectors) for v in out_of_plane_vectors])
+#
+# def bc(ya, yb):
+#     return np.hstack([np.dot(ya - stable_point, stable_out_of_plane_vectors.T),
+#                       np.dot(yb - unstable_point, unstable_out_of_plane_vectors.T)])
+#
+# t_guess = np.linspace(0, t_end, 10001)
+# y_guess = stable_point[:, np.newaxis] + t_guess[np.newaxis, :] * (unstable_point - stable_point)[:,
+#                                                                      np.newaxis] / t_end
+# wrapper = lambda x, y: model.y_dot_func(y)
+# res = scipy.integrate.solve_bvp(wrapper, bc, t_guess, y_guess, tol=1e-14, max_nodes=100000)

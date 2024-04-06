@@ -1,24 +1,29 @@
 import sympy
+from pydantic import BaseModel
+
+
+class Params(BaseModel):
+    epsilon: float
+    delta: float
+    chi: float
+    kappa: float = 1.0
 
 
 class EOM:
     x1, x2, p1, p2 = sympy.symbols("x1 x2 p1 p2")
     sym = (x1, x2, p1, p2)
 
-    def __init__(self, epsilon: float, delta: float, chi: float, kappa: float = 1):
-        self.epsilon = epsilon
-        self.delta = delta
-        self.chi = chi
-        self.kappa = kappa
+    def __init__(self, params: Params):
+        self.params: Params = params
 
         self.H = (
-            kappa * (self.p1**2 + self.p2**2)
-            - kappa * (self.x1 * self.p1 + self.x2 * self.p2)
-            - delta * (self.x1 * self.p2 - self.x2 * self.p1)
-            - (chi / 2)
+            self.params.kappa * (self.p1**2 + self.p2**2)
+            - self.params.kappa * (self.x1 * self.p1 + self.x2 * self.p2)
+            - self.params.delta * (self.x1 * self.p2 - self.x2 * self.p1)
+            - (self.params.chi / 2)
             * (self.x1**2 + self.x2**2 - self.p1**2 - self.p2**2)
             * (self.x1 * self.p2 - self.x2 * self.p1)
-            - 2 * epsilon * self.p1
+            - 2 * self.params.epsilon * self.p1
         )
         dx1_over_dt = sympy.diff(self.H, self.p1)
         dx2_over_dt = sympy.diff(self.H, self.p2)

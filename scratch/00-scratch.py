@@ -8,10 +8,10 @@ from metastable.extend_map import extend_map
 
 
 seed_map = FixedPointMap(
-    epsilon_linspace=np.linspace(start=0.0, stop=100.0 / 7.8, num=51),
-    kappa_linspace=np.linspace(start=0.0, stop=5.0 / 7.8, num=51),
-    delta=1.0,
-    chi=-0.01 / 7.8,
+    epsilon_linspace=np.linspace(start=0.0, stop=10.0, num=51),
+    kappa_linspace=np.linspace(start=0.0, stop=1.5, num=31),
+    delta=6.7,
+    chi=-0.1,
 )
 
 # Choose a point in parameter space for the seed solution

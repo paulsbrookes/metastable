@@ -1,66 +1,16 @@
 import numpy as np
-from numpy.typing import NDArray
+import scipy
 
 
 from metastable.state import FixedPointMap
 from metastable.eom import EOM, Params
-
-
-def calculate_saddle_point_incoming_quantum_vector(
-    classical_saddle_point: NDArray[float], params: Params
-) -> NDArray[float]:
-    """At the saddle point, calculate the incoming vector which has non-zero quantum components."""
-
-    eom = EOM(params=params)
-
-    classical_jacobian = eom.jacobian_classical_func(classical_saddle_point)
-    classical_eigenvalues, classical_eigenvectors = np.linalg.eig(classical_jacobian)
-    assert (
-        np.prod(classical_eigenvalues) < 0
-    ), f"{classical_saddle_point} is not a saddle point."
-
-    keldysh_saddle_point = extend_to_keldysh_state(classical_saddle_point)
-    keldysh_jacobian = eom.jacobian_func(keldysh_saddle_point)
-    keldysh_eigenvalues, keldysh_eigenvectors = np.linalg.eig(keldysh_jacobian)
-
-    incoming_vector_mask = keldysh_eigenvalues < 0
-    quantum_vector_mask = ~np.isclose(
-        np.linalg.norm(keldysh_eigenvectors[2:, :], axis=0), 0.0
-    )
-    incoming_quantum_vector_mask = incoming_vector_mask & quantum_vector_mask
-    assert (
-        np.sum(incoming_quantum_vector_mask) == 1
-    ), f"We expect only a single incoming quantum vector. Found: {np.sum(incoming_quantum_vector_mask)}."
-
-    incoming_quantum_vector = keldysh_eigenvectors[
-        np.where(incoming_quantum_vector_mask)[0][0]
-    ]
-
-    return incoming_quantum_vector
-
-    # quantum_vector_indices = np.where(
-    #     ~np.isclose(np.linalg.norm(keldysh_eigenvectors[2:, :], axis=0), 0)
-    # )[0]
-    # incoming_quantum_vector_indices = quantum_vector_indices[
-    #     np.where(keldysh_eigenvalues[quantum_vector_indices] < 0)[0]
-    # ]
-    #
-    # if incoming_quantum_vector_indices.shape[0] != 1:
-    #     raise Exception("Number of incoming quantum vectors != 1.")
-    #
-    # incoming_quantum_vector_idx = incoming_quantum_vector_indices[0]
-    # incoming_quantum_vector = keldysh_eigenvectors[:, incoming_quantum_vector_idx]
-    #
-    # return incoming_quantum_vector
-
-
-def extend_to_keldysh_state(classical_state: NDArray[float]):
-    return np.hstack([classical_state, [0.0, 0.0]])
+from metastable.manifold_inverses import calculate_manifold_inverses
+from metastable.incoming_quantum_vector import extend_to_keldysh_state
 
 
 fixed_point_map = FixedPointMap.load("map.npz")
-epsilon_idx = 30
-kappa_idx = 10
+epsilon_idx = -1
+kappa_idx = 20
 params = Params(
     epsilon=fixed_point_map.epsilon_linspace[epsilon_idx],
     kappa=fixed_point_map.kappa_linspace[kappa_idx],
@@ -69,79 +19,47 @@ params = Params(
 )
 eom = EOM(params=params)
 classical_saddle_point = fixed_point_map.fixed_points[epsilon_idx, kappa_idx, 0]
-incoming_quantum_vector = calculate_saddle_point_incoming_quantum_vector(
-    classical_saddle_point, params
+classical_focus_point = fixed_point_map.fixed_points[epsilon_idx, kappa_idx, 2]
+print(params)
+print(classical_saddle_point, classical_focus_point)
+
+
+keldysh_saddle_point = extend_to_keldysh_state(classical_saddle_point)
+keldysh_focus_point = extend_to_keldysh_state(classical_focus_point)
+_, saddle_point_unstable_manifold_inverse = calculate_manifold_inverses(
+    keldysh_saddle_point, params
 )
-print(incoming_quantum_vector)
+focus_point_stable_manifold_inverse, _ = calculate_manifold_inverses(
+    keldysh_focus_point, params
+)
 
 
-# print(classical_saddle_point)
-# classical_jacobian = eom.jacobian_classical_func(classical_saddle_point)
-#
-# # Calculate the eigenvalues and eigenvectors
-# eigenvalues, eigenvectors = np.linalg.eig(classical_jacobian)
-#
-#
-# keldysh_saddle_point = extend_to_keldysh_state(classical_saddle_point)
-# keldysh_jacobian = eom.jacobian_func(keldysh_saddle_point)
-#
-#
-#
-# # Calculate the eigenvalues and eigenvectors
-# eigenvalues, eigenvectors = np.linalg.eig(keldysh_jacobian)
-#
-#
-#
-#
-#
-#
-# quantum_vector_indices = np.where(
-#     ~np.isclose(np.linalg.norm(eigenvectors[2:, :], axis=0), 0)
-# )[0]
-# incoming_quantum_vector_indices = quantum_vector_indices[
-#     np.where(eigenvalues[quantum_vector_indices] < 0)[0]
-# ]
-#
-# if incoming_quantum_vector_indices.shape[0] != 1:
-#     raise Exception("Number of incoming quantum vectors != 1.")
-#
-# incoming_quantum_vector_idx = incoming_quantum_vector_indices[0]
-# incoming_quantum_vector = eigenvectors[:, incoming_quantum_vector_idx]
-#
-# print(incoming_quantum_vector)
+def bc(ya, yb):
+    return np.hstack(
+        [
+            np.abs(np.dot(focus_point_stable_manifold_inverse, ya - keldysh_focus_point)),
+            np.abs(np.dot(saddle_point_unstable_manifold_inverse, yb - keldysh_saddle_point)),
+        ]
+    )
 
 
-# model = EscapeModel(epsilon, delta, chi)
-# model.find_fixed_points()
-# model.classify_fixed_points()
-# model.obtain_incoming_quantum_vector()
-#
-# unstable_point = np.hstack([model.fixed_points[1], [0, 0]])
-# unstable_jac = model.jacobian_func(unstable_point)
-# unstable_eigenvalues, unstable_eigenvectors = np.linalg.eig(unstable_jac)
-# unstable_incoming_vectors = unstable_eigenvectors[:, [1, 2]]
-# unstable_outgoing_vectors = unstable_eigenvectors[:, [0, 3]]
-# plane_vectors = unstable_incoming_vectors
-# out_of_plane_vectors = unstable_outgoing_vectors.T
-# unstable_out_of_plane_vectors = np.array([remove_plane_component(v, plane_vectors) for v in out_of_plane_vectors])
-#
-# stable_point = np.hstack([model.fixed_points[2], [0, 0]])
-# stable_jac = model.jacobian_func(stable_point)
-# stable_eigenvalues, stable_eigenvectors = np.linalg.eig(stable_jac)
-# stable_incoming_vectors = np.array([(stable_eigenvectors[:, 0] + stable_eigenvectors[:, 1]).real,
-#                                     (1j * stable_eigenvectors[:, 0] - 1j * stable_eigenvectors[:, 1]).real]).T
-# stable_outgoing_vectors = np.array([(stable_eigenvectors[:, 2] + stable_eigenvectors[:, 3]).real,
-#                                     (1j * stable_eigenvectors[:, 2] - 1j * stable_eigenvectors[:, 3]).real]).T
-# plane_vectors = stable_outgoing_vectors
-# out_of_plane_vectors = stable_incoming_vectors.T
-# stable_out_of_plane_vectors = np.array([remove_plane_component(v, plane_vectors) for v in out_of_plane_vectors])
-#
-# def bc(ya, yb):
-#     return np.hstack([np.dot(ya - stable_point, stable_out_of_plane_vectors.T),
-#                       np.dot(yb - unstable_point, unstable_out_of_plane_vectors.T)])
-#
-# t_guess = np.linspace(0, t_end, 10001)
-# y_guess = stable_point[:, np.newaxis] + t_guess[np.newaxis, :] * (unstable_point - stable_point)[:,
-#                                                                      np.newaxis] / t_end
-# wrapper = lambda x, y: model.y_dot_func(y)
-# res = scipy.integrate.solve_bvp(wrapper, bc, t_guess, y_guess, tol=1e-14, max_nodes=100000)
+t_guess = np.linspace(0.0, 10.0, 10001)
+y_guess = (
+    keldysh_focus_point[:, np.newaxis]
+    + t_guess[np.newaxis, :]
+    * (keldysh_saddle_point - keldysh_focus_point)[:, np.newaxis]
+    / t_guess[-1]
+)
+wrapper = lambda x, y: eom.y_dot_func(y)
+res = scipy.integrate.solve_bvp(
+    wrapper, bc, t_guess, y_guess, tol=3e-14, max_nodes=200000
+)
+
+
+import matplotlib.pyplot as plt
+fig, axes = plt.subplots(1,1,figsize=(5, 5))
+t_plot = np.linspace(0, t_guess[-1], 1001)
+y0_plot = res.sol(t_plot)[0]
+y1_plot = res.sol(t_plot)[1]
+axes.plot(y0_plot,y1_plot)
+plt.show()

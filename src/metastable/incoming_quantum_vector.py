@@ -3,6 +3,7 @@ from numpy.typing import NDArray
 
 
 from metastable.eom import EOM, Params
+from metastable.extend_to_keldysh import extend_to_keldysh_state
 
 
 def calculate_incoming_quantum_vector(
@@ -36,7 +37,3 @@ def calculate_incoming_quantum_vector(
     ]
 
     return incoming_quantum_vector
-
-
-def extend_to_keldysh_state(classical_state: NDArray[float]):
-    return np.hstack([classical_state, [0.0, 0.0]])

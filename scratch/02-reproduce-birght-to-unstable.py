@@ -33,15 +33,29 @@ focus_point_stable_manifold_inverse, _ = calculate_manifold_inverses(
     keldysh_focus_point, params
 )
 
+old_vectors = np.load("bright-to-unstable.npz")
+
+
+# def bc(ya, yb):
+#     return np.hstack(
+#         [
+#             np.abs(np.dot(old_vectors["vectors_orthogonal_to_stable_point_outgoing_vectors"].reshape([2, 4]), ya - keldysh_focus_point)),
+#             np.abs(np.dot(old_vectors["vectors_orthogonal_to_unstable_point_incoming_vectors"].reshape([2, 4]), yb - keldysh_saddle_point)),
+#         ]
+#     )
+
+test = np.vstack([focus_point_stable_manifold_inverse[0] + focus_point_stable_manifold_inverse[1], focus_point_stable_manifold_inverse[0] - focus_point_stable_manifold_inverse[1]])
 
 def bc(ya, yb):
     return np.hstack(
         [
-            np.abs(np.dot(focus_point_stable_manifold_inverse, ya - keldysh_focus_point)),
+            np.abs(np.dot(test, ya - keldysh_focus_point)),
             np.abs(np.dot(saddle_point_unstable_manifold_inverse, yb - keldysh_saddle_point)),
         ]
     )
 
+
+print(keldysh_saddle_point, keldysh_focus_point)
 
 t_guess = np.linspace(0.0, 8.0, 10001)
 y_guess = (

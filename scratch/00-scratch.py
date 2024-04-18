@@ -10,7 +10,7 @@ from metastable.extend_map import extend_map
 seed_map = FixedPointMap(
     epsilon_linspace=np.linspace(start=0.0, stop=10.0, num=51),
     kappa_linspace=np.linspace(start=0.0, stop=1.5, num=31),
-    delta=6.7,
+    delta=7.8,
     chi=-0.1,
 )
 

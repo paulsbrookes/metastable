@@ -5,7 +5,7 @@ import numpy as np
 # Set the default font size
 plt.rcParams.update({"font.size": 14})
 
-state = FixedPointMap.load("map.npz")
+state = FixedPointMap.load("/home/paul/Projects/keldysh/metastable/scratch/map.npz")
 
 # Create a new figure with subplots
 fig, axes = plt.subplots(3, 1, figsize=(6, 18), sharex=True)
@@ -49,5 +49,6 @@ cbar_ax = fig.add_axes([0.82, 0.15, 0.02, 0.7])
 cbar = fig.colorbar(heatmap, cax=cbar_ax)
 cbar.set_label("Norm of Fixed Points")
 
+plt.savefig("fig.png")
 # Display the plot
 plt.show()

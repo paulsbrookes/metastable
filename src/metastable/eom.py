@@ -25,6 +25,7 @@ class EOM:
             * (self.x1 * self.p2 - self.x2 * self.p1)
             - 2 * self.params.epsilon * self.p1
         )
+
         dx1_over_dt = sympy.diff(self.H, self.p1)
         dx2_over_dt = sympy.diff(self.H, self.p2)
         dp1_over_dt = -sympy.diff(self.H, self.x1)

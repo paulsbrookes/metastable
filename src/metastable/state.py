@@ -13,6 +13,7 @@ class FixedPointMap:
         chi: float,
         fixed_points: Optional[NDArray] = None,
         checked_points: Optional[NDArray] = None,
+        path_results: Optional[NDArray] = None,
     ):
         self.epsilon_linspace: Final[NDArray] = epsilon_linspace
         self.kappa_linspace: Final[NDArray] = kappa_linspace
@@ -37,6 +38,14 @@ class FixedPointMap:
                 dtype=bool,
             )
 
+        if path_results is not None:
+            self.path_results = path_results
+        else:
+            self.path_results: NDArray = np.empty(
+                shape=(len(epsilon_linspace), len(kappa_linspace)),
+                dtype=object
+            )
+
     def update_map(self, epsilon_idx: int, kappa_idx: int, new_fixed_points: NDArray):
         """
         Update the fixed_points and checked_points arrays with new data.
@@ -53,11 +62,12 @@ class FixedPointMap:
             chi=self.chi,
             fixed_points=self.fixed_points,
             checked_points=self.checked_points,
+            path_results=self.path_results
         )
 
     @classmethod
     def load(cls, file_path: str) -> FixedPointMap:
-        loaded_data = np.load(file_path)
+        loaded_data = np.load(file_path, allow_pickle=True)
         tracker = cls(**loaded_data)
         return tracker
 
@@ -69,4 +79,5 @@ class FixedPointMap:
             chi=self.chi,
             fixed_points=self.fixed_points.copy(),
             checked_points=self.checked_points.copy(),
+            path_results=self.path_results.copy(),
         )

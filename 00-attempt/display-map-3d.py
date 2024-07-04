@@ -1,6 +1,7 @@
 from metastable.state import FixedPointMap
 import matplotlib
-matplotlib.use('TkAgg')  # Example for Tkinter based interactive backend
+
+matplotlib.use("TkAgg")  # Example for Tkinter based interactive backend
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -12,15 +13,12 @@ state = FixedPointMap.load("./map.npz")
 
 # Prepare 3D figure and axis
 fig = plt.figure(figsize=(8, 8))
-ax = fig.add_subplot(111, projection='3d')
+ax = fig.add_subplot(111, projection="3d")
 
 names = ["Saddle Point", "Bright State", "Dim State"]
 
 # Setup a meshgrid for the axes
-kappa, epsilon = np.meshgrid(
-    state.kappa_linspace,
-    state.epsilon_linspace
-)
+kappa, epsilon = np.meshgrid(state.kappa_linspace, state.epsilon_linspace)
 
 # Define the z-levels for each plot to avoid overlap
 z_levels = [0, 0, 0]  # Adjust these values to manage the vertical spacing
@@ -34,7 +32,7 @@ for idx, z in enumerate(z_levels):
         epsilon,
         norm_fixed_points,  # Offset each surface by z to separate them in the 3D space
         cmap="viridis",
-        edgecolor='none'
+        edgecolor="none",
     )
     ax.text2D(0.05, 0.95 - idx * 0.05, f"{names[idx]}", transform=ax.transAxes)
 

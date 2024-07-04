@@ -42,8 +42,7 @@ class FixedPointMap:
             self.path_results = path_results
         else:
             self.path_results: NDArray = np.empty(
-                shape=(len(epsilon_linspace), len(kappa_linspace)),
-                dtype=object
+                shape=(len(epsilon_linspace), len(kappa_linspace)), dtype=object
             )
 
     def update_map(self, epsilon_idx: int, kappa_idx: int, new_fixed_points: NDArray):
@@ -62,7 +61,7 @@ class FixedPointMap:
             chi=self.chi,
             fixed_points=self.fixed_points,
             checked_points=self.checked_points,
-            path_results=self.path_results
+            path_results=self.path_results,
         )
 
     @classmethod

@@ -13,9 +13,6 @@ def generate_guess_from_sol(bvp_result, t_end: float):
 def generate_linear_guess(y0: NDArray, y1: NDArray, t_end: float):
     t_guess = np.linspace(0.0, t_end, 10001)
     y_guess = (
-        y0[:, np.newaxis]
-        + t_guess[np.newaxis, :]
-        * (y1 - y0)[:, np.newaxis]
-        / t_end
+        y0[:, np.newaxis] + t_guess[np.newaxis, :] * (y1 - y0)[:, np.newaxis] / t_end
     )
     return t_guess, y_guess

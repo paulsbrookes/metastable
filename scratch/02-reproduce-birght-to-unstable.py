@@ -44,13 +44,23 @@ old_vectors = np.load("bright-to-unstable.npz")
 #         ]
 #     )
 
-test = np.vstack([focus_point_stable_manifold_inverse[0] + focus_point_stable_manifold_inverse[1], focus_point_stable_manifold_inverse[0] - focus_point_stable_manifold_inverse[1]])
+test = np.vstack(
+    [
+        focus_point_stable_manifold_inverse[0] + focus_point_stable_manifold_inverse[1],
+        focus_point_stable_manifold_inverse[0] - focus_point_stable_manifold_inverse[1],
+    ]
+)
+
 
 def bc(ya, yb):
     return np.hstack(
         [
             np.abs(np.dot(test, ya - keldysh_focus_point)),
-            np.abs(np.dot(saddle_point_unstable_manifold_inverse, yb - keldysh_saddle_point)),
+            np.abs(
+                np.dot(
+                    saddle_point_unstable_manifold_inverse, yb - keldysh_saddle_point
+                )
+            ),
         ]
     )
 
@@ -71,9 +81,10 @@ res = scipy.integrate.solve_bvp(
 
 
 import matplotlib.pyplot as plt
-fig, axes = plt.subplots(1,1,figsize=(5, 5))
+
+fig, axes = plt.subplots(1, 1, figsize=(5, 5))
 t_plot = np.linspace(0, t_guess[-1], 1001)
 y0_plot = res.sol(t_plot)[0]
 y1_plot = res.sol(t_plot)[1]
-axes.plot(y0_plot,y1_plot)
+axes.plot(y0_plot, y1_plot)
 plt.show()

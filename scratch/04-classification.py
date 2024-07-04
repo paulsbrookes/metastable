@@ -36,12 +36,29 @@ stable_eigenvector_indexes = [i for i, val in enumerate(eigenvalues) if val.real
 unstable_eigenvector_indexes = [i for i, val in enumerate(eigenvalues) if val.real > 0]
 
 # Assert conditions
-assert len(stable_eigenvector_indexes) == 2, "There should be exactly two stable eigenvectors."
-assert len(unstable_eigenvector_indexes) == 2, "There should be exactly two unstable eigenvectors."
+assert (
+    len(stable_eigenvector_indexes) == 2
+), "There should be exactly two stable eigenvectors."
+assert (
+    len(unstable_eigenvector_indexes) == 2
+), "There should be exactly two unstable eigenvectors."
 
 # Check for complex conjugates in each pair
-assert np.all(np.isclose(eigenvectors[:,stable_eigenvector_indexes[0]], np.conj(eigenvectors[:,stable_eigenvector_indexes[1]]))), "The unstable eigenvectors should be conjugate at a focus."
-assert np.all(np.isclose(eigenvectors[:,unstable_eigenvector_indexes[0]], np.conj(eigenvectors[:,unstable_eigenvector_indexes[1]]))), "The stable eigenvectors should be conjugate at a focus."
+assert np.all(
+    np.isclose(
+        eigenvectors[:, stable_eigenvector_indexes[0]],
+        np.conj(eigenvectors[:, stable_eigenvector_indexes[1]]),
+    )
+), "The unstable eigenvectors should be conjugate at a focus."
+assert np.all(
+    np.isclose(
+        eigenvectors[:, unstable_eigenvector_indexes[0]],
+        np.conj(eigenvectors[:, unstable_eigenvector_indexes[1]]),
+    )
+), "The stable eigenvectors should be conjugate at a focus."
 
-cov = np.dot(np.conjugate(np.transpose(eigenvectors[:,stable_eigenvector_indexes])), eigenvectors[:,stable_eigenvector_indexes])
+cov = np.dot(
+    np.conjugate(np.transpose(eigenvectors[:, stable_eigenvector_indexes])),
+    eigenvectors[:, stable_eigenvector_indexes],
+)
 ...

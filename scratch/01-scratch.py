@@ -37,8 +37,14 @@ focus_point_stable_manifold_inverse, _ = calculate_manifold_inverses(
 def bc(ya, yb):
     return np.hstack(
         [
-            np.abs(np.dot(focus_point_stable_manifold_inverse, ya - keldysh_focus_point)),
-            np.abs(np.dot(saddle_point_unstable_manifold_inverse, yb - keldysh_saddle_point)),
+            np.abs(
+                np.dot(focus_point_stable_manifold_inverse, ya - keldysh_focus_point)
+            ),
+            np.abs(
+                np.dot(
+                    saddle_point_unstable_manifold_inverse, yb - keldysh_saddle_point
+                )
+            ),
         ]
     )
 
@@ -57,9 +63,10 @@ res = scipy.integrate.solve_bvp(
 
 
 import matplotlib.pyplot as plt
-fig, axes = plt.subplots(1,1,figsize=(5, 5))
+
+fig, axes = plt.subplots(1, 1, figsize=(5, 5))
 t_plot = np.linspace(0, t_guess[-1], 1001)
 y0_plot = res.sol(t_plot)[0]
 y1_plot = res.sol(t_plot)[1]
-axes.plot(y0_plot,y1_plot)
+axes.plot(y0_plot, y1_plot)
 plt.show()

@@ -1,12 +1,15 @@
 from __future__ import annotations
 from typing import Optional, Final, Union
 from numpy.typing import NDArray
+from scipy.integrate._bvp import BVPResult
 from enum import Enum
 from pathlib import Path
 import numpy as np
 
 
 class FixedPointType(Enum):
+    """Currently we have no validation that the saddle, bright and dim states are stored at the correct indexes. The
+    index at which they are stored depends on the seed solution used to initialise the mapping of the fixed points."""
     SADDLE = 0
     BRIGHT = 1
     DIM = 2
@@ -15,13 +18,13 @@ class FixedPointType(Enum):
 class FixedPointMap:
     def __init__(
         self,
-        epsilon_linspace: NDArray,
-        kappa_linspace: NDArray,
+        epsilon_linspace: NDArray[np.float_],
+        kappa_linspace: NDArray[np.float_],
         delta: float,
         chi: float,
-        fixed_points: Optional[NDArray] = None,
-        checked_points: Optional[NDArray] = None,
-        path_results: Optional[NDArray] = None,
+        fixed_points: Optional[NDArray[np.float_]] = None,
+        checked_points: Optional[NDArray[np.bool_]] = None,
+        path_results: Optional[NDArray[BVPResult]] = None,
     ):
         self.epsilon_linspace: Final[NDArray] = epsilon_linspace
         self.kappa_linspace: Final[NDArray] = kappa_linspace
@@ -40,7 +43,7 @@ class FixedPointMap:
         if checked_points is not None:
             self.checked_points = checked_points
         else:
-            self.checked_points: NDArray = np.full(
+            self.checked_points: NDArray[np.bool_] = np.full(
                 shape=(len(epsilon_linspace), len(kappa_linspace)),
                 fill_value=False,
                 dtype=bool,
@@ -49,7 +52,7 @@ class FixedPointMap:
         if path_results is not None:
             self.path_results = path_results
         else:
-            self.path_results: NDArray = np.empty(
+            self.path_results: NDArray[BVPResult] = np.empty(
                 shape=(len(epsilon_linspace), len(kappa_linspace)), dtype=object
             )
 

@@ -8,8 +8,8 @@ import numpy as np
 
 class FixedPointType(Enum):
     SADDLE = 0
-    DIM = 1
-    BRIGHT = 2
+    BRIGHT = 1
+    DIM = 2
 
 
 class FixedPointMap:

@@ -5,8 +5,8 @@ from metastable.state import FixedPointMap, FixedPointType
 from metastable.paths.map import map_switching_paths, IndexPair
 
 
-map_path = Path("/home/paul/Projects/keldysh/metastable/00-attempt/map.npz")
-output_path = Path("/home/paul/Projects/keldysh/metastable/00-attempt/output")
+map_path = Path("/home/paul/Projects/keldysh/metastable/experiments/map.npz")
+output_path = Path("/home/paul/Projects/keldysh/metastable/experiments/output_dim")
 
 # Check if the directory exists
 if output_path.exists():
@@ -29,5 +29,5 @@ index_list = [
 
 # Begin mapping switching paths
 results = map_switching_paths(
-    fixed_point_map, index_list, output_path, endpoint_type=FixedPointType.BRIGHT
+    fixed_point_map, index_list, output_path, endpoint_type=FixedPointType.DIM
 )

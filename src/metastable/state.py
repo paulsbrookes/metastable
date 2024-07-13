@@ -1,7 +1,15 @@
 from __future__ import annotations
-from typing import Optional, Final
+from typing import Optional, Final, Union
 from numpy.typing import NDArray
+from enum import Enum
+from pathlib import Path
 import numpy as np
+
+
+class FixedPointType(Enum):
+    SADDLE = 0
+    DIM = 1
+    BRIGHT = 2
 
 
 class FixedPointMap:
@@ -52,7 +60,7 @@ class FixedPointMap:
         self.fixed_points[epsilon_idx, kappa_idx] = new_fixed_points
         self.checked_points[epsilon_idx, kappa_idx] = True
 
-    def save_state(self, file_path: str):
+    def save_state(self, file_path: Union[str, Path]):
         np.savez(
             file_path,
             epsilon_linspace=self.epsilon_linspace,
@@ -65,7 +73,7 @@ class FixedPointMap:
         )
 
     @classmethod
-    def load(cls, file_path: str) -> FixedPointMap:
+    def load(cls, file_path: Union[str, Path]) -> FixedPointMap:
         loaded_data = np.load(file_path, allow_pickle=True)
         tracker = cls(**loaded_data)
         return tracker

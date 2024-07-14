@@ -11,7 +11,7 @@ from scipy.integrate import solve_bvp
 from scipy.integrate._bvp import BVPResult
 
 
-from metastable.state import FixedPointMap, FixedPointType
+from metastable.map.map import FixedPointMap, FixedPointType, PathType
 from metastable.eom import EOM, Params
 from metastable.incoming_quantum_vector import extend_to_keldysh_state
 from metastable.generate_guess import generate_linear_guess, generate_guess_from_sol

@@ -3,7 +3,7 @@ import numpy as np
 
 
 from metastable.zero_damping import solve_zero_damping
-from metastable.state import FixedPointMap
+from metastable.map.map import FixedPointMap
 from metastable.extend_map import extend_map
 
 

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-from metastable.state import FixedPointMap, FixedPointType
+from metastable.map.map import FixedPointMap, FixedPointType
 from metastable.paths.map import map_switching_paths, IndexPair
 
 

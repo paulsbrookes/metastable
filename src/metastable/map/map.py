@@ -15,6 +15,11 @@ class FixedPointType(Enum):
     DIM = 2
 
 
+class PathType(Enum):
+    BRIGHT_TO_SADDLE = 0
+    DIM_TO_SADDLE = 1
+
+
 class FixedPointMap:
     def __init__(
         self,
@@ -53,7 +58,7 @@ class FixedPointMap:
             self.path_results = path_results
         else:
             self.path_results: NDArray[BVPResult] = np.empty(
-                shape=(len(epsilon_linspace), len(kappa_linspace)), dtype=object
+                shape=(len(epsilon_linspace), len(kappa_linspace), 2), dtype=object
             )
 
     def update_map(self, epsilon_idx: int, kappa_idx: int, new_fixed_points: NDArray):

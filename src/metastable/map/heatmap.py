@@ -2,7 +2,7 @@ import numpy as np
 import plotly.graph_objects as go
 from typing import Dict, List
 from plotly.subplots import make_subplots
-from metastable.state import FixedPointMap, FixedPointType
+from metastable.map.map import FixedPointMap, FixedPointType
 
 
 def plot_fixed_point_map(
@@ -53,9 +53,3 @@ def plot_fixed_point_map(
     )
 
     return fig
-
-
-if __name__ == "__main__":
-    fixed_point_map = FixedPointMap.load("./map.npz")
-    fig = plot_fixed_point_map(fixed_point_map)
-    fig.show()

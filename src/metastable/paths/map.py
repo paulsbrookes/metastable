@@ -172,6 +172,13 @@ def map_switching_paths(
         fixed_point_map, index_list[0], t_end, endpoint_type
     )
 
+    if endpoint_type == FixedPointType.BRIGHT:
+        path_idx = PathType.BRIGHT_TO_SADDLE
+    elif endpoint_type == FixedPointType.DIM:
+        path_idx = PathType.DIM_TO_SADDLE
+    else:
+        raise ValueError(f"Unsupported endpoint_type: {endpoint_type}.")
+
     output_map_path = output_path / "output_map.npz"
     log_path = output_path / "logs"
     log_path.mkdir(parents=True)
@@ -198,7 +205,7 @@ def map_switching_paths(
         fig, _ = plot_solution(path_result, t_guess)
         fig.savefig(plot_file_path, bbox_inches="tight")
 
-        fixed_point_map.path_results[index_pair.epsilon_idx, index_pair.kappa_idx] = (
+        fixed_point_map.path_results[index_pair.epsilon_idx, index_pair.kappa_idx, path_idx] = (
             path_result
         )
         fixed_point_map.save_state(output_map_path)

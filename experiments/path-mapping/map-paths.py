@@ -6,7 +6,7 @@ from metastable.paths.map import map_switching_paths, IndexPair
 
 
 map_path = Path("/home/paul/Projects/keldysh/metastable/experiments/map.npz")
-output_path = Path("/home/paul/Projects/keldysh/metastable/experiments/output_dim")
+output_path = Path("/home/paul/Projects/keldysh/metastable/experiments/output")
 
 # Check if the directory exists
 if output_path.exists():

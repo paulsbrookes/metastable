@@ -173,9 +173,9 @@ def map_switching_paths(
     )
 
     if endpoint_type == FixedPointType.BRIGHT:
-        path_idx = PathType.BRIGHT_TO_SADDLE
+        path_idx = PathType.BRIGHT_TO_SADDLE.value
     elif endpoint_type == FixedPointType.DIM:
-        path_idx = PathType.DIM_TO_SADDLE
+        path_idx = PathType.DIM_TO_SADDLE.value
     else:
         raise ValueError(f"Unsupported endpoint_type: {endpoint_type}.")
 
@@ -205,9 +205,9 @@ def map_switching_paths(
         fig, _ = plot_solution(path_result, t_guess)
         fig.savefig(plot_file_path, bbox_inches="tight")
 
-        fixed_point_map.path_results[index_pair.epsilon_idx, index_pair.kappa_idx, path_idx] = (
-            path_result
-        )
+        fixed_point_map.path_results[
+            index_pair.epsilon_idx, index_pair.kappa_idx, path_idx
+        ] = path_result
         fixed_point_map.save_state(output_map_path)
 
         t_guess, y_guess = generate_guess_from_sol(bvp_result=path_result, t_end=t_end)

@@ -6,12 +6,14 @@ from metastable.map.map import FixedPointMap, FixedPointType
 
 
 def plot_fixed_point_map(
-    fixed_point_map: FixedPointMap,
-    fig_size=(800, 1800),
-    cmap="Viridis"
+    fixed_point_map: FixedPointMap, fig_size=(800, 1800), cmap="Viridis"
 ):
 
-    types_to_plot: List[FixedPointType] = [FixedPointType.SADDLE, FixedPointType.DIM, FixedPointType.BRIGHT]
+    types_to_plot: List[FixedPointType] = [
+        FixedPointType.SADDLE,
+        FixedPointType.DIM,
+        FixedPointType.BRIGHT,
+    ]
     title_map: Dict[FixedPointType, str] = {
         FixedPointType.SADDLE: "Saddle Point",
         FixedPointType.DIM: "Dim State",

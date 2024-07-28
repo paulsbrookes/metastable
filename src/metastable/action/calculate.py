@@ -11,6 +11,8 @@ def calculate_action(bvp_result: BVPResult) -> Tuple[float, float]:
         integrand -= bvp_result.sol(t, nu=1)[1] * bvp_result.sol(t)[3]
         return integrand
 
-    action, action_error = scipy.integrate.quad(integrand_func, 0, bvp_result.x[-1], limit=2000, epsabs=1e-2)
+    action, action_error = scipy.integrate.quad(
+        integrand_func, 0, bvp_result.x[-1], limit=2000, epsabs=1e-2
+    )
 
     return action, action_error

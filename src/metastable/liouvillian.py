@@ -1,4 +1,3 @@
-from copy import deepcopy
 from qutip import *
 from tqdm import tqdm
 import numpy as np

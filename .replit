@@ -6,3 +6,11 @@ channel = "stable-24_05"
 
 [deployment]
 run = ["sh", "-c", "pytest"]
+
+[[ports]]
+localPort = 8888
+externalPort = 80
+
+[[ports]]
+localPort = 8889
+externalPort = 3000

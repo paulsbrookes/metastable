@@ -7,3 +7,4 @@ matplotlib
 pandas
 pytest
 pydantic==2.10.3
+jupyter>=1.1.1

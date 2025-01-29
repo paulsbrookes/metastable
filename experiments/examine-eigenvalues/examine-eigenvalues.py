@@ -2,11 +2,17 @@ from pathlib import Path
 import numpy as np
 
 from metastable.map.map import FixedPointMap, FixedPointType
-from metastable.paths.map import map_switching_paths, IndexPair, prepare_saddle_and_focus_points
+from metastable.paths.map import (
+    map_switching_paths,
+    IndexPair,
+    prepare_saddle_and_focus_points,
+)
 from metastable.eom import EOM, Params
 
 
-map_path = Path("/home/paul/Projects/keldysh/metastable/experiments/output/output_map.npz")
+map_path = Path(
+    "/home/paul/Projects/keldysh/metastable/experiments/output/output_map.npz"
+)
 
 # Load the map of fixed points
 fixed_point_map = FixedPointMap.load(map_path)
@@ -30,8 +36,8 @@ params = Params(
     delta=fixed_point_map.delta,
     chi=fixed_point_map.chi,
 )
-print("epsilon:", params.epsilon/params.delta)
-print("kappa:", params.kappa/params.delta)
+print("epsilon:", params.epsilon / params.delta)
+print("kappa:", params.kappa / params.delta)
 eom = EOM(params=params)
 
 

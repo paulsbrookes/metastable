@@ -5,7 +5,9 @@ from metastable.map.map import FixedPointMap, FixedPointType
 from metastable.paths.map import map_switching_paths, IndexPair
 
 
-map_path = Path("/home/paul/Projects/keldysh/metastable/experiments/output/output_map.npz")
+map_path = Path(
+    "/home/paul/Projects/keldysh/metastable/experiments/output/output_map.npz"
+)
 output_path = Path("/home/paul/Projects/keldysh/metastable/experiments/output2")
 
 # Check if the directory exists

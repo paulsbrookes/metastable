@@ -28,16 +28,8 @@ def dykman_actions_calc(delta, chi, eps, kappa):
     D_B_1 = Omega ** (-1) * ((n + 0.5) + 0.5 * chi_ph * (1 - Y_B_1))
     D_B_2 = Omega ** (-1) * ((n + 0.5) + 0.5 * chi_ph * (1 - Y_B_2))
 
-    b_1 = (
-        -(beta_1**0.5)
-        * (2 * Y_B_1) ** (-1)
-        * (1 - 2 * (Omega**2) * Y_B_1 + Omega**2)
-    )
-    b_2 = (
-        -(beta_2**0.5)
-        * (2 * Y_B_2) ** (-1)
-        * (1 - 2 * (Omega**2) * Y_B_2 + Omega**2)
-    )
+    b_1 = -(beta_1**0.5) * (2 * Y_B_1) ** (-1) * (1 - 2 * (Omega**2) * Y_B_1 + Omega**2)
+    b_2 = -(beta_2**0.5) * (2 * Y_B_2) ** (-1) * (1 - 2 * (Omega**2) * Y_B_2 + Omega**2)
 
     eta_1 = beta - beta_1
     eta_2 = beta - beta_2
@@ -53,4 +45,4 @@ def dykman_actions_calc(delta, chi, eps, kappa):
         / (3 * D_B_2 * (np.abs(b_2) ** 0.5) * (beta_2**0.75))
     )
 
-    return -R_A_1/lam, -R_A_2/lam
+    return -R_A_1 / lam, -R_A_2 / lam

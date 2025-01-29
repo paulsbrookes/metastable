@@ -9,7 +9,8 @@ import numpy as np
 
 class FixedPointType(Enum):
     """Currently we have no validation that the saddle, bright and dim states are stored at the correct indexes. The
-    index at which they are stored depends on the seed solution used to initialise the mapping of the fixed points."""
+    index at which they are stored depends on the seed solution used to initialise the mapping of the fixed points.
+    """
 
     SADDLE = 0
     BRIGHT = 1

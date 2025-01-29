@@ -16,7 +16,8 @@ dependencies = [
     "sympy",
     "tqdm",
     "matplotlib",
-    "pandas"
+    "pandas",
+    "pytest",
 ]
 
 [tool.setuptools.packages.find]

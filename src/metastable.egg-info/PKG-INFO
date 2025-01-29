@@ -1,0 +1,16 @@
+Metadata-Version: 2.2
+Name: metastable
+Version: 1.0.0
+Summary: A project for metastable calculations
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: qutip
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: sympy
+Requires-Dist: tqdm
+Requires-Dist: matplotlib
+Requires-Dist: pandas
+Requires-Dist: pytest
+Requires-Dist: pydantic==2.10.3

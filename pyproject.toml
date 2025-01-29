@@ -18,6 +18,7 @@ dependencies = [
     "matplotlib",
     "pandas",
     "pytest",
+    "pydantic==2.10.3",
 ]
 
 [tool.setuptools.packages.find]

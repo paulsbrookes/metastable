@@ -16,7 +16,7 @@ In systems at finite temperature, thermal fluctuations from an external bath can
 
 ### 2. Quantum Tunneling
 
-At very low temperatures, quantum tunneling through the potential barrier may occur. While this process exists even at zero temperature, it becomes exponentially suppressed as the barrier height or width increases [3]. The tunneling rate takes the form $\exp(-2S_{\text{tun}}/\lambda)$, where $S_{\text{tun}}$ is the tunneling action.
+At very low temperatures, quantum tunneling through the potential barrier may occur. While this process exists even at zero temperature, it becomes exponentially suppressed as the barrier height or width increases [3]. The tunneling rate takes the form $\exp(-2S_{\text{tun}}/\lambda)$, where $S_{\text{tun}}$ is the tunneling action. TO-DO: WHAT IS LAMBDA HERE
 
 ### 3. Quantum Activation
 
@@ -24,11 +24,34 @@ In driven dissipative systems far from equilibrium, a distinct mechanism called 
 
 ## Instanton Approach to Quantum Activation
 
+### Overview
+
 Our task to find the rate at which the system transitions from one metastable state to another. Broadly this involves picking an initial state, evolving it over some time period, and finding the probability with which it has reached the target final state. Whereas a closed system could be described by a pure quantum state, and would evolve under the action of a unitary time evolution operator, our system is coupled to its environment and experiences significant drive and dissipation. Therefore it should be studied under the action of more general Liouvillian superoperator.
 
 Finding transition rates can then be done in multiple ways. For example, one could write a Lindblad master equation for the system and evolve it numerically, or switching events could be simulated using a stochastic Schroedinger equation, but here we use the Keldysh path integral formalism. This approach is particularly powerful for our non-equilibrium system as it naturally incorporates both quantum effects and dissipation, while allowing us to identify the most probable switching paths through instanton solutions.
 
 In this context, an instanton is the path of least action solution to the equations of motion in the Keldysh field theory formalism that connects the two stable nodes (metastable states) through the saddle point. This trajectory represents the most probable path by which the system surmounts the effective barrier via quantum fluctuations—even at zero temperature—due to the intrinsic non-equilibrium noise accompanying dissipation. The action of this instanton forms the exponential factor in the switching rate and therefore dominates its dependence on system parameters.
+
+### Method
+
+In order to calculate these instanton solutions and their associated switching rates we take the following steps:
+1. Formulate the problem in the Keldysh field theory framework by:
+   - Writing the system's action in terms of classical and quantum fields
+   - Including dissipative terms from coupling to the environment
+   - Incorporating the driving terms in the rotating frame
+
+2. Map the fixed points of the classical equations of motion by:
+   - Obtaining the classical equations of motion by setting quantum fluctuations to zero.
+   - Identifying the fixed points as a function of system parameters: either three in the bistable regime, or one in the monostable regime.
+   - Determining the stability of these fixed points by linearizing the equations of motion and finding the eigenvalues of the Jacobian matrix.
+
+3. Determine the optimal escape paths by:
+   - Setting boundary conditions for the instanton trajectory using Jacobian eigenvectors at an initial node and the saddle point.
+   - Solving the equations of motion for the instanton path from the node to the saddle using a boundary value solver.
+
+4. Calculate the activation energy by:
+   - Evaluating the action by integrating the Lagrangian along the optimal escape paths.
+   - Finding the prefctoar by using it as a fitting parameter when comparing the instanton solution to alternative numerical methods.
 
 ## References
 

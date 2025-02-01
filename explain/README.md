@@ -50,9 +50,8 @@ To calculate the instanton solutions and their associated switching rates, we fo
 
 3. **Find Optimal Escape Paths**
    - Define instanton boundary conditions using:
-     * Initial node position
-     * Saddle point position
-     * Jacobian eigenvectors at these points
+     * Initial node position and outgoing Jacobian eigenvectors
+     * Saddle point position and incoming Jacobian eigenvectors
    - Solve boundary value problem for the instanton trajectory
 
 4. **Compute Switching Rates**

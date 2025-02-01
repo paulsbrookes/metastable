@@ -1,6 +1,6 @@
 # Switching Dynamics in a Driven Nonlinear Oscillator
 
-Here we study the switching dynamics of a driven nonlinear oscillator at zero temperature in the bistable regime. Switching refers to the process by which the system transitions from one metastable state to another. We will review three methods below, before focusing on quantum activation, which will study in more depth using an instanton approach based on Keldysh field theory [1].
+Here we study the switching dynamics of a driven nonlinear oscillator at zero temperature in the bistable regime. Switching refers to the process by which the system transitions from one metastable state to another, and below we will review three methods by which this may occur, before placing our focu on quantum activation. We will study this approach in more depth using an instanton approach based on Keldysh field theory [1].
 
 ## Fixed Points in the Bistable Regime
 
@@ -21,6 +21,14 @@ At very low temperatures, quantum tunneling through the potential barrier may oc
 ### 3. Quantum Activation
 
 In driven dissipative systems far from equilibrium, a distinct mechanism called quantum activation becomes dominant [4, 5]. This process arises from the quantum noise that accompanies relaxation due to coupling with a thermal bath. Unlike tunneling, quantum activation involves transitions over the effective barrier through these quantum fluctuations, even at zero temperature [6, 7]. The switching rate takes the form $W_{\text{sw}} \propto \exp(-R_A/\lambda)$, where $R_A$ is the effective activation energy and $\lambda$ is the effective Planck constant in the rotating frame. This process has no analog in equilibrium systems and yields exponentially larger switching rates compared to tunneling, making it the dominant switching mechanism unless the relaxation rate is exponentially small.
+
+## Instanton Approach to Quantum Activation
+
+Our task to find the rate at which the system transitions from one metastable state to another. Broadly this involves picking an initial state, evolving it over some time period, and finding the probability with which it has reached the target final state. Whereas a closed system could be described by a pure quantum state, and would evolve under the action of a unitary time evolution operator, our system is coupled to its environment and experiences significant drive and dissipation. Therefore it should be studied under the action of more general Liouvillian superoperator.
+
+Finding transition rates can then be done in multiple ways. For example, one could write a Lindblad master equation for the system and evolve it numerically, or switching events could be simulated using a stochastic Schroedinger equation, but here we use the Keldysh path integral formalism. This approach is particularly powerful for our non-equilibrium system as it naturally incorporates both quantum effects and dissipation, while allowing us to identify the most probable switching paths through instanton solutions.
+
+In this context, an instanton is the path of least action solution to the equations of motion in the Keldysh field theory formalism that connects the two stable nodes (metastable states) through the saddle point. This trajectory represents the most probable path by which the system surmounts the effective barrier via quantum fluctuations—even at zero temperature—due to the intrinsic non-equilibrium noise accompanying dissipation. The action of this instanton forms the exponential factor in the switching rate and therefore dominates its dependence on system parameters.
 
 ## References
 

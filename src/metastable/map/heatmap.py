@@ -2,11 +2,11 @@ import numpy as np
 import plotly.graph_objects as go
 from typing import Dict, List
 from plotly.subplots import make_subplots
-from metastable.map.map import FixedPointMap, FixedPointType
+from metastable.map.map import PhaseSpaceMap, FixedPointType
 
 
 def plot_fixed_point_map(
-    fixed_point_map: FixedPointMap, fig_size=(800, 1800), cmap="Viridis"
+    fixed_point_map: PhaseSpaceMap, fig_size=(800, 1800), cmap="Viridis"
 ):
 
     types_to_plot: List[FixedPointType] = [

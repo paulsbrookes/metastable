@@ -1,7 +1,7 @@
 from pathlib import Path
 import numpy as np
 
-from metastable.map.map import FixedPointMap, FixedPointType
+from metastable.map.map import PhaseSpaceMap, FixedPointType
 from metastable.paths.map import (
     map_switching_paths,
     IndexPair,
@@ -15,7 +15,7 @@ map_path = Path(
 )
 
 # Load the map of fixed points
-fixed_point_map = FixedPointMap.load(map_path)
+fixed_point_map = PhaseSpaceMap.load(map_path)
 
 # epsilon_idx = 428  # dim saddle bifurcation
 epsilon_idx = 340  # dim saddle bifurcation

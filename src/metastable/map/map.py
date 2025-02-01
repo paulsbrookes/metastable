@@ -22,7 +22,7 @@ class PathType(Enum):
     DIM_TO_SADDLE = 1
 
 
-class FixedPointMap:
+class PhaseSpaceMap:
     def __init__(
         self,
         epsilon_linspace: NDArray[np.float_],
@@ -83,13 +83,13 @@ class FixedPointMap:
         )
 
     @classmethod
-    def load(cls, file_path: Union[str, Path]) -> FixedPointMap:
+    def load(cls, file_path: Union[str, Path]) -> PhaseSpaceMap:
         loaded_data = np.load(file_path, allow_pickle=True)
         tracker = cls(**loaded_data)
         return tracker
 
-    def copy(self) -> FixedPointMap:
-        return FixedPointMap(
+    def copy(self) -> PhaseSpaceMap:
+        return PhaseSpaceMap(
             epsilon_linspace=self.epsilon_linspace.copy(),
             kappa_linspace=self.kappa_linspace.copy(),
             delta=self.delta,

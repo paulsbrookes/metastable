@@ -1,7 +1,7 @@
 from pathlib import Path
 import numpy as np
 
-from metastable.map.map import FixedPointMap, FixedPointType
+from metastable.map.map import PhaseSpaceMap, FixedPointType
 from metastable.paths.map import map_switching_paths, IndexPair
 
 
@@ -18,7 +18,7 @@ else:
     output_path.mkdir(parents=True)
 
 # Load the map of fixed points
-fixed_point_map = FixedPointMap.load(map_path)
+fixed_point_map = PhaseSpaceMap.load(map_path)
 
 
 # Build the queue of IndexPairs whose paths we will map

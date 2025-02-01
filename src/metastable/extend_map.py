@@ -6,13 +6,13 @@ from tqdm import tqdm
 
 
 from metastable.eom import Params
-from metastable.map.map import FixedPointMap
+from metastable.map.map import PhaseSpaceMap
 from metastable.neighbour_average import neighbour_average
 from metastable.find_boundary import find_boundary
 from metastable.calculate_fixed_points import calculate_fixed_points
 
 
-def extend_map(seeded_map: FixedPointMap) -> FixedPointMap:
+def extend_map(seeded_map: PhaseSpaceMap) -> PhaseSpaceMap:
     fixed_points_map = seeded_map.copy()
     with ProcessPoolExecutor(max_workers=20) as executor:
         for round_idx in tqdm(

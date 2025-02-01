@@ -11,7 +11,7 @@ from scipy.integrate import solve_bvp
 from scipy.integrate._bvp import BVPResult
 
 
-from metastable.map.map import FixedPointMap, FixedPointType, PathType
+from metastable.map.map import PhaseSpaceMap, FixedPointType, PathType
 from metastable.eom import EOM, Params
 from metastable.incoming_quantum_vector import extend_to_keldysh_state
 from metastable.generate_guess import generate_linear_guess, generate_guess_from_sol
@@ -51,7 +51,7 @@ def configure_logging(file_name):
     logger.addHandler(file_handler)
 
 
-def extract_params(fixed_point_map: FixedPointMap, index_pair: IndexPair) -> Params:
+def extract_params(fixed_point_map: PhaseSpaceMap, index_pair: IndexPair) -> Params:
     return Params(
         epsilon=fixed_point_map.epsilon_linspace[index_pair.epsilon_idx],
         kappa=fixed_point_map.kappa_linspace[index_pair.kappa_idx],
@@ -61,7 +61,7 @@ def extract_params(fixed_point_map: FixedPointMap, index_pair: IndexPair) -> Par
 
 
 def prepare_saddle_and_focus_points(
-    fixed_point_map: FixedPointMap,
+    fixed_point_map: PhaseSpaceMap,
     index_pair: IndexPair,
     fixed_point_type: FixedPointType,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -105,7 +105,7 @@ def solve_path(
 
 
 def process_index(
-    fixed_point_map: FixedPointMap,
+    fixed_point_map: PhaseSpaceMap,
     index_pair: IndexPair,
     t_guess: np.ndarray,
     y_guess: np.ndarray,
@@ -131,7 +131,7 @@ def process_index(
 
 
 def generate_linear_guess_from_map(
-    fixed_point_map: FixedPointMap,
+    fixed_point_map: PhaseSpaceMap,
     index_pair: IndexPair,
     t_end: float = 8.0,
     fixed_point_type: FixedPointType = FixedPointType.BRIGHT,
@@ -162,7 +162,7 @@ def plot_solution(res: BVPResult, t_guess: np.ndarray):
 
 
 def map_switching_paths(
-    fixed_point_map: FixedPointMap,
+    fixed_point_map: PhaseSpaceMap,
     index_list: List[IndexPair],
     output_path: Path,
     t_end: float = 8.0,

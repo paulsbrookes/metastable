@@ -3,11 +3,11 @@ import numpy as np
 
 
 from metastable.zero_damping import solve_zero_damping
-from metastable.map.map import FixedPointMap
+from metastable.map.map import PhaseSpaceMap
 from metastable.extend_map import extend_map
 
 
-seed_map = FixedPointMap(
+seed_map = PhaseSpaceMap(
     epsilon_linspace=np.linspace(start=0.0, stop=30.0, num=601),
     kappa_linspace=np.linspace(start=0.0, stop=5.0, num=401),
     delta=7.8,

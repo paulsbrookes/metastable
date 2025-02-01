@@ -78,8 +78,8 @@ the final form of the Keldysh Lagrangian becomes
 \boxed{
 \begin{aligned}
 L_K =\; & a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_- \\
-&\quad {} + \delta\,\Bigl(a_+^*a_+ - a_-^*a_-\Bigr) + \chi\,\Bigl(a_+^{*2}a_+^2 - a_-^{*2}a_-^2\Bigr) \\
-&\quad {} + i\varepsilon\,\Bigl[(a_+^* - a_+) - (a_-^* - a_-)\Bigr] \\
+&\quad {} - \delta\,\Bigl(a_+^*a_+ - a_-^*a_-\Bigr) - \chi\,\Bigl(a_+^{*2}a_+^2 - a_-^{*2}a_-^2\Bigr) \\
+&\quad {} - i\varepsilon\,\Bigl[(a_+^* - a_+) - (a_-^* - a_-)\Bigr] \\
 &\quad {} - i\,\kappa\Bigl[2\,a_+a_-^* - a_+^*a_+ - a_-^*a_-\Bigr].
 \end{aligned}
 }
@@ -89,24 +89,5 @@ This expression clearly separates:
 - The **time-evolution** terms: \(a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_-\),
 - The **coherent Hamiltonian** contributions, and
 - The **dissipative** contributions.
-
----
-
-## 4. Summary
-
-1. **Starting Point:** The Lindblad master equation is written in terms of the Hamiltonian and a dissipative term with jump operator \(L = \sqrt{2\kappa}\,a\).
-
-2. **Liouvillian Superoperator:** In the coherent-state basis with forward (\(+\)) and backward (\( - \)) contours, the superoperator is defined by
-   \[
-   L_{\rm super}(a_+^*,a_+,a_-^*,a_-) = -i\Bigl[H(a_+^*,a_+) - H(a_-^*,a_-)\Bigr] + \kappa\Bigl[2\,a_+a_-^* - a_+^*a_+ - a_-^*a_-\Bigr].
-   \]
-
-3. **Keldysh Lagrangian:** The full Lagrangian is constructed as
-   \[
-   L_K = a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_- - i\,L_{\rm super}(a_+^*,a_+,a_-^*,a_-),
-   \]
-   leading to the final boxed expression above.
-
-This derivation provides a compact path-integral description of the driven–dissipative Kerr oscillator, capturing both its unitary (Hamiltonian) dynamics and its dissipative (Lindblad) dynamics.
 
 ---

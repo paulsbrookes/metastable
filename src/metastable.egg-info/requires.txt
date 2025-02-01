@@ -1,9 +1,0 @@
-qutip
-numpy
-scipy
-sympy
-tqdm
-matplotlib
-pandas
-pytest
-pydantic==2.10.3

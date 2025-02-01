@@ -34,24 +34,30 @@ In this context, an instanton is the path of least action solution to the equati
 
 ### Method
 
-In order to calculate these instanton solutions and their associated switching rates we take the following steps:
-1. Formulate the problem in the Keldysh field theory framework by:
-   - Writing the system's action in terms of classical and quantum fields
-   - Including dissipative terms from coupling to the environment
-   - Incorporating the driving terms in the rotating frame
+To calculate the instanton solutions and their associated switching rates, we follow these steps:
 
-2. Map the fixed points of the classical equations of motion by:
-   - Obtaining the classical equations of motion by setting quantum fluctuations to zero.
-   - Identifying the fixed points as a function of system parameters: either three in the bistable regime, or one in the monostable regime.
-   - Determining the stability of these fixed points by linearizing the equations of motion and finding the eigenvalues of the Jacobian matrix.
+1. **Set up the Keldysh Framework**
+   - Express the system's action using classical and quantum fields
+   - Add dissipative terms from environmental coupling
+   - Transform driving terms into the rotating frame
 
-3. Determine the optimal escape paths by:
-   - Setting boundary conditions for the instanton trajectory using Jacobian eigenvectors at an initial node and the saddle point.
-   - Solving the equations of motion for the instanton path from the node to the saddle using a boundary value solver.
+2. **Analyze Classical Fixed Points**
+   - Find classical equations of motion (setting quantum fluctuations to zero)
+   - Locate fixed points in parameter space:
+     * Three points in bistable regime
+     * Single point in monostable regime
+   - Analyze stability via linearization and Jacobian eigenvalues
 
-4. Calculate the activation energy by:
-   - Evaluating the action by integrating the Lagrangian along the optimal escape paths.
-   - Finding the prefctoar by using it as a fitting parameter when comparing the instanton solution to alternative numerical methods.
+3. **Find Optimal Escape Paths**
+   - Define instanton boundary conditions using:
+     * Initial node position
+     * Saddle point position
+     * Jacobian eigenvectors at these points
+   - Solve boundary value problem for the instanton trajectory
+
+4. **Compute Switching Rates**
+   - Calculate activation energy by integrating along optimal escape paths
+   - Determine prefactor through comparison with numerical simulations
 
 ## References
 

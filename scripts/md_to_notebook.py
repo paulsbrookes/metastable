@@ -14,7 +14,9 @@ def md_to_notebook(md_path):
             {
                 "cell_type": "markdown",
                 "metadata": {},
-                "source": content.split('\n')
+                "source": content.split('\n'),
+                "execution_count": 1,
+                "outputs": []
             }
         ],
         "metadata": {

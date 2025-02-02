@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metastable States in Driven Nonlinear Systems</title>
+    
+    <!-- MathJax for LaTeX support -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --text-color: #202124;
+            --background-color: #ffffff;
+            --hover-color: #f8f9fa;
+            --border-color: #dadce0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--background-color);
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            margin-top: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 3rem;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .content-section {
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .document-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .document-list li {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .document-list li:hover {
+            background-color: var(--hover-color);
+        }
+
+        .key-areas {
+            list-style: none;
+            padding: 0;
+        }
+
+        .key-areas li {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .key-areas li::before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Metastable States in Driven Nonlinear Systems</h1>
+    
+    <div class="content-section">
+        <p>This repository contains research and documentation on the study of switching dynamics in driven nonlinear oscillators, with a particular focus on quantum activation in the bistable regime at zero temperature.</p>
+    </div>
+
+    <h2>Core Concepts</h2>
+    <div class="content-section">
+        <ul class="document-list">
+            <li>
+                <a href="explain/Overview.html">Overview</a>
+                <p>Introduction to switching dynamics and transition mechanisms</p>
+            </li>
+            <li>
+                <a href="explain/OriginalEom.html">Original Equations of Motion</a>
+                <p>Derivation and analysis of the system's equations of motion</p>
+            </li>
+            <li>
+                <a href="explain/KeldyshLagrangian.html">Keldysh Lagrangian</a>
+                <p>Development of the Keldysh field theory approach</p>
+            </li>
+            <li>
+                <a href="explain/KeldyshAuxiliaryHamiltonian.html">Keldysh Auxiliary Hamiltonian</a>
+                <p>Analysis of the auxiliary Hamiltonian system</p>
+            </li>
+            <li>
+                <a href="explain/QuantumImaginary.html">Quantum Imaginary Time</a>
+                <p>Discussion of quantum effects and imaginary time formalism</p>
+            </li>
+        </ul>
+    </div>
+
+    <h2>Interactive Notebooks</h2>
+    <div class="content-section">
+        <p>Each document is also available as an interactive Jupyter notebook:</p>
+        <ul class="document-list">
+            <li><a href="notebooks/Overview.ipynb">Overview Notebook</a></li>
+            <li><a href="notebooks/OriginalEom.ipynb">Original EoM Notebook</a></li>
+            <li><a href="notebooks/KeldyshLagrangian.ipynb">Keldysh Lagrangian Notebook</a></li>
+            <li><a href="notebooks/KeldyshAuxiliaryHamiltonian.ipynb">Keldysh Auxiliary Hamiltonian Notebook</a></li>
+            <li><a href="notebooks/QuantumImaginary.ipynb">Quantum Imaginary Time Notebook</a></li>
+        </ul>
+    </div>
+
+    <h2>About</h2>
+    <div class="content-section">
+        <p>This documentation covers research into quantum activation in driven dissipative systems far from equilibrium. The work focuses on understanding how quantum noise associated with relaxation can lead to transitions between metastable states, even at zero temperature.</p>
+        
+        <h3>Key Areas of Investigation</h3>
+        <ul class="key-areas">
+            <li>Analysis of fixed points in the bistable regime</li>
+            <li>Comparison of different transition mechanisms (thermal activation, quantum tunneling, quantum activation)</li>
+            <li>Development of Keldysh field theory approach</li>
+            <li>Study of quantum fluctuations and their role in state transitions</li>
+        </ul>
+
+        <p>The documentation is automatically synchronized with interactive Jupyter notebooks for each section, allowing for both theoretical study and computational exploration of the concepts.</p>
+    </div>
+
+    <script>
+        // Configure MathJax
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+</body>
+</html> 

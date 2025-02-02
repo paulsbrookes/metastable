@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KeldyshLagrangian</title>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+        }
+        pre {
+            background-color: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow: auto;
+        }
+        code {
+            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Derivation of the Keldysh Lagrangian from a Lindblad Master Equation</h1>
+
+<p>This document presents a derivation of the Keldysh Lagrangian for a driven–dissipative Kerr oscillator following.</p>
+
+<hr />
+
+<h2>1. Starting Point: The Lindblad Master Equation</h2>
+
+<p>The Lindblad master equation for the density matrix evolution is given by</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mo>&#x02202;</mo><mi>t</mi></msub><mi>&#x003C1;</mi><mo>&#x0003D;</mo><mo>&#x02212;</mo><mi>i</mi><mspace width="0.167em" /><mo stretchy="false">[</mo><mi>H</mi><mo>&#x0002C;</mo><mi>&#x003C1;</mi><mo stretchy="false">]</mo><mo>&#x0002B;</mo><mi>&#x003BA;</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">(</mo><mn>2</mn><mi>a</mi><mspace width="0.167em" /><mi>&#x003C1;</mi><mspace width="0.167em" /><msup><mi>a</mi><mi>&#x02020;</mi></msup><mo>&#x02212;</mo><mo stretchy="false">&#x0007B;</mo><msup><mi>a</mi><mi>&#x02020;</mi></msup><mi>a</mi><mo>&#x0002C;</mo><mi>&#x003C1;</mi><mo stretchy="false">&#x0007D;</mo><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">)</mo><mo>&#x0002C;</mo></mrow></math>
+
+<p>where the Hamiltonian is</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>H</mi><mo>&#x0003D;</mo><mi>&#x003B4;</mi><mspace width="0.167em" /><msup><mi>a</mi><mi>&#x02020;</mi></msup><mi>a</mi><mo>&#x0002B;</mo><mi>&#x003C7;</mi><mspace width="0.167em" /><msup><mi>a</mi><mi>&#x02020;</mi></msup><msup><mi>a</mi><mi>&#x02020;</mi></msup><mi>a</mi><mi>a</mi><mo>&#x0002B;</mo><mi>i</mi><mi>&#x003B5;</mi><mspace width="0.167em" /><mo stretchy="false">&#x00028;</mo><msup><mi>a</mi><mi>&#x02020;</mi></msup><mo>&#x02212;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0002E;</mo></mrow></math>
+
+<p>The jump operator can be expressed as</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>L</mi><mo>&#x0003D;</mo><msqrt><mrow><mn>2</mn><mi>&#x003BA;</mi></mrow></msqrt><mspace width="0.167em" /><mi>a</mi><mo>&#x0002C;</mo></mrow></math>
+
+<p>so that the dissipative part is in the standard Lindblad form.</p>
+
+<hr />
+
+<h2>2. Matrix Element of the Liouvillian Superoperator</h2>
+
+<p>In the coherent-state representation, we work with forward (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x0002B;</mo></mrow></math>) and backward (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02212;</mo></mrow></math>) contours. Denoting the fields by <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>a</mi><mo>&#x0002B;</mo></msub></mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>a</mi><mo>&#x02212;</mo></msub></mrow></math> (with their complex conjugates <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup></mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup></mrow></math>), we define the matrix element of the Liouvillian superoperator as</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>L</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x0002C;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x02212;</mo><mi>i</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mo>&#x0002B;</mo><mi>&#x003BA;</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mn>2</mn><mspace width="0.167em" /><msub><mi>a</mi><mo>&#x0002B;</mo></msub><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mo>&#x0002E;</mo></mrow></math>
+
+<p>Here, the Hamiltonian evaluated on each contour is</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mi>&#x000B1;</mi><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mi>&#x000B1;</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>&#x003B4;</mi><mspace width="0.167em" /><msubsup><mi>a</mi><mi>&#x000B1;</mi><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mi>&#x000B1;</mi></msub><mo>&#x0002B;</mo><mi>&#x003C7;</mi><mspace width="0.167em" /><msubsup><mi>a</mi><mi>&#x000B1;</mi><mrow><mo>&#x0002A;</mo><mn>2</mn></mrow></msubsup><msubsup><mi>a</mi><mi>&#x000B1;</mi><mn>2</mn></msubsup><mo>&#x0002B;</mo><mi>i</mi><mi>&#x003B5;</mi><mspace width="0.167em" /><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mi>&#x000B1;</mi><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msub><mi>a</mi><mi>&#x000B1;</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002E;</mo></mrow></math>
+
+<hr />
+
+<h2>3. Constructing the Keldysh Lagrangian</h2>
+
+<p>Following the recipe, the full Keldysh Lagrangian is written as</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>L</mi><mi>K</mi></msub><mo>&#x0003D;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo>&#x02212;</mo><mi>i</mi><mspace width="0.167em" /><msub><mi>L</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x0002C;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002E;</mo></mrow></math>
+
+<p>Substituting the expression for <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>L</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow></msub></mrow></math>, we have</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><msub><mi>L</mi><mi>K</mi></msub><mi>&</mi><mo>&#x0003D;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x02212;</mo></msub><mspace linebreak="newline" /><mi>&</mi><mspace width="1em" /><mrow /><mo>&#x02212;</mo><mi>i</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">\{</mo><mo>&#x02212;</mo><mi>i</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mo>&#x0002B;</mo><mi>&#x003BA;</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mn>2</mn><mspace width="0.167em" /><msub><mi>a</mi><mo>&#x0002B;</mo></msub><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">\}</mo><mspace linebreak="newline" /><mi>&</mi><mo>&#x0003D;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo>&#x0002B;</mo><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mspace linebreak="newline" /><mi>&</mi><mspace width="1em" /><mrow /><mo>&#x02212;</mo><mi>i</mi><mspace width="0.167em" /><mi>&#x003BA;</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mn>2</mn><mspace width="0.167em" /><msub><mi>a</mi><mo>&#x0002B;</mo></msub><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mo>&#x0002E;</mo></mrow></mrow></math>
+
+<p>Inserting the explicit form of the Hamiltonian difference</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mi>H</mi><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x0002C;</mo><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="false">&#x00029;</mo><mi>&</mi><mo>&#x0003D;</mo><mi>&#x003B4;</mi><mspace width="0.167em" /><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">(</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">)</mo><mo>&#x0002B;</mo><mi>&#x003C7;</mi><mspace width="0.167em" /><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">(</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mrow><mo>&#x0002A;</mo><mn>2</mn></mrow></msubsup><msubsup><mi>a</mi><mo>&#x0002B;</mo><mn>2</mn></msubsup><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mrow><mo>&#x0002A;</mo><mn>2</mn></mrow></msubsup><msubsup><mi>a</mi><mo>&#x02212;</mo><mn>2</mn></msubsup><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">)</mo><mspace linebreak="newline" /><mi>&</mi><mspace width="1em" /><mrow /><mo>&#x0002B;</mo><mi>i</mi><mi>&#x003B5;</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mo>&#x0002C;</mo></mrow></mrow></math>
+
+<p>the final form of the Keldysh Lagrangian becomes</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><menclose notation="box"><mrow><mrow><msub><mi>L</mi><mi>K</mi></msub><mo>&#x0003D;</mo><mspace width="0.278em" /><mi>&</mi><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x02212;</mo></msub><mspace linebreak="newline" /><mi>&</mi><mspace width="1em" /><mrow /><mo>&#x02212;</mo><mi>&#x003B4;</mi><mspace width="0.167em" /><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">(</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">)</mo><mo>&#x02212;</mo><mi>&#x003C7;</mi><mspace width="0.167em" /><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">(</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mrow><mo>&#x0002A;</mo><mn>2</mn></mrow></msubsup><msubsup><mi>a</mi><mo>&#x0002B;</mo><mn>2</mn></msubsup><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mrow><mo>&#x0002A;</mo><mn>2</mn></mrow></msubsup><msubsup><mi>a</mi><mo>&#x02212;</mo><mn>2</mn></msubsup><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">)</mo><mspace linebreak="newline" /><mi>&</mi><mspace width="1em" /><mrow /><mo>&#x02212;</mo><mi>i</mi><mi>&#x003B5;</mi><mspace width="0.167em" /><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mo stretchy="false">&#x00028;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mspace linebreak="newline" /><mi>&</mi><mspace width="1em" /><mrow /><mo>&#x02212;</mo><mi>i</mi><mspace width="0.167em" /><mi>&#x003BA;</mi><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">[</mo><mn>2</mn><mspace width="0.167em" /><msub><mi>a</mi><mo>&#x0002B;</mo></msub><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><msub><mi>a</mi><mo>&#x02212;</mo></msub><mo stretchy="true" fence="true" minsize="1.623em" maxsize="1.623em">]</mo><mo>&#x0002E;</mo></mrow></mrow></menclose></mrow></math>
+
+<p>This expression clearly separates:
+- The <strong>time-evolution</strong> terms: <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>a</mi><mo>&#x0002B;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x0002B;</mo></msub><mo>&#x02212;</mo><msubsup><mi>a</mi><mo>&#x02212;</mo><mo>&#x0002A;</mo></msubsup><mspace width="0.167em" /><mi>i</mi><msub><mo>&#x02202;</mo><mi>t</mi></msub><msub><mi>a</mi><mo>&#x02212;</mo></msub></mrow></math>,
+- The <strong>coherent Hamiltonian</strong> contributions, and
+- The <strong>dissipative</strong> contributions.</p>
+
+<hr />
+
+</body>
+</html>

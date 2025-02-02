@@ -3,18 +3,22 @@
 import json
 import os
 from pathlib import Path
+import markdown
 
 def md_to_notebook(md_path):
     """Convert a markdown file to a Jupyter notebook with a single cell."""
     with open(md_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
+    # Convert markdown to HTML
+    html = markdown.markdown(content)
+    
     notebook = {
         "cells": [
             {
                 "cell_type": "markdown",
                 "metadata": {},
-                "source": content.split('\n'),
+                "source": html.split('\n'),
                 "execution_count": 1,
                 "outputs": []
             }

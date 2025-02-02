@@ -30,7 +30,7 @@ so that the dissipative part is in the standard Lindblad form.
 
 ## 2. Matrix Element of the Liouvillian Superoperator
 
-In the coherent-state representation, we work with forward (\(+\)) and backward (\( - \)) contours. Denoting the fields by \(a_+\) and \(a_-\) (with their complex conjugates \(a_+^*\) and \(a_-^*\)), we define the matrix element of the Liouvillian superoperator as
+In the coherent-state representation, we work with forward ($+$) and backward ($ - $) contours. Denoting the fields by $a_+$ and $a_-$ (with their complex conjugates $a_+^*$ and $a_-^*$), we define the matrix element of the Liouvillian superoperator as
 
 $$
 L_{\rm super}(a_+^*,a_+,a_-^*,a_-) = -i\Bigl[H(a_+^*,a_+) - H(a_-^*,a_-)\Bigr] + \kappa\Bigl[2\,a_+a_-^* - a_+^*a_+ - a_-^*a_-\Bigr].
@@ -52,7 +52,7 @@ $$
 L_K = a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_- - i\,L_{\rm super}(a_+^*,a_+,a_-^*,a_-).
 $$
 
-Substituting the expression for \(L_{\rm super}\), we have
+Substituting the expression for $L_{\rm super}$, we have
 
 $$
 \begin{aligned}
@@ -86,7 +86,7 @@ L_K =\; & a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_- \\
 $$
 
 This expression clearly separates:
-- The **time-evolution** terms: \(a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_-\),
+- The **time-evolution** terms: $a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_-$,
 - The **coherent Hamiltonian** contributions, and
 - The **dissipative** contributions.
 

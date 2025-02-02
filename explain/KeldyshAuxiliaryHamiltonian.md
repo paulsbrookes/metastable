@@ -60,7 +60,7 @@ To capture nonclassical (instanton) trajectories connecting metastable states, o
 $$
 \tilde{x}_q \to -i\,p_q,\qquad \tilde{p}_q \to i\,x_q,
 $$
-where \(x_q\) and \(p_q\) are real variables.
+where $x_q\) and $p_q\) are real variables.
 
 Let us now see how each term in the Lagrangian transforms.
 
@@ -116,7 +116,7 @@ The remaining terms transform as follows:
   &\to \kappa\Bigl(x_c\,(i\,x_q)-p_c\,(-i\,p_q)\Bigr)\\[1mm]
   &= i\,\kappa\,(x_c\,x_q+p_c\,p_q).
   \end{aligned}
-  $$]
+  $$
 
 - **Additional Dissipative Contribution:**
   $$
@@ -144,7 +144,7 @@ L \to \; & i\Bigl\{ \dot{x}_c\,x_q + \dot{p}_c\,p_q\\[1mm]
 - 2\varepsilon\,x_q \Bigr\}.
 \end{aligned}
 $$
-It is convenient to factor out the overall factor of \(i\) and to write the action in a canonical form. One introduces the notation
+It is convenient to factor out the overall factor of $i\) and to write the action in a canonical form. One introduces the notation
 $$
 \mathbf{z}_c=(x_c,p_c),\quad \mathbf{z}_q=(x_q,p_q),
 $$
@@ -152,7 +152,7 @@ and writes the (transformed) action as
 $$
 iS = i\int dt\,L = -\int dt\Bigl[\dot{x}_c\,p_c + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
 $$
-By comparing with the expression above, one identifies the auxiliary Hamiltonian \(H(x_c,p_c,x_q,p_q)\) as
+By comparing with the expression above, one identifies the auxiliary Hamiltonian $H(x_c,p_c,x_q,p_q)\) as
 $$
 \boxed{
 \begin{aligned}

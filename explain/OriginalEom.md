@@ -18,8 +18,8 @@ L_{\rm kin} = \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q\,.
 $$
 
 This form identifies the canonical pairs as:
-- \(x_c\) with conjugate momentum \(\tilde{p}_q\), and
-- \(p_c\) with conjugate momentum \(-\tilde{x}_q\).
+- $x_c$ with conjugate momentum $\tilde{p}_q$, and
+- $p_c$ with conjugate momentum $-\tilde{x}_q$.
 
 Thus, the Lagrangian can be rewritten as
 
@@ -57,53 +57,53 @@ A \equiv \delta+\frac{\chi}{2}\Bigl(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2\Bigr
 B \equiv x_c\,\tilde{x}_q+p_c\,\tilde{p}_q\,.
 $$
 
-### Derivative with Respect to \(\tilde{p}_q\):
+### Derivative with Respect to $\tilde{p}_q$:
 
 $$
 \frac{\partial H}{\partial \tilde{p}_q}
 = \chi\,\tilde{p}_q\,B + A\,p_c - \kappa\,x_c - 2i\kappa\,\tilde{p}_q - 2\varepsilon\,.
 $$
 
-Thus, the equation of motion for \(x_c\) is
+Thus, the equation of motion for $x_c$ is
 
 $$
 \dot{x}_c = \chi\,\tilde{p}_q\,B + A\,p_c - \kappa\,x_c - 2i\kappa\,\tilde{p}_q - 2\varepsilon\,.
 $$
 
-### Derivative with Respect to \(x_c\):
+### Derivative with Respect to $x_c$:
 
 $$
 \frac{\partial H}{\partial x_c}
 = \chi\,x_c\,B + A\,\tilde{x}_q - \kappa\,\tilde{p}_q\,.
 $$
 
-Thus, the equation of motion for \(\tilde{p}_q\) is
+Thus, the equation of motion for $\tilde{p}_q$ is
 
 $$
 \dot{\tilde{p}}_q = -\chi\,x_c\,B - A\,\tilde{x}_q + \kappa\,\tilde{p}_q\,.
 $$
 
-### Derivative with Respect to \(\tilde{x}_q\):
+### Derivative with Respect to $\tilde{x}_q$:
 
 $$
 \frac{\partial H}{\partial \tilde{x}_q}
 = \chi\,\tilde{x}_q\,B + A\,x_c + \kappa\,p_c - 2i\kappa\,\tilde{x}_q\,.
 $$
 
-Thus, the equation of motion for \(p_c\) is
+Thus, the equation of motion for $p_c$ is
 
 $$
 \dot{p}_c = -\chi\,\tilde{x}_q\,B - A\,x_c - \kappa\,p_c + 2i\kappa\,\tilde{x}_q\,.
 $$
 
-### Derivative with Respect to \(p_c\):
+### Derivative with Respect to $p_c$:
 
 $$
 \frac{\partial H}{\partial p_c}
 = \chi\,p_c\,B + A\,\tilde{p}_q + \kappa\,\tilde{x}_q\,.
 $$
 
-Thus, the equation of motion for \(\tilde{x}_q\) is
+Thus, the equation of motion for $\tilde{x}_q$ is
 
 $$
 \dot{\tilde{x}}_q = \chi\,p_c\,B + A\,\tilde{p}_q + \kappa\,\tilde{x}_q\,.
@@ -131,14 +131,3 @@ $$
 \end{aligned}
 }
 $$
-
-Any answer equivalent to the set above (obtained by a direct application of the Euler–Lagrange or Hamilton equations) is correct.
-
-## 5. Summary
-
-- **Step 1:** Recognize the canonical structure from the kinetic term.
-- **Step 2:** Write the Hamiltonian \(H\) from the Lagrangian.
-- **Step 3:** Use the canonical (Hamilton's) equations to find the equations of motion.
-- **Step 4:** Compute the necessary partial derivatives and substitute them to obtain the final set.
-
-This completes the derivation.

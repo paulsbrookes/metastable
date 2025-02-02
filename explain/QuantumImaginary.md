@@ -18,15 +18,15 @@ Below we explain why this separation leads to \(x_c\) and \(p_c\) being real, wh
 
 Examine the kinetic (first-order) part of the Lagrangian:
 
-\[
+$$
 L_{\rm kin} = \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q\,.
-\]
+$$
 
 This term is reminiscent of the canonical form \(p\,\dot{q}\). Here:
 - \(x_c\) is paired with \(\tilde{p}_q\),
 - \(p_c\) is paired with \(-\tilde{x}_q\).
 
-For the overall structure to be consistent (especially when writing the action \(S = \int dt\, L\) in the exponential \(e^{iS}\)), it is convenient to choose the response fields such that when one “pulls out” an extra factor of \(i\), the contributions from these terms yield a real and convergent path-integral weight.
+For the overall structure to be consistent (especially when writing the action \(S = \int dt\, L\) in the exponential \(e^{iS}\)), it is convenient to choose the response fields such that when one "pulls out" an extra factor of \(i\), the contributions from these terms yield a real and convergent path-integral weight.
 
 ## 3. Convergence and Causality in the Path-Integral
 

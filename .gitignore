@@ -12,6 +12,7 @@ __pycache__/
 
 # Ignore scratch files
 scratch/
+docs/_site/
 
 # Ignore Python egg-info
 *.egg-info/

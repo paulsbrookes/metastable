@@ -112,116 +112,31 @@ This is permitted by Cauchy's theorem provided that the integrand decays suffici
 
 @TODO: Reference Kamenev's book for the transformation.
 
-Let us now see how each term in the Lagrangian transforms.
-
-### 3.1 Kinetic Term
-
-The kinetic term
-
-$$
-\dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q
-$$
-
-becomes
+Applying this transformation to the Lagrangian and collecting terms we get
 
 $$
 \begin{aligned}
-\dot{x}_c\,(i\,x_q) - \dot{p}_c\,(-i\,p_q)
-&= i\,\dot{x}_c\,x_q + i\,\dot{p}_c\,p_q\\[1mm]
-&= i\Bigl(\dot{x}_c\,x_q + \dot{p}_c\,p_q\Bigr).
-\end{aligned}
-$$
-
-### 3.2 Interaction and Nonlinear Terms
-
-Consider the term
-
-$$
-\Biggl[\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2\Bigr)\Biggr]\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q).
-$$
-
-First, note that
-
-$$
-\begin{aligned}
-x_c\,\tilde{x}_q+p_c\,\tilde{p}_q &\to x_c\,(-i\,p_q)+p_c\,(i\,x_q)\\[1mm]
-&= i\,(p_c\,x_q - x_c\,p_q).
-\end{aligned}
-$$
-
-Also, since
-
-$$
-\tilde{x}_q^2+\tilde{p}_q^2 \to (-i\,p_q)^2+(i\,x_q)^2 = -p_q^2 - x_q^2,
-$$
-
-the factor in square brackets becomes
-
-$$
-\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2 -\bigl(x_q^2+p_q^2\bigr)\Bigr).
-$$
-
-Thus, the entire interaction term transforms into
-
-$$
--i\Biggl[\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2-x_q^2-p_q^2\Bigr)\Biggr](p_c\,x_q-x_c\,p_q).
-$$
-
-### 3.3 Dissipative and Driving Terms
-
-The remaining terms transform as follows:
-
-**Dissipative Term:**
-
-  $$
-  \begin{aligned}
-  \kappa\,(x_c\,\tilde{p}_q-p_c\,\tilde{x}_q)
-  &\to \kappa\Bigl(x_c\,(i\,x_q)-p_c\,(-i\,p_q)\Bigr)\\[1mm]
-  &= i\,\kappa\,(x_c\,x_q+p_c\,p_q).
-  \end{aligned}
-  $$
-
-**Additional Dissipative Contribution:**
-
-  $$
-  i\kappa\,(\tilde{x}_q^2+\tilde{p}_q^2)
-  \to i\kappa\,\Bigl[-(x_q^2+p_q^2)\Bigr]
-  = -i\,\kappa\,(x_q^2+p_q^2).
-  $$
-
-**Driving Term:**
-
-  $$
-  2\varepsilon\,\tilde{p}_q \to 2\varepsilon\,(i\,x_q) = 2i\,\varepsilon\,x_q.
-  $$
-
----
-
-## 4. The Auxiliary Hamiltonian
-
-Collecting the transformed terms, the Lagrangian now reads
-
-$$
-\begin{aligned}
-L \to \; & i\Bigl\{ \dot{x}_c\,x_q + \dot{p}_c\,p_q - \Bigl[\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_q^2\bigr)\Bigr](p_c\,x_q-x_c\,p_q) + \kappa\,(x_c\,x_q+p_c\,p_q)
+L \to \; & i\Bigl\{ \dot{x}_c\,x_q + \dot{p}_c\,p_q - \Bigl[\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_q^2\bigr)\Bigr](p_c\,x_q-x_c\,p_q)\\[1mm]
+& \quad + \kappa\,(x_c\,x_q+p_c\,p_q)
 - \kappa\,(x_q^2+p_q^2)
 - 2\varepsilon\,x_q \Bigr\}.
 \end{aligned}
 $$
 
-It is convenient to factor out the overall factor of $i$ and to write the action in a canonical form. One introduces the notation
+
+## 4. The Auxiliary Hamiltonian
+
+Using this transformed Lagrangian we can write a transformed action as
 
 $$
-\mathbf{z}_c=(x_c,p_c),\quad \mathbf{z}_q=(x_q,p_q),
+\begin{aligned}
+S_{\mathrm{aux}} &= iS \\
+&= i\int dt\,L \\
+&= -\int dt\Bigl[\dot{x}_c\,p_c + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
+\end{aligned}
 $$
 
-and writes the (transformed) action as
-
-$$
-iS = i\int dt\,L = -\int dt\Bigl[\dot{x}_c\,p_c + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
-$$
-
-By comparing with the expression above, one identifies the auxiliary Hamiltonian $H(x_c,p_c,x_q,p_q)$ as
+Where we have defined an auxiliary Hamiltonian $H(x_c,p_c,x_q,p_q)$ as
 
 $$
 \boxed{
@@ -234,7 +149,20 @@ H(x_c,p_c,x_q,p_q)=\; & \Biggl(\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_
 }
 $$
 
-This Hamiltonian generates the saddle-point equations via
+Meanwhile the partition function is given by
+
+$$
+\mathcal{Z} = \int \mathcal{D}x_c\,\mathcal{D}p_c\,\mathcal{D}x_q\,\mathcal{D}p_q \; e^{S_{\mathrm{aux}}[x_c,p_c,x_q,p_q]},
+$$
+
+
+Finally, to write down the equations of motion we use the notation
+
+$$
+\mathbf{z}_c=(x_c,p_c),\quad \mathbf{z}_q=(x_q,p_q),
+$$
+
+in terms of which the Hamiltonian formulation gives us
 
 $$
 \dot{\mathbf{z}}_c = \frac{\partial H}{\partial \mathbf{z}_q},\qquad

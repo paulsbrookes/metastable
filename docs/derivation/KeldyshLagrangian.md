@@ -18,7 +18,7 @@ $$
 H = \delta\,a^\dagger a + \chi\,a^\dagger a^\dagger aa + i\varepsilon\,(a^\dagger - a).
 $$
 
-The jump operator can be expressed as
+The Lindblad operator can be expressed as
 
 $$
 L = \sqrt{2\kappa}\,a,

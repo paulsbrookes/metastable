@@ -24,11 +24,11 @@ $$
 \mathcal{Z} = \int \mathcal{D}a_{-}\,\mathcal{D}a_{-}^{*}\,\mathcal{D}a_{+}\,\mathcal{D}a_{+}^{*}\;e^{iS[a_+,a_+^*,a_-,a_-^*]}.
 $$
 
+@TODO: Add equation for action being equal to integral over time of the Lagrangian.
+
 ---
 
 ## 2. Keldysh Rotation and Decomposition into Real Fields
-
-### 2.1 Keldysh Rotation
 
 We introduce the **classical** and **quantum** fields by performing the Keldysh rotation:
 
@@ -37,9 +37,7 @@ a_c = \frac{a_+ + a_-}{\sqrt{2}},\qquad
 a_q = \frac{a_+ - a_-}{\sqrt{2}}.
 $$
 
-### 2.2 Decomposition into Real and Imaginary Parts
-
-Next, we express these complex fields in terms of their real components:
+In general these are complex fifelds and we can express them terms of real components as follows:
 
 $$
 a_c = \frac{x_c + i\,p_c}{\sqrt{2}},\qquad
@@ -66,6 +64,8 @@ $$
 $$
 
 where $x_q$ and $p_q$ are real variables.
+
+@TODO: Reference Kamenev's book for the transformation.
 
 Let us now see how each term in the Lagrangian transforms.
 

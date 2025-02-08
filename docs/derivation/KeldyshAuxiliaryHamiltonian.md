@@ -18,13 +18,19 @@ L &= a_{+}^{*} \,i\partial_t a_{+} - a_{-}^{*}\, i\partial_t a_{-}
 \end{aligned}
 $$
 
-and partition function is given by
+and the partition function is given by
 
 $$
 \mathcal{Z} = \int \mathcal{D}a_{-}\,\mathcal{D}a_{-}^{*}\,\mathcal{D}a_{+}\,\mathcal{D}a_{+}^{*}\;e^{iS[a_+,a_+^*,a_-,a_-^*]}.
 $$
 
-@TODO: Add equation for action being equal to integral over time of the Lagrangian.
+The action is defined as the time-integral of the Lagrangian:
+
+$$
+S[a_+,a_+^*,a_-,a_-^*] = \int_{t_i}^{t_f} dt\, L(a_+,a_+^*,a_-,a_-^*),
+$$
+
+where $t_i$ and $t_f$ are the initial and final times of the evolution.
 
 Our overall goal is to calculate the rate at which the system escapes from metastable states, and we are attempting to do this via finding the instanton (saddle-point) solutions to the equation of motion which dominate the partition function.
 
@@ -41,7 +47,7 @@ a_c = \frac{a_+ + a_-}{\sqrt{2}},\qquad
 a_q = \frac{a_+ - a_-}{\sqrt{2}}.
 $$
 
-In general these are complex fields and we can express them terms of real components as follows:
+In general these are complex fields and we can express them in terms of real components as follows:
 
 $$
 a_c = \frac{x_c + i\,p_c}{\sqrt{2}},\qquad
@@ -57,7 +63,17 @@ L &= \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q -\Biggl[\delta + \frac{\chi
 \end{aligned}
 $$
 
-@TODO: Write the partition function and action in terms of these new variables.
+In these new variables, the partition function becomes
+
+$$
+\mathcal{Z} = \int \mathcal{D}x_c\,\mathcal{D}p_c\,\mathcal{D}\tilde{x}_q\,\mathcal{D}\tilde{p}_q \; e^{i\,S[x_c,p_c,\tilde{x}_q,\tilde{p}_q]},
+$$
+
+with the action given by
+
+$$
+S[x_c,p_c,\tilde{x}_q,\tilde{p}_q] = \int_{t_i}^{t_f} dt\, L(x_c,p_c,\tilde{x}_q,\tilde{p}_q).
+$$
 
 ---
 
@@ -119,7 +135,7 @@ $$
 the factor in square brackets becomes
 
 $$
-\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2 - (x_q^2+p_q^2)\Bigr).
+\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2 -\bigl(x_q^2+p_q^2\bigr)\Bigr).
 $$
 
 Thus, the entire interaction term transforms into

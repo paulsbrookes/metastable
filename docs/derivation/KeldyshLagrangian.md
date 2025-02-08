@@ -84,10 +84,3 @@ L_K =\; & a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_- \\
 \end{aligned}
 }
 $$
-
-This expression clearly separates:
-- The **time-evolution** terms: $a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_-$,
-- The **coherent Hamiltonian** contributions, and
-- The **dissipative** contributions.
-
----

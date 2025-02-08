@@ -5,10 +5,9 @@ This repository contains research and documentation on the study of switching dy
 ## Core Concepts
 
 1. [Overview](derivation/Overview.md) - Introduction to switching dynamics and transition mechanisms
-2. [Original Equations of Motion](derivation/OriginalEom.md) - Derivation and analysis of the system's equations of motion
-3. [Keldysh Lagrangian](derivation/KeldyshLagrangian.md) - Development of the Keldysh field theory approach
-4. [Keldysh Auxiliary Hamiltonian](derivation/KeldyshAuxiliaryHamiltonian.md) - Analysis of the auxiliary Hamiltonian system
-5. [Quantum Imaginary Time](derivation/QuantumImaginary.md) - Discussion of quantum effects and imaginary time formalism
+2. [Keldysh Lagrangian](derivation/KeldyshLagrangian.md) - Development of the Keldysh field theory approach
+3. [Keldysh Auxiliary Hamiltonian](derivation/KeldyshAuxiliaryHamiltonian.md) - Analysis of the auxiliary Hamiltonian system
+4. [Original Equations of Motion](derivation/OriginalEom.md) - Derivation and analysis of the system's equations of motion
 
 ## About
 

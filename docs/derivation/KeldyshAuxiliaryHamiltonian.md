@@ -6,7 +6,7 @@ This document presents a derivation of the auxiliary Hamiltonian for a driven–
 
 ## 1. Starting Point: The Keldysh Lagrangian
 
-The system is described by the Lagrangian written in terms of the forward (a_+) and backward (a_-) fields:
+The system is described by the Lagrangian written in terms of the forward ($a_+$) and backward ($a_-$) fields:
 
 $$
 \begin{aligned}
@@ -17,7 +17,9 @@ L &= a_{+}^{*} \,i\partial_t a_{+} - a_{-}^{*}\, i\partial_t a_{-}
 &\quad - i\kappa\Bigl( 2a_{+}a_{-}^{*} - a_{+}^{*}a_{+} - a_{-}^{*}a_{-}\Bigr).
 \end{aligned}
 $$
+
 The partition function is then given by
+
 $$
 \mathcal{Z} = \int \mathcal{D}a_{-}\,\mathcal{D}a_{-}^{*}\,\mathcal{D}a_{+}\,\mathcal{D}a_{+}^{*}\;e^{iS[a_+,a_+^*,a_-,a_-^*]}.
 $$
@@ -29,6 +31,7 @@ $$
 ### 2.1 Keldysh Rotation
 
 We introduce the **classical** and **quantum** fields by performing the Keldysh rotation:
+
 $$
 a_c = \frac{a_+ + a_-}{\sqrt{2}},\qquad
 a_q = \frac{a_+ - a_-}{\sqrt{2}}.
@@ -37,18 +40,18 @@ $$
 ### 2.2 Decomposition into Real and Imaginary Parts
 
 Next, we express these complex fields in terms of their real components:
+
 $$
 a_c = \frac{x_c + i\,p_c}{\sqrt{2}},\qquad
 a_q = \frac{\tilde{x}_q + i\,\tilde{p}_q}{\sqrt{2}}.
 $$
+
 In these variables, after some algebra (and up to total time derivatives), the Lagrangian takes the form:
+
 $$
 \begin{aligned}
-L &= \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q \\
-&\quad -\Biggl[\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2\Bigr)\Biggr]\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q) \\
-&\quad + \kappa\,(x_c\,\tilde{p}_q-p_c\,\tilde{x}_q) \\
-&\quad + i\kappa\,(\tilde{x}_q^2+\tilde{p}_q^2) \\
-&\quad + 2\varepsilon\,\tilde{p}_q.
+L &= \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q -\Biggl[\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2\Bigr)\Biggr]\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q) \\
+&\quad + \kappa\,(x_c\,\tilde{p}_q-p_c\,\tilde{x}_q) + i\kappa\,(\tilde{x}_q^2+\tilde{p}_q^2) + 2\varepsilon\,\tilde{p}_q.
 \end{aligned}
 $$
 
@@ -57,9 +60,11 @@ $$
 ## 3. Analytic Continuation of the Quantum Fields
 
 To capture nonclassical (instanton) trajectories connecting metastable states, one deforms the integration contour for the quantum fields. We perform the analytic continuation
+
 $$
 \tilde{x}_q \to -i\,p_q,\qquad \tilde{p}_q \to i\,x_q,
 $$
+
 where $x_q$ and $p_q$ are real variables.
 
 Let us now see how each term in the Lagrangian transforms.
@@ -67,10 +72,13 @@ Let us now see how each term in the Lagrangian transforms.
 ### 3.1 Kinetic Term
 
 The kinetic term
+
 $$
 \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q
 $$
+
 becomes
+
 $$
 \begin{aligned}
 \dot{x}_c\,(i\,x_q) - \dot{p}_c\,(-i\,p_q)
@@ -82,25 +90,34 @@ $$
 ### 3.2 Interaction and Nonlinear Terms
 
 Consider the term
+
 $$
 \Biggl[\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2\Bigr)\Biggr]\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q).
 $$
+
 First, note that
+
 $$
 \begin{aligned}
 x_c\,\tilde{x}_q+p_c\,\tilde{p}_q &\to x_c\,(-i\,p_q)+p_c\,(i\,x_q)\\[1mm]
 &= i\,(p_c\,x_q - x_c\,p_q).
 \end{aligned}
 $$
+
 Also, since
+
 $$
 \tilde{x}_q^2+\tilde{p}_q^2 \to (-i\,p_q)^2+(i\,x_q)^2 = -p_q^2 - x_q^2,
 $$
+
 the factor in square brackets becomes
+
 $$
 \delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2 - (x_q^2+p_q^2)\Bigr).
 $$
+
 Thus, the entire interaction term transforms into
+
 $$
 -i\Biggl[\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2-x_q^2-p_q^2\Bigr)\Biggr](p_c\,x_q-x_c\,p_q).
 $$
@@ -110,6 +127,7 @@ $$
 The remaining terms transform as follows:
 
 - **Dissipative Term:**
+
   $$
   \begin{aligned}
   \kappa\,(x_c\,\tilde{p}_q-p_c\,\tilde{x}_q)
@@ -119,6 +137,7 @@ The remaining terms transform as follows:
   $$
 
 - **Additional Dissipative Contribution:**
+
   $$
   i\kappa\,(\tilde{x}_q^2+\tilde{p}_q^2)
   \to i\kappa\,\Bigl[-(x_q^2+p_q^2)\Bigr]
@@ -126,6 +145,7 @@ The remaining terms transform as follows:
   $$
 
 - **Driving Term:**
+
   $$
   2\varepsilon\,\tilde{p}_q \to 2\varepsilon\,(i\,x_q) = 2i\,\varepsilon\,x_q.
   $$
@@ -135,24 +155,29 @@ The remaining terms transform as follows:
 ## 4. The Auxiliary Hamiltonian
 
 Collecting the transformed terms, the Lagrangian now reads
+
 $$
 \begin{aligned}
-L \to \; & i\Bigl\{ \dot{x}_c\,x_q + \dot{p}_c\,p_q\\[1mm]
-&\quad - \Bigl[\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_q^2\bigr)\Bigr](p_c\,x_q-x_c\,p_q)\\[1mm]
-&\quad + \kappa\,(x_c\,x_q+p_c\,p_q)
+L \to \; & i\Bigl\{ \dot{x}_c\,x_q + \dot{p}_c\,p_q - \Bigl[\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_q^2\bigr)\Bigr](p_c\,x_q-x_c\,p_q) + \kappa\,(x_c\,x_q+p_c\,p_q)
 - \kappa\,(x_q^2+p_q^2)
 - 2\varepsilon\,x_q \Bigr\}.
 \end{aligned}
 $$
-It is convenient to factor out the overall factor of $i\) and to write the action in a canonical form. One introduces the notation
+
+It is convenient to factor out the overall factor of $i$ and to write the action in a canonical form. One introduces the notation
+
 $$
 \mathbf{z}_c=(x_c,p_c),\quad \mathbf{z}_q=(x_q,p_q),
 $$
+
 and writes the (transformed) action as
+
 $$
 iS = i\int dt\,L = -\int dt\Bigl[\dot{x}_c\,p_c + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
 $$
+
 By comparing with the expression above, one identifies the auxiliary Hamiltonian $H(x_c,p_c,x_q,p_q)$ as
+
 $$
 \boxed{
 \begin{aligned}
@@ -163,10 +188,10 @@ H(x_c,p_c,x_q,p_q)=\; & \Biggl(\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_
 \end{aligned}
 }
 $$
+
 This Hamiltonian generates the saddle-point equations via
+
 $$
 \dot{\mathbf{z}}_c = \frac{\partial H}{\partial \mathbf{z}_q},\qquad
 \dot{\mathbf{z}}_q = -\frac{\partial H}{\partial \mathbf{z}_c}.
 $$
-
----

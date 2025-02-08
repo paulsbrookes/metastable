@@ -78,9 +78,9 @@ $$
 \boxed{
 \begin{aligned}
 L_K =\; & a_+^*\,i\partial_t a_+ - a_-^*\,i\partial_t a_- \\
-&\quad {} - \delta\,\Bigl(a_+^*a_+ - a_-^*a_-\Bigr) - \chi\,\Bigl(a_+^{*2}a_+^2 - a_-^{*2}a_-^2\Bigr) \\
-&\quad {} - i\varepsilon\,\Bigl[(a_+^* - a_+) - (a_-^* - a_-)\Bigr] \\
-&\quad {} - i\,\kappa\Bigl[2\,a_+a_-^* - a_+^*a_+ - a_-^*a_-\Bigr].
+& - \delta\,\Bigl(a_+^*a_+ - a_-^*a_-\Bigr) - \chi\,\Bigl(a_+^{*2}a_+^2 - a_-^{*2}a_-^2\Bigr) \\
+& - i\varepsilon\,\Bigl[(a_+^* - a_+) - (a_-^* - a_-)\Bigr] \\
+& - i\,\kappa\Bigl[2\,a_+a_-^* - a_+^*a_+ - a_-^*a_-\Bigr].
 \end{aligned}
 }
 $$

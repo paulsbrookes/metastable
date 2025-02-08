@@ -99,7 +99,7 @@ $$
 
 ## 3. Transformation of the Quantum Fields
 
-In order to capture instanton trajectories connecting metastable states we wish to find solutions to the equations of motion above. Under examination we should see that if $x_c$ and $p_c$ are both real, then $\tilde{x}_q$ and $\tilde{p}_q$ must be purely imaginary. Since $\tilde{x}_q$ and $\tilde{p}_q$ supposed to also be real, this would restrict us to the classical solutions, i.e. $\tilde{x}_q$ and $\tilde{p}_q$ are both zero. These classical solutions will not permit any switching and will only show relaxation towards the fixed points.
+In order to capture instanton trajectories connecting metastable states we wish to find solutions to the equations of motion above. One may observe that if $x_c$ and $p_c$ are both real, then these equations imply that $\tilde{x}_q$ and $\tilde{p}_q$ must be purely imaginary. Since $\tilde{x}_q$ and $\tilde{p}_q$ supposed to also be real, this would restrict us to the classical solutions, i.e. $\tilde{x}_q$ and $\tilde{p}_q$ would both be zero. These solutions will not permit any switching and will only show relaxation towards the fixed points.
 
 However, the equations of motion do indeed have solutions with imaginary $\tilde{x}_q$ and $\tilde{p}_q$ and we can make use of them if we deform the integration contours of the quantum fields along the imaginary axis [1].
 
@@ -129,7 +129,7 @@ $$
 \begin{aligned}
 S_{\mathrm{aux}} &= iS \\
 &= i\int dt\,L_K \\
-&= -\int dt\Bigl[\dot{x}_c\,p_c + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
+&= -\int dt\Bigl[\dot{x}_c\,x_q + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
 \end{aligned}
 $$
 

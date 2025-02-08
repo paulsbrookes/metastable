@@ -4,9 +4,9 @@ This document presents a derivation of the auxiliary Hamiltonian for a driven–
 
 ---
 
-## 1. Starting Point: The Keldysh Lagrangian
+## 1. The Keldysh Lagrangian
 
-The system is described by the Lagrangian written in terms of the forward ($a_+$) and backward ($a_-$) fields:
+We start from the Lagrangian derived in [Keldysh Lagrangian](KeldyshLagrangian.md). The system is described in terms of the forward ($a_+$) and backward ($a_-$) fields as follows:
 
 $$
 \begin{aligned}

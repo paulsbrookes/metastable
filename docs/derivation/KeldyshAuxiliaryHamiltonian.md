@@ -75,17 +75,40 @@ $$
 S[x_c,p_c,\tilde{x}_q,\tilde{p}_q] = \int_{t_i}^{t_f} dt\, L(x_c,p_c,\tilde{x}_q,\tilde{p}_q).
 $$
 
+
+Finally, as derived in [Original Equations of Motion](OriginalEom.md), the equations of motion are given by
+
+$$
+\begin{aligned}
+\dot{x}_c &= \chi\,\tilde{p}_q\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q)
++\left(\delta+\frac{\chi}{2}(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2)\right)p_c
+-\kappa\,x_c-2i\kappa\,\tilde{p}_q-2\varepsilon\,,\\[1mm]
+\dot{\tilde{p}}_q &= -\chi\,x_c\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q)
+-\left(\delta+\frac{\chi}{2}(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2)\right)\tilde{x}_q
++\kappa\,\tilde{p}_q\,,\\[1mm]
+\dot{p}_c &= -\chi\,\tilde{x}_q\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q)
+-\left(\delta+\frac{\chi}{2}(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2)\right)x_c
+-\kappa\,p_c+2i\kappa\,\tilde{x}_q\,,\\[1mm]
+\dot{\tilde{x}}_q &= \chi\,p_c\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q)
++\left(\delta+\frac{\chi}{2}(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2)\right)\tilde{p}_q
++\kappa\,\tilde{x}_q\,.
+\end{aligned}
+$$
+
 ---
 
 ## 3. Transformation of the Quantum Fields
 
-To capture nonclassical (instanton) trajectories connecting metastable states, one deforms the integration contour for the quantum fields. We perform the transformation
+In order to capture instanton trajectories connecting metastable states we wish to find solutions to the equations of motion above. Under examination we should see that if $x_c$ and $p_c$ are both real, then $\tilde{x}_q$ and $\tilde{p}_q$ must be purely imaginary. Since $\tilde{x}_q$ and $\tilde{p}_q$ supposed to also be real, this would restrict us to the classical solutions, i.e. $\tilde{x}_q$ and $\tilde{p}_q$ are both zero. These classical solutions will not permit any switching and will only show relaxation towards the fixed points.
+
+However, the equations of motion do indeed have solutions with imaginary $\tilde{x}_q$ and $\tilde{p}_q$ and we can make use of them if we deform the integration contours of the quantum fields along the imaginary axis.
 
 $$
 \tilde{x}_q \to -i\,p_q,\qquad \tilde{p}_q \to i\,x_q,
 $$
 
-where $x_q$ and $p_q$ are real variables.
+This is permitted by Cauchy's theorem provided that the integrand decays sufficiently rapidly at infinity and that no singularities are crossed by the contour shift.
+
 
 @TODO: Reference Kamenev's book for the transformation.
 

@@ -60,7 +60,7 @@ To capture nonclassical (instanton) trajectories connecting metastable states, o
 $$
 \tilde{x}_q \to -i\,p_q,\qquad \tilde{p}_q \to i\,x_q,
 $$
-where $x_q\) and $p_q\) are real variables.
+where $x_q$ and $p_q$ are real variables.
 
 Let us now see how each term in the Lagrangian transforms.
 
@@ -152,7 +152,7 @@ and writes the (transformed) action as
 $$
 iS = i\int dt\,L = -\int dt\Bigl[\dot{x}_c\,p_c + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
 $$
-By comparing with the expression above, one identifies the auxiliary Hamiltonian $H(x_c,p_c,x_q,p_q)\) as
+By comparing with the expression above, one identifies the auxiliary Hamiltonian $H(x_c,p_c,x_q,p_q)$ as
 $$
 \boxed{
 \begin{aligned}

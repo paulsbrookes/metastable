@@ -10,16 +10,6 @@ This repository contains research and documentation on the study of switching dy
 4. [Keldysh Auxiliary Hamiltonian](explain/KeldyshAuxiliaryHamiltonian.md) - Analysis of the auxiliary Hamiltonian system
 5. [Quantum Imaginary Time](explain/QuantumImaginary.md) - Discussion of quantum effects and imaginary time formalism
 
-## Interactive Notebooks
-
-Each document is also available as an interactive Jupyter notebook:
-
-- [Overview Notebook](notebooks/Overview.ipynb)
-- [Original EoM Notebook](notebooks/OriginalEom.ipynb)
-- [Keldysh Lagrangian Notebook](notebooks/KeldyshLagrangian.ipynb)
-- [Keldysh Auxiliary Hamiltonian Notebook](notebooks/KeldyshAuxiliaryHamiltonian.ipynb)
-- [Quantum Imaginary Time Notebook](notebooks/QuantumImaginary.ipynb)
-
 ## About
 
 This documentation covers research into quantum activation in driven dissipative systems far from equilibrium. The work focuses on understanding how quantum noise associated with relaxation can lead to transitions between metastable states, even at zero temperature.

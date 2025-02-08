@@ -30,7 +30,7 @@ so that the dissipative part is in the standard Lindblad form.
 
 ## 2. Matrix Element of the Liouvillian Superoperator
 
-In the coherent-state representation, we work with forward ($+$) and backward ($ - $) contours. Denoting the fields by $a_+$ and $a_-$ (with their complex conjugates $a_+^*$ and $a_-^*$), we define the matrix element of the Liouvillian superoperator as
+In the coherent-state representation, we work with forward ($a_+$) and backward ($a_-$) contours. Denoting the fields by $a_+$ and $a_-$ we define the matrix element of the Liouvillian superoperator as
 
 $$
 L_{\rm super}(a_+^*,a_+,a_-^*,a_-) = -i\Bigl[H(a_+^*,a_+) - H(a_-^*,a_-)\Bigr] + \kappa\Bigl[2\,a_+a_-^* - a_+^*a_+ - a_-^*a_-\Bigr].

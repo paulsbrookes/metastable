@@ -10,7 +10,7 @@ We start from the Lagrangian derived in [Keldysh Lagrangian](KeldyshLagrangian.m
 
 $$
 \begin{aligned}
-L &= a_{+}^{*} \,i\partial_t a_{+} - a_{-}^{*}\, i\partial_t a_{-}
+L_K &= a_{+}^{*} \,i\partial_t a_{+} - a_{-}^{*}\, i\partial_t a_{-}
 + i\varepsilon \Bigl( a_{+}^{*} - a_{+} - a_{-}^{*} + a_{-} \Bigr)\\[1mm]
 &\quad - \delta\Bigl(a_{+}^{*}a_{+} - a_{-}^{*}a_{-}\Bigr)
 - \chi\Bigl(a_{+}^{*2}a_{+}^2 - a_{-}^{*2}a_{-}^2\Bigr)\\[1mm]
@@ -27,7 +27,7 @@ $$
 The action is defined as the time-integral of the Lagrangian:
 
 $$
-S[a_+,a_+^*,a_-,a_-^*] = \int_{t_i}^{t_f} dt\, L(a_+,a_+^*,a_-,a_-^*),
+S[a_+,a_+^*,a_-,a_-^*] = \int_{t_i}^{t_f} dt\, L_K(a_+,a_+^*,a_-,a_-^*),
 $$
 
 where $t_i$ and $t_f$ are the initial and final times of the evolution.
@@ -58,7 +58,7 @@ In these variables, after some algebra (and up to total time derivatives), the L
 
 $$
 \begin{aligned}
-L &= \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q -\Biggl[\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2\Bigr)\Biggr]\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q) \\
+L_K &= \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q -\Biggl[\delta + \frac{\chi}{2}\Bigl(x_c^2+p_c^2+\tilde{x}_q^2+\tilde{p}_q^2\Bigr)\Biggr]\,(x_c\,\tilde{x}_q+p_c\,\tilde{p}_q) \\
 &\quad + \kappa\,(x_c\,\tilde{p}_q-p_c\,\tilde{x}_q) + i\kappa\,(\tilde{x}_q^2+\tilde{p}_q^2) + 2\varepsilon\,\tilde{p}_q.
 \end{aligned}
 $$
@@ -72,7 +72,7 @@ $$
 with the action given by
 
 $$
-S[x_c,p_c,\tilde{x}_q,\tilde{p}_q] = \int_{t_i}^{t_f} dt\, L(x_c,p_c,\tilde{x}_q,\tilde{p}_q).
+S[x_c,p_c,\tilde{x}_q,\tilde{p}_q] = \int_{t_i}^{t_f} dt\, L_K(x_c,p_c,\tilde{x}_q,\tilde{p}_q).
 $$
 
 
@@ -101,7 +101,7 @@ $$
 
 In order to capture instanton trajectories connecting metastable states we wish to find solutions to the equations of motion above. Under examination we should see that if $x_c$ and $p_c$ are both real, then $\tilde{x}_q$ and $\tilde{p}_q$ must be purely imaginary. Since $\tilde{x}_q$ and $\tilde{p}_q$ supposed to also be real, this would restrict us to the classical solutions, i.e. $\tilde{x}_q$ and $\tilde{p}_q$ are both zero. These classical solutions will not permit any switching and will only show relaxation towards the fixed points.
 
-However, the equations of motion do indeed have solutions with imaginary $\tilde{x}_q$ and $\tilde{p}_q$ and we can make use of them if we deform the integration contours of the quantum fields along the imaginary axis.
+However, the equations of motion do indeed have solutions with imaginary $\tilde{x}_q$ and $\tilde{p}_q$ and we can make use of them if we deform the integration contours of the quantum fields along the imaginary axis [1].
 
 $$
 \tilde{x}_q \to -i\,p_q,\qquad \tilde{p}_q \to i\,x_q,
@@ -109,14 +109,11 @@ $$
 
 This is permitted by Cauchy's theorem provided that the integrand decays sufficiently rapidly at infinity and that no singularities are crossed by the contour shift.
 
-
-@TODO: Reference Kamenev's book for the transformation.
-
 Applying this transformation to the Lagrangian and collecting terms we get
 
 $$
 \begin{aligned}
-L \to \; & i\Bigl\{ \dot{x}_c\,x_q + \dot{p}_c\,p_q - \Bigl[\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_q^2\bigr)\Bigr](p_c\,x_q-x_c\,p_q)\\[1mm]
+L_K \to \; & i\Bigl\{ \dot{x}_c\,x_q + \dot{p}_c\,p_q - \Bigl[\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_q^2\bigr)\Bigr](p_c\,x_q-x_c\,p_q)\\[1mm]
 & \quad + \kappa\,(x_c\,x_q+p_c\,p_q)
 - \kappa\,(x_q^2+p_q^2)
 - 2\varepsilon\,x_q \Bigr\}.
@@ -131,7 +128,7 @@ Using this transformed Lagrangian we can write a transformed action as
 $$
 \begin{aligned}
 S_{\mathrm{aux}} &= iS \\
-&= i\int dt\,L \\
+&= i\int dt\,L_K \\
 &= -\int dt\Bigl[\dot{x}_c\,p_c + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
 \end{aligned}
 $$
@@ -168,3 +165,7 @@ $$
 \dot{\mathbf{z}}_c = \frac{\partial H}{\partial \mathbf{z}_q},\qquad
 \dot{\mathbf{z}}_q = -\frac{\partial H}{\partial \mathbf{z}_c}.
 $$
+
+## References
+
+[1] A. Kamenev, "Field Theory of Non-Equilibrium Systems" (Cambridge University Press, 2011), pp. 49-50.

@@ -6,7 +6,7 @@ This repository contains research and documentation on the study of switching dy
 
 1. [Overview](derivation/Overview.md) - Introduction to switching dynamics and transition mechanisms
 2. [Keldysh Lagrangian](derivation/KeldyshLagrangian.md) - Development of the Keldysh field theory approach
-3. [Keldysh Auxiliary Hamiltonian](derivation/KeldyshAuxiliaryHamiltonian.md) - Analysis of the auxiliary Hamiltonian system
+3. [Auxiliary Hamiltonian](derivation/KeldyshAuxiliaryHamiltonian.md) - Analysis of the auxiliary Hamiltonian system
 4. [Original Equations of Motion](derivation/OriginalEom.md) - Derivation and analysis of the system's equations of motion
 
 ## About

@@ -14,17 +14,21 @@ L &= a_{+}^{*} \,i\partial_t a_{+} - a_{-}^{*}\, i\partial_t a_{-}
 + i\varepsilon \Bigl( a_{+}^{*} - a_{+} - a_{-}^{*} + a_{-} \Bigr)\\[1mm]
 &\quad - \delta\Bigl(a_{+}^{*}a_{+} - a_{-}^{*}a_{-}\Bigr)
 - \chi\Bigl(a_{+}^{*2}a_{+}^2 - a_{-}^{*2}a_{-}^2\Bigr)\\[1mm]
-&\quad - i\kappa\Bigl( 2a_{+}a_{-}^{*} - a_{+}^{*}a_{+} - a_{-}^{*}a_{-}\Bigr).
+&\quad - i\kappa\Bigl( 2a_{+}a_{-}^{*} - a_{+}^{*}a_{+} - a_{-}^{*}a_{-}\Bigr)
 \end{aligned}
 $$
 
-The partition function is then given by
+and partition function is given by
 
 $$
 \mathcal{Z} = \int \mathcal{D}a_{-}\,\mathcal{D}a_{-}^{*}\,\mathcal{D}a_{+}\,\mathcal{D}a_{+}^{*}\;e^{iS[a_+,a_+^*,a_-,a_-^*]}.
 $$
 
 @TODO: Add equation for action being equal to integral over time of the Lagrangian.
+
+Our overall goal is to calculate the rate at which the system escapes from metastable states, and we are attempting to do this via finding the instanton (saddle-point) solutions to the equation of motion which dominate the partition function.
+
+Below we rewrite the Lagrangian in terms of classical and quantum fields and show the equations of motion for these quantities. We then argue that the instanton solutions should be obtained by deforming the integration contour for the quantum fields along the imaginary axis. This results in new equations of motion which can be obtained from an auxiliary Hamiltonian.
 
 ---
 
@@ -37,7 +41,7 @@ a_c = \frac{a_+ + a_-}{\sqrt{2}},\qquad
 a_q = \frac{a_+ - a_-}{\sqrt{2}}.
 $$
 
-In general these are complex fifelds and we can express them terms of real components as follows:
+In general these are complex fields and we can express them terms of real components as follows:
 
 $$
 a_c = \frac{x_c + i\,p_c}{\sqrt{2}},\qquad
@@ -53,11 +57,13 @@ L &= \dot{x}_c\,\tilde{p}_q - \dot{p}_c\,\tilde{x}_q -\Biggl[\delta + \frac{\chi
 \end{aligned}
 $$
 
+@TODO: Write the partition function and action in terms of these new variables.
+
 ---
 
-## 3. Analytic Continuation of the Quantum Fields
+## 3. Transformation of the Quantum Fields
 
-To capture nonclassical (instanton) trajectories connecting metastable states, one deforms the integration contour for the quantum fields. We perform the analytic continuation
+To capture nonclassical (instanton) trajectories connecting metastable states, one deforms the integration contour for the quantum fields. We perform the transformation
 
 $$
 \tilde{x}_q \to -i\,p_q,\qquad \tilde{p}_q \to i\,x_q,
@@ -126,7 +132,7 @@ $$
 
 The remaining terms transform as follows:
 
-- **Dissipative Term:**
+**Dissipative Term:**
 
   $$
   \begin{aligned}
@@ -136,7 +142,7 @@ The remaining terms transform as follows:
   \end{aligned}
   $$
 
-- **Additional Dissipative Contribution:**
+**Additional Dissipative Contribution:**
 
   $$
   i\kappa\,(\tilde{x}_q^2+\tilde{p}_q^2)
@@ -144,7 +150,7 @@ The remaining terms transform as follows:
   = -i\,\kappa\,(x_q^2+p_q^2).
   $$
 
-- **Driving Term:**
+**Driving Term:**
 
   $$
   2\varepsilon\,\tilde{p}_q \to 2\varepsilon\,(i\,x_q) = 2i\,\varepsilon\,x_q.

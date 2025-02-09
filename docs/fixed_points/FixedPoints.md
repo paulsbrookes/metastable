@@ -4,7 +4,7 @@ In this section we explain how to map and characterise the fixed points of the a
 - Find the fixed points of the classical equations of motion derived from the auxiliary Hamiltonian.
 - Classify the stability of these fixed points by linearising the classical equations of motion around them using the Jacobian.
 
-After these steps have been completed will need to move back to the full equations of motion including the quantum fields. This will be dealt with in the next section.
+After these steps have been completed, we will need to move back to the full equations of motion including the quantum fields. This will be dealt with in the next section.
 
 ---
 
@@ -30,7 +30,7 @@ $$
 H(x_c,p_c,x_q,p_q)=\; & \Biggl(\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_q^2\bigr)\Biggr)(p_c\,x_q - x_c\,p_q)\\[1mm]
 &\quad - \kappa\,(x_c\,x_q+p_c\,p_q)
 +\kappa\,(x_q^2+p_q^2)
-+2\varepsilon\,x_q.
++2\epsilon\,x_q.
 \end{aligned}
 $$
 
@@ -61,7 +61,7 @@ This gives us the classical equations of motion:
 
 $$
 \begin{aligned}
-\dot{x}_c &= \frac{\chi}{2}p_c(p_c^2 + x_c^2) + \delta p_c + 2\varepsilon - \kappa x_c, \\
+\dot{x}_c &= \frac{\chi}{2}p_c(p_c^2 + x_c^2) + \delta p_c + 2\epsilon - \kappa x_c, \\
 \dot{p}_c &= -\frac{\chi}{2}x_c(p_c^2 + x_c^2) - \delta x_c - \kappa p_c.
 \end{aligned}
 $$
@@ -74,7 +74,7 @@ At first we can simplify the problem significantly by setting $\kappa = 0$. When
 
 $$
 \begin{aligned}
-p_c\left(\delta + \frac{\chi}{2}(x_c^2+p_c^2)\right) + 2\varepsilon &= 0,\\[1mm]
+p_c\left(\delta + \frac{\chi}{2}(x_c^2+p_c^2)\right) + 2\epsilon &= 0,\\[1mm]
 -x_c\left(\delta + \frac{\chi}{2}(x_c^2+p_c^2)\right) &= 0.
 \end{aligned}
 $$
@@ -82,7 +82,7 @@ $$
 From the second equation we can see that either $x_c = 0$ or $\delta + \frac{\chi}{2}(x_c^2+p_c^2) = 0$, but to solve both equations simultaneously we require $x_c = 0$. Substituting this into the first equation gives us a cubic equation for $p_c$:
 
 $$
-\frac{\chi}{2}p_c^3 + \delta p_c + 2\varepsilon = 0.
+\frac{\chi}{2}p_c^3 + \delta p_c + 2\epsilon = 0.
 $$
 
 This cubic equation can be reliably solved either analytically or numerically. In our implementation we use NumPy's `roots` function [2], which finds the roots by computing eigenvalues of the companion matrix of the polynomial. This method is both efficient and numerically stable, able to find all roots simultaneously without requiring initial guesses.
@@ -94,7 +94,7 @@ $$
 a &= \chi / 2, \\
 b &= 0, \\
 c &= \delta, \\
-d &= 2\varepsilon.
+d &= 2\epsilon.
 \end{aligned}
 $$
 
@@ -103,7 +103,7 @@ For this cubic equation, the discriminant $\Delta$ determines the number of real
 $$
 \begin{aligned}
 \Delta &= 18abcd - 4b^3d + b^2c^2 - 4ac^3 - 27a^2d^2 \\
-      &= -2\chi\delta^3 - 27\chi^2\varepsilon^2.
+      &= -2\chi\delta^3 - 27\chi^2\epsilon^2.
 \end{aligned}
 $$
 
@@ -111,38 +111,38 @@ When $\Delta > 0$ there are three distinct real roots, and when $\Delta < 0$ the
 
 ### 2.3. Stability Analysis
 
-## Linearization Around a Fixed Point
+The stability of a fixed point can be determined by linearising the equations of motion around the fixed point. Let
 
-Let
 $$
 \mathbf{z}_c(t) \;=\; \mathbf{z}_{c,0} \;+\; \Delta \mathbf{z}_c(t),
 $$
-where $\mathbf{z}_{c,0}$ is a fixed point satisfying $\dot{\mathbf{z}}_c(\mathbf{z}_{c,0}) = 0$.
 
-To first order in $\Delta \mathbf{z}_c(t)$, the linearized equations of motion take the form
+where $\mathbf{z}_{c,0}$ is a fixed point. To first order in $\Delta \mathbf{z}_c(t)$, the linearized equations of motion take the form
+
 $$
 \frac{d}{dt}\,\Delta \mathbf{z}_c(t)
 \;=\;
 J\bigl(\mathbf{z}_{c,0}\bigr)\,\Delta \mathbf{z}_c(t),
 $$
-where $J(\mathbf{z}_{c,0})$ is the Jacobian evaluated at the fixed point $\mathbf{z}_{c,0}$.  For classical Hamiltonian dynamics $H_\mathrm{cl}(x_c,p_c)$, the Jacobian is
+
+where $J(\mathbf{z}\_{c,0})$ is the Jacobian evaluated at $\mathbf{z}\_{c,0}$. For classical Hamiltonian dynamics $H_\mathrm{cl}(x_c,p_c)$ = $H(x_c,p_c,0,0)$ the Jacobian is
+
 $$
 J(\mathbf{z}_{c,0})
 \;=\;
 \begin{pmatrix}
-\displaystyle
-\frac{\partial^2 H_\mathrm{cl}}{\partial p_c \,\partial x_c}
+\displaystyle \frac{\partial^2 H_\mathrm{cl}}{\partial p_c \,\partial x_c}
 &
 \quad
-\frac{\partial^2 H_\mathrm{cl}}{\partial p_c^2}
+\displaystyle \frac{\partial^2 H_\mathrm{cl}}{\partial p_c^2}
 \\[10pt]
-\displaystyle
--\,\frac{\partial^2 H_\mathrm{cl}}{\partial x_c^2}
+\displaystyle -\,\frac{\partial^2 H_\mathrm{cl}}{\partial x_c^2}
 &
 \quad
--\,\frac{\partial^2 H_\mathrm{cl}}{\partial x_c \,\partial p_c}
+\displaystyle -\,\frac{\partial^2 H_\mathrm{cl}}{\partial x_c \,\partial p_c}
 \end{pmatrix}_{\mathbf{z}_{c,0}}.
 $$
+
 
 The stability of a fixed point is determined by the eigenvalues of the Jacobian matrix evaluated at that point. For the classical equations of motion, the Jacobian will have two eigenvalues $\lambda_1$ and $\lambda_2$ and the stability classification depends on the real parts of these eigenvalues:
 
@@ -170,7 +170,7 @@ In our case we use the SciPy implementation of Powell's hybrid method `scipy.opt
 
 ### 3.2. The `generate_fixed_point_map` Function
 
-Bringing together the zero damping solution with method of numerical continuation, we have written the `metastable.generate_fixed_point_map` function, which creates a map of the fixed points across a two-dimensional parameter space of $\epsilon$ and $\kappa$, starting from zero damping.
+Bringing together the zero damping solution and the method of numerical continuation, we have written the `metastable.generate_fixed_point_map` function, which creates a map of the fixed points across a two-dimensional parameter space of $\epsilon$ and $\kappa$, starting from zero damping.
 
 **Initialisation**:
 

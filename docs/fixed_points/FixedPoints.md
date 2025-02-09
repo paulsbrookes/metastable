@@ -1,8 +1,8 @@
-# Fixed Points of the Auxiliary Hamiltonian
+# Fixed Points of the Classical Equations of Motion
 
-In this section we explain how to map and characterise the fixed points of the auxiliary Hamiltonian. Recall that our overall goal is to study the switching dynamics of the driven–dissipative Kerr oscillator, and we wish to do this by finding the switching trajectories in the phase space of the auxiliary Hamiltonian. In order to do this we must:
+Recall that our overall goal is to study the switching dynamics of the driven–dissipative Kerr oscillator, and we wish to do this by finding the switching trajectories in the phase space of the auxiliary Hamiltonian. In order to do this we must:
 - Find the fixed points of the classical equations of motion derived from the auxiliary Hamiltonian.
-- Classify the stability of these fixed points by linearising the classical equations of motion around them using the Jacobian.
+- Classify the stability of these fixed points by linearising the equations of motion around them using the Jacobian.
 
 After these steps have been completed, we will need to move back to the full equations of motion including the quantum fields. This will be dealt with in the next section.
 

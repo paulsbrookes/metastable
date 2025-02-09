@@ -36,12 +36,12 @@ $$
 The equations of motion are then given by
 
 $$
-\begin{align}
+\begin{aligned}
 \dot{x}_c =& \delta p_c + 2 \epsilon + 2 \kappa x_q - \kappa x_c + \frac{1}{2} \chi (p_c^3 - 3 p_c x_q^2 + p_c x_c^2 - p_c p_q^2 +2 x_q x_c p_q) \\
 \dot{p}_c =& - \delta x_c - \kappa (p_c - 2 p_q)- \frac{1}{2} \chi (p_c^2 x_c + 2 p_c x_q p_q - x_q^2 x_c + x_c^3 - 3 x_c p_q^2) \\
 \dot{x}_q =& \frac{1}{2} \chi (p_q p_c^2 - p_q^3 + 3 p_q x_c^2 - p_q x_q^2 - x_c p_c x_q) + \delta p_q + \kappa x_q \\
 \dot{p}_q =& \frac{1}{2} \chi (2 p_q p_c x_c + x_q p_q^2 + x_q^3 - x_q x_c^2 - 3 p_c^2 x_q) - \delta x_q + \kappa p_q
-\end{align}
+\end{aligned}
 $$
 
 ---
@@ -110,8 +110,50 @@ When $\Delta > 0$ there are three distinct real roots, and when $\Delta < 0$ the
 
 ---
 
+## 3. Mapping the Fixed Points
+
+### 3.1 Numerical Continuation to Non-Zero Damping
+
+We now have a method for finding the fixed points at zero damping. But to proceed we need to extend this to the general case. We can do this by using the method of numerical continuation. Given a solution at zero damping, we can use it as an initial guess to find the solution for a small but non-zero damping rate using an appropriate root-finding algorithm.
+
+In our case we use the SciPy implementation of Powell's hybrid method `scipy.optimize.root` with `method='hybr'` [3], which is based on a modified Powell hybrid algorithm. This suits our problem well because it works even in the multi-dimensional case, and has good convergence properties even when the initial guess is far from the solution.
+
+### 3.2. The `generate_fixed_point_map` Function
+
+Bringing together the zero damping solution with method of numerical continuation, we have written the `metastable.generate_fixed_point_map` function, which creates a map of the fixed points across a two-dimensional parameter space of $\epsilon$ and $\kappa$, starting from zero damping.
+
+**Initialisation**:
+
+To initialise the problem we first fix values of $\delta$ and $\chi$. We then create an empty map of fixed points over a grid of $(\epsilon, \kappa)$ values. This grid ranges from $(0,0)$ to $(\epsilon_{\text{max}}, \kappa_{\text{max}})$ and uses $N_\epsilon \times N_\kappa$ points for resolution.
+
+**Algorithm Steps**:
+1. First we find the fixed points at zero damping ($\kappa=0$) and zero drive strength ($\epsilon=0$) using the analytical solution of the cubic equation for $p_c$ above.
+2. We then add these initial solutions to the map.
+3. Next we employ numerical continuation to extend the known solutions to neighbouring points in parameter space.
+4. We repeat step 3 until the entire parameter space has been covered.
+
+Here's an example usage that explores a region where the system exhibits bistability:
+
+```python
+from metastable.generate_fixed_point_map import generate_fixed_point_map, FixedPointMap
+
+map: FixedPointMap = generate_fixed_point_map(
+    epsilon_max=30.0,    # Maximum drive strength
+    kappa_max=5.0,       # Maximum damping rate
+    epsilon_points=61,   # Number of points along ε axis
+    kappa_points=41,     # Number of points along κ axis
+    delta=7.8,           # Detuning parameter
+    chi=-0.1,            # Nonlinearity parameter
+    max_workers=20       # Number of parallel processes
+)
+```
+
+The function returns a `FixedPointMap` object containing the fixed points and their stability information across the parameter space. This map is crucial for understanding the bistable regime of the system and locating the switching trajectories between stable states.
+
 ## References
 
 [1] "Derivation of the Auxiliary Hamiltonian from the Keldysh Lagrangian", see [KeldyshAuxiliaryHamiltonian.md](../derivation/KeldyshAuxiliaryHamiltonian.md).
 
 [2] "NumPy roots function documentation", see [numpy.org/doc/2.2/reference/generated/numpy.roots.html](https://numpy.org/doc/2.2/reference/generated/numpy.roots.html).
+
+[3] "SciPy Powell's Hybrid Method Documentation", see [scipy.optimize.root-hybr](https://docs.scipy.org/doc/scipy/reference/optimize.root-hybr.html). This method combines the advantages of quasi-Newton methods and modified Powell updates for solving nonlinear systems of equations.

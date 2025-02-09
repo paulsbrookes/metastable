@@ -8,6 +8,7 @@ This repository contains research and documentation on the study of switching dy
 2. [Keldysh Lagrangian](derivation/KeldyshLagrangian.md) - Development of the Keldysh field theory approach
 3. [Auxiliary Hamiltonian](derivation/KeldyshAuxiliaryHamiltonian.md) - Analysis of the auxiliary Hamiltonian system
 4. [Original Equations of Motion](derivation/OriginalEom.md) - Derivation and analysis of the system's equations of motion
+5. [Fixed Points](fixed_points/FixedPoints.md) - Analysis of the fixed points of the auxiliary Hamiltonian
 
 ## About
 

@@ -16,9 +16,9 @@ class FixedPointType(Enum):
         the mapping of the fixed points.
     """
 
-    SADDLE = 0
+    DIM = 0
     BRIGHT = 1
-    DIM = 2
+    SADDLE = 2
 
 
 class PathType(Enum):
@@ -232,7 +232,7 @@ class FixedPointMap:
             kappa_idx: Index in the kappa dimension
             seed_fixed_points: Array of shape (3, 2) containing the (x, p) coordinates
                 for all three fixed points
-                
+
         """
         seed_fixed_points = np.zeros((3, 2))
         seed_fixed_points[FixedPointType.SADDLE.value] = saddle_fixed_point

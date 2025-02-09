@@ -133,20 +133,22 @@ To initialise the problem we first fix values of $\delta$ and $\chi$. We then cr
 3. Next we employ numerical continuation to extend the known solutions to neighbouring points in parameter space.
 4. We repeat step 3 until the entire parameter space has been covered.
 
-Here's an example usage that explores a region where the system exhibits bistability:
+Here's an example usage that explores a region where the system exhibits bistability, which you can download from [generate_map.py](examples/generate_map.py):
 
 ```python
 from metastable.generate_fixed_point_map import generate_fixed_point_map, FixedPointMap
 
 map: FixedPointMap = generate_fixed_point_map(
-    epsilon_max=30.0,    # Maximum drive strength
-    kappa_max=5.0,       # Maximum damping rate
-    epsilon_points=61,   # Number of points along ε axis
-    kappa_points=41,     # Number of points along κ axis
-    delta=7.8,           # Detuning parameter
-    chi=-0.1,            # Nonlinearity parameter
-    max_workers=20       # Number of parallel processes
+    epsilon_max=30.0,     # Maximum drive strength
+    kappa_max=5.0,        # Maximum damping rate
+    epsilon_points=601,    # Number of points along ε axis
+    kappa_points=401,      # Number of points along κ axis
+    delta=7.8,            # Detuning parameter
+    chi=-0.1,             # Nonlinearity parameter
+    max_workers=20        # Number of parallel processes
 )
+
+map.save(Path("map.npz")) # Save the map to a file for future use
 ```
 
 The `FixedPointMap` returned by this function will contain the fixed points across the entire parameter space being studied, which we can now visualise. For example, if we wish to plot the occupation of the oscillator as a function of the drive strength and damping rate, we take
@@ -161,6 +163,24 @@ $$
 n = \frac{x_c^2 + p_c^2}{2}
 $$
 
+Now if we process the map saved above with [visualise_occupations.py](examples/visualise_occupations.py) we get the following plot:
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 600px; margin: 0 auto;">
+    <iframe src="examples/occupations.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](examples/occupations.html)
+
+We see three distinct regions in the parameter space, corresponding to the three possible fixed points of the system:
+
+1. **Dim State**: Shows low occupation numbers (dark blue), representing the lower stable fixed point of the system.
+2. **Bright State**: Exhibits high occupation numbers (yellow/orange), representing the upper stable fixed point.
+3. **Saddle Point**: Displays intermediate occupation numbers (purple/pink), representing the unstable fixed point that separates the two stable states.
+
+The bistable region is where all three fixed points coexist. This region is bounded by bifurcation lines where stable and unstable fixed points merge and disappear (saddle-node bifurcations).
 
 ## References
 
@@ -172,11 +192,3 @@ $$
 
 ## Interactive Visualization
 
-<div class="plotly-container" style="position: relative; width: 100%; height: 600px; margin: 0 auto;">
-    <iframe src="examples/occupations.html" 
-            style="position: absolute; width: 100%; height: 100%; border: none;"
-            allowfullscreen>
-    </iframe>
-</div>
-
-[Open visualization in new window](fixed_points_l2_norms.html)

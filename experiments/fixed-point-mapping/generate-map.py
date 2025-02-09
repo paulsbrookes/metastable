@@ -4,7 +4,7 @@ import numpy as np
 
 from metastable.zero_damping import solve_zero_damping
 from metastable.map.map import PhaseSpaceMap
-from metastable.extend_map import extend_map
+from metastable.extend_map import fill_map
 
 
 seed_map = PhaseSpaceMap(
@@ -37,6 +37,6 @@ seed_map.update_map(
 )
 
 
-fixed_points_map = extend_map(seed_map)
+fixed_points_map = fill_map(seed_map)
 
 fixed_points_map.save_state(file_path="map-601x401.npz")

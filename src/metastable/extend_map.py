@@ -59,9 +59,8 @@ def _extend_map(
             new_fixed_points=new_fixed_points,
         )
 
-def extend_map(seeded_map: PhaseSpaceMap, max_workers: int = 20) -> PhaseSpaceMap:
-    """Completes a map of fixed points using numeric continuation from an initial map 
-    containing at least one seed solution. The seed solution should be inside the 
+def fill_map(seeded_map: PhaseSpaceMap, max_workers: int = 20) -> PhaseSpaceMap:
+    """Completes a map of fixed points using numeric continuation from an initial seed solution. The seed solution should be inside the 
     bistable regime and should contain all three fixed points in order for numeric 
     continuation to find all fixed points throughout the parameter space.
     

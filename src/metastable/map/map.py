@@ -70,6 +70,14 @@ class PhaseSpaceMap:
         self.fixed_points[epsilon_idx, kappa_idx] = new_fixed_points
         self.checked_points[epsilon_idx, kappa_idx] = True
 
+    def add_seed(self, epsilon_idx: int, kappa_idx: int, seed_fixed_points: NDArray):
+        """
+        Add a seed solution to the map.
+        """
+        assert True
+        self.update_map(epsilon_idx, kappa_idx, seed_fixed_points)
+
+
     def save_state(self, file_path: Union[str, Path]):
         np.savez(
             file_path,

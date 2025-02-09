@@ -12,7 +12,7 @@ def generate_seed_points(
     delta: float,
     chi: float,
 ) -> FixedPointsClassification:
-    
+
     kappa = 0.0
 
     # Generate seed solutions

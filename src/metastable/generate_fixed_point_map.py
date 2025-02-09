@@ -10,32 +10,33 @@ from metastable.generate_seed_points import generate_seed_points
 def calculate_max_epsilon_bistable(delta: float, chi: float) -> float:
     """
     Calculate the maximum epsilon value in the bistable regime at kappa = 0.
-    
+
     Args:
         delta: Detuning parameter
         chi: Nonlinearity parameter
-        
+
     Returns:
         float: Maximum epsilon value in the bistable regime
     """
     return np.sqrt(-2 * delta**3 / (27 * chi))
 
 
-
-def choose_seed_point_location(epsilon_linspace: np.ndarray, kappa_linspace: np.ndarray, 
-                             delta: float, chi: float) -> Tuple[int, int]:
+def choose_seed_point_location(
+    epsilon_linspace: np.ndarray, kappa_linspace: np.ndarray, delta: float, chi: float
+) -> Tuple[int, int]:
     """
-    Choose the location of the seed point in the parameter space.
-    
+    Choose the location of the seed point in the parameter space. Aims to find a point 
+    with zero damping and with a drive strength which places the system far from bifurcations.
+
     Args:
         epsilon_linspace: Array of epsilon values
         kappa_linspace: Array of kappa values
         delta: Detuning parameter
         chi: Nonlinearity parameter
-        
+
     Returns:
         Tuple[int, int]: The (epsilon_idx, kappa_idx) location for the seed point
-        
+
     Raises:
         ValueError: If kappa = 0 point cannot be found in kappa_linspace
     """
@@ -47,11 +48,11 @@ def choose_seed_point_location(epsilon_linspace: np.ndarray, kappa_linspace: np.
 
     # Calculate maximum epsilon in bistable regime at kappa = 0
     max_epsilon_bistable = calculate_max_epsilon_bistable(delta, chi)
-    
+
     # Find epsilon_idx closest to half the maximum bistable epsilon
     target_epsilon = max_epsilon_bistable / 2
     epsilon_idx = np.abs(epsilon_linspace - target_epsilon).argmin()
-    
+
     return epsilon_idx, kappa_idx
 
 
@@ -68,7 +69,7 @@ def generate_fixed_point_map(
     Generate a complete fixed point map starting from zero damping.
 
     The initial seed points are generated at kappa = 0 (zero damping) and finite epsilon,
-    as this is where analytical solutions exist. These seed points are then used as 
+    as this is where analytical solutions exist. These seed points are then used as
     starting points to numerically extend the map across the full parameter space.
 
     Args:

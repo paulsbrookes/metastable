@@ -9,17 +9,17 @@ from metastable.eom import EOM
 @dataclass
 class FixedPointsClassification:
     saddle: Tuple[float, float]  # Unstable fixed point (saddle)
-    dim: Tuple[float, float]     # Low-amplitude stable fixed point
+    dim: Tuple[float, float]  # Low-amplitude stable fixed point
     bright: Tuple[float, float]  # High-amplitude stable fixed point
 
 
 def is_stable(fixed_point: Tuple[float, float], eom: EOM) -> bool:
     """Determine if a fixed point is stable based on its Jacobian eigenvalues.
-    
+
     Args:
         fixed_point: The fixed point coordinates (xc, pc)
         eom: Equations of motion instance
-        
+
     Returns:
         bool: True if the fixed point is stable (no positive real eigenvalues)
     """
@@ -34,15 +34,15 @@ def classify_fixed_points(
     """
     Classify a list of fixed points into saddle (unstable), dim (low amplitude stable)
     and bright (high amplitude stable) states in the bistable regime.
-    
+
     Args:
         fixed_points: List of exactly three tuples representing fixed points to be classified (xc, pc).
         eom: An EOM instance.
-    
+
     Returns:
         FixedPointsClassification: A dataclass containing the classified fixed points
             with fields 'saddle', 'dim', and 'bright'.
-        
+
     Notes:
         - Requires exactly three fixed points (bistable regime)
         - None of the fixed points can be None
@@ -54,7 +54,9 @@ def classify_fixed_points(
     """
 
     if not fixed_points or len(fixed_points) != 3:
-        raise ValueError("Exactly three fixed points must be provided (bistable regime)")
+        raise ValueError(
+            "Exactly three fixed points must be provided (bistable regime)"
+        )
 
     if any(fp is None for fp in fixed_points):
         raise ValueError("None of the fixed points can be None")
@@ -66,7 +68,7 @@ def classify_fixed_points(
 
     saddle = None
     stable_points = []
-    
+
     for fp in fixed_points:
         if is_stable(fp, eom):
             stable_points.append(fp)
@@ -76,9 +78,13 @@ def classify_fixed_points(
             saddle = fp
 
     if len(stable_points) != 2:
-        raise ValueError(f"Found {len(stable_points)} stable fixed points, but expected exactly 2 in bistable regime")
+        raise ValueError(
+            f"Found {len(stable_points)} stable fixed points, but expected exactly 2 in bistable regime"
+        )
 
     # Sort stable points by amplitude |p|
     stable_points.sort(key=lambda point: abs(point[1]))
-    
-    return FixedPointsClassification(saddle=saddle, dim=stable_points[0], bright=stable_points[1])
+
+    return FixedPointsClassification(
+        saddle=saddle, dim=stable_points[0], bright=stable_points[1]
+    )

@@ -7,6 +7,7 @@ from dataclasses import dataclass
 @dataclass
 class ClassifiedSeedPoints:
     """Container for classified seed points."""
+
     dim: complex
     bright: complex
     saddle: complex
@@ -53,4 +54,4 @@ def generate_seed_points(
         dim=classified_points.dim,
         bright=classified_points.bright,
         saddle=classified_points.saddle,
-    ) 
+    )

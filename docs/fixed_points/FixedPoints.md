@@ -109,6 +109,10 @@ $$
 
 When $\Delta > 0$ there are three distinct real roots, and when $\Delta < 0$ there is one real root and two complex conjugate roots. Meanwhile when $\Delta = 0$ all three roots are real and at least two of them are equal. The physical solutions correspond only to real roots and when there are three real roots we are in the bistable regime, in which we can expect to find two stable fixed points and one unstable one.
 
+### 2.3. Stability Analysis
+
+
+
 ---
 
 ## 3. Mapping the Fixed Points
@@ -128,9 +132,9 @@ Bringing together the zero damping solution with method of numerical continuatio
 To initialise the problem we first fix values of $\delta$ and $\chi$. We then create an empty map of fixed points over a grid of $(\epsilon, \kappa)$ values. This grid ranges from $(0,0)$ to $(\epsilon_{\text{max}}, \kappa_{\text{max}})$ and uses $N_\epsilon \times N_\kappa$ points for resolution.
 
 **Algorithm Steps**:
-1. First we find the fixed points at zero damping ($\kappa=0$) and zero drive strength ($\epsilon=0$) using the analytical solution of the cubic equation for $p_c$ above.
+1. First we [find all three fixed points at zero damping](https://github.com/paulsbrookes/metastable/blob/d37e1c1a32d7eb25d01ae4ad7505b8497070639f/src/metastable/generate_fixed_point_map.py#L54-L58) ($\kappa=0$) and a small but finite drive strength ($\epsilon>0$) using the analytical solution of the cubic equation for $p_c$ above .
 2. We then add these initial solutions to the map.
-3. Next we employ numerical continuation to extend the known solutions to neighbouring points in parameter space.
+3. We employ numerical continuation to extend the known solutions to neighbouring points in parameter space.
 4. We repeat step 3 until the entire parameter space has been covered.
 
 Here's an example usage that explores a region where the system exhibits bistability, which you can download from [generate_map.py](examples/generate_map.py):
@@ -141,8 +145,8 @@ from metastable.generate_fixed_point_map import generate_fixed_point_map, FixedP
 map: FixedPointMap = generate_fixed_point_map(
     epsilon_max=30.0,     # Maximum drive strength
     kappa_max=5.0,        # Maximum damping rate
-    epsilon_points=601,    # Number of points along ε axis
-    kappa_points=401,      # Number of points along κ axis
+    epsilon_points=601,   # Number of points along ε axis
+    kappa_points=401,     # Number of points along κ axis
     delta=7.8,            # Detuning parameter
     chi=-0.1,             # Nonlinearity parameter
     max_workers=20        # Number of parallel processes

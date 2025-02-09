@@ -49,7 +49,7 @@ def generate_fixed_point_map(
     kappa_idx = 0
 
     # To avoid bifurcation points and allow determination of stability, start at finite epsilon
-    epsilon_idx = 1
+    epsilon_idx = 100
 
     seed_points = generate_seed_points(
         epsilon=seed_map.epsilon_linspace[epsilon_idx],

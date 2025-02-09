@@ -10,8 +10,8 @@ if __name__ == "__main__":
     map: FixedPointMap = generate_fixed_point_map(
         epsilon_max=30.0,
         kappa_max=5.0,
-        epsilon_points=121,
-        kappa_points=81,
+        epsilon_points=241,
+        kappa_points=161,
         delta=7.8,
         chi=-0.1,
         max_workers=20,

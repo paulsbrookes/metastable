@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from metastable.map.map import PhaseSpaceMap
+from metastable.map.map import FixedPointMap
 from metastable.rescaled import (
     calculate_kappa_rescaled,
     calculate_beta_limits,
@@ -26,7 +26,7 @@ fig.subplots_adjust(hspace=0.05)  # Reduce space between subplots
 
 # Upper row: Epsilon limits plot
 map_path = "/home/paul/Projects/keldysh/metastable/experiments/backup-map/map-601x401-bright-to-saddle.npz"
-fixed_point_map = PhaseSpaceMap.load(map_path)
+fixed_point_map = FixedPointMap.load(map_path)
 
 kappa_rescaled_linspace = calculate_kappa_rescaled(
     fixed_point_map.kappa_linspace, delta=fixed_point_map.delta

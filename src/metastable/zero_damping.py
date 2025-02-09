@@ -6,25 +6,25 @@ def solve_zero_damping(
     epsilon: float, delta: float, chi: float
 ) -> List[Tuple[float, float]]:
     """Solves for the steady-state solutions of a system with zero damping.
-    
+
     This function finds the equilibrium points (xₒ, pₒ) of a system by solving a cubic equation
     for pₒ. The function verifies the number of real roots matches theoretical expectations
     based on the discriminant of the cubic equation.
-    
+
     Args:
         epsilon (float): Parameter affecting the constant term in the cubic equation
         delta (float): Parameter affecting the linear term in the cubic equation
         chi (float): Parameter affecting the cubic term coefficient
-        
+
     Returns:
         List[Tuple[float, float]]: A list of (xₒ, pₒ) pairs representing steady-state solutions.
             xₒ is always 0.0, and pₒ values are the real roots of the cubic equation.
             Complex solutions are filtered out (represented as None in the output list).
-            
+
     Raises:
         ValueError: If the number of real roots found doesn't match the theoretical expectation
             based on the discriminant.
-            
+
     Notes:
         The function solves the cubic equation: (chi/2)pₒ³ + δpₒ - 2ε = 0
         The discriminant determines whether there are 1 or 3 real roots:

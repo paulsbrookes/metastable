@@ -6,18 +6,15 @@ from tqdm import tqdm
 
 
 from metastable.eom import Params
-from metastable.map.map import PhaseSpaceMap
+from metastable.map.map import FixedPointMap
 from metastable.neighbour_average import neighbour_average
 from metastable.find_boundary import find_boundary
 from metastable.calculate_fixed_points import calculate_fixed_points
 
 
-def _extend_map(
-    fixed_points_map: PhaseSpaceMap,
-    executor: ProcessPoolExecutor
-) -> None:
+def _extend_map(fixed_points_map: FixedPointMap, executor: ProcessPoolExecutor) -> None:
     """Process boundary points to find and update new fixed points.
-    
+
     Args:
         fixed_points_map: The map to update with new fixed points
         executor: ProcessPoolExecutor for parallel processing
@@ -30,7 +27,7 @@ def _extend_map(
         neighbour_average(fixed_points_map.fixed_points, *bi)
         for bi in boundary_indexes_queue
     ]
-    
+
     # Submit all calculations to the executor
     for (epsilon_idx, kappa_idx), guesses in zip(
         boundary_indexes_queue, boundary_guesses_queue
@@ -47,11 +44,9 @@ def _extend_map(
             guesses,
         )
         futures.append(future)
-    
+
     # Process results and update the map
-    for (epsilon_idx, kappa_idx), future in zip(
-        boundary_indexes_queue, futures
-    ):
+    for (epsilon_idx, kappa_idx), future in zip(boundary_indexes_queue, futures):
         new_fixed_points = future.result()
         fixed_points_map.update_map(
             epsilon_idx=epsilon_idx,
@@ -59,11 +54,12 @@ def _extend_map(
             new_fixed_points=new_fixed_points,
         )
 
-def fill_map(seeded_map: PhaseSpaceMap, max_workers: int = 20) -> PhaseSpaceMap:
-    """Completes a map of fixed points using numeric continuation from an initial seed solution. The seed solution should be inside the 
-    bistable regime and should contain all three fixed points in order for numeric 
+
+def fill_map(seeded_map: FixedPointMap, max_workers: int = 20) -> FixedPointMap:
+    """Completes a map of fixed points using numeric continuation from an initial seed solution. The seed solution should be inside the
+    bistable regime and should contain all three fixed points in order for numeric
     continuation to find all fixed points throughout the parameter space.
-    
+
     Extends a phase space map by finding fixed points around its boundaries.
 
     This function implements a numeric continuation approach to extend a seeded phase

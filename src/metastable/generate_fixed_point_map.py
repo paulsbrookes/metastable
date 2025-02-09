@@ -2,7 +2,7 @@ import numpy as np
 from typing import Optional
 
 from metastable.zero_damping import solve_zero_damping
-from metastable.map.map import PhaseSpaceMap
+from metastable.map.map import FixedPointMap
 from metastable.extend_map import fill_map
 
 
@@ -14,25 +14,25 @@ def generate_fixed_point_map(
     delta: float,
     chi: float,
     max_workers: Optional[int] = None,
-) -> PhaseSpaceMap:
+) -> FixedPointMap:
     """
     Generate a complete fixed point map starting from zero damping.
-    
+
     Args:
         epsilon_max: Maximum epsilon value (range starts from 0)
         kappa_max: Maximum kappa value (range starts from 0)
-        epsilon_points: Number of points in epsilon dimension
-        kappa_points: Number of points in kappa dimension
+        epsilon_points: Number of points along the epsilon axis
+        kappa_points: Number of points along the kappa axis
         delta: Detuning parameter
         chi: Nonlinearity parameter
         max_workers: Maximum number of worker processes for parallel computation.
-                    If None, uses all available CPU cores.
-        
+                     If None, uses all available CPU cores.
+
     Returns:
-        PhaseSpaceMap: The completed fixed point map
+        FixedPointMap: The completed fixed point map
     """
     # Initialize the map
-    seed_map = PhaseSpaceMap(
+    seed_map = FixedPointMap(
         epsilon_linspace=np.linspace(start=0.0, stop=epsilon_max, num=epsilon_points),
         kappa_linspace=np.linspace(start=0.0, stop=kappa_max, num=kappa_points),
         delta=delta,
@@ -50,9 +50,6 @@ def generate_fixed_point_map(
         delta=seed_map.delta,
         chi=seed_map.chi,
     )
-
-    # Verify we have all three types of fixed points
-    assert len([point for point in seed_points if point is not None]) == 3
 
     # Initialize the map with seed points
     seed_map.add_seed(

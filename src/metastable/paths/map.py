@@ -208,7 +208,7 @@ def map_switching_paths(
         fixed_point_map.path_results[
             index_pair.epsilon_idx, index_pair.kappa_idx, path_idx
         ] = path_result
-        fixed_point_map.save_state(output_map_path)
+        fixed_point_map.save(output_map_path)
 
         t_guess, y_guess = generate_guess_from_sol(bvp_result=path_result, t_end=t_end)
 

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Final, Union, ClassVar
+from typing import Optional, Final, Union, Tuple
 from numpy.typing import NDArray
 from scipy.integrate._bvp import BVPResult
 from enum import Enum
@@ -218,7 +218,12 @@ class FixedPointMap:
         self._checked_points[epsilon_idx, kappa_idx] = True
 
     def add_seed(
-        self, epsilon_idx: int, kappa_idx: int, seed_fixed_points: NDArray[np.float_]
+        self,
+        epsilon_idx: int,
+        kappa_idx: int,
+        saddle_fixed_point: Tuple[float, float],
+        bright_fixed_point: Tuple[float, float],
+        dim_fixed_point: Tuple[float, float],
     ) -> None:
         """Add a seed solution to the map for a bistable parameter combination.
 
@@ -227,14 +232,15 @@ class FixedPointMap:
             kappa_idx: Index in the kappa dimension
             seed_fixed_points: Array of shape (3, 2) containing the (x, p) coordinates
                 for all three fixed points
-
-        Raises:
-            AssertionError: If the seed doesn't contain exactly three fixed points
+                
         """
-        assert len([point for point in seed_fixed_points if point is not None]) == 3
+        seed_fixed_points = np.zeros((3, 2))
+        seed_fixed_points[FixedPointType.SADDLE.value] = saddle_fixed_point
+        seed_fixed_points[FixedPointType.BRIGHT.value] = bright_fixed_point
+        seed_fixed_points[FixedPointType.DIM.value] = dim_fixed_point
         self.update_map(epsilon_idx, kappa_idx, seed_fixed_points)
 
-    def save_state(self, file_path: Union[str, Path]) -> None:
+    def save(self, file_path: Union[str, Path]) -> None:
         """Save the current state of the map to a NumPy .npz file.
 
         Args:

@@ -1,9 +1,10 @@
 # Fixed Points of the Auxiliary Hamiltonian
 
 In this section we explain how to map and characterise the fixed points of the auxiliary Hamiltonian. Recall that our overall goal is to study the switching dynamics of the driven–dissipative Kerr oscillator, and we wish to do this by finding the switching trajectories in the phase space of the auxiliary Hamiltonian. In order to do this we must:
-1. Find the fixed points of the classical equations of motion derived from the auxiliary Hamiltonian.
-2. Classify the stability of the fixed points by linearising the equations of motion around them using the Jacobian.
-3. Use the fixed points and the eigenvectors of the Jacobian to set the boundary conditions for the switching trajectories.
+- Find the fixed points of the classical equations of motion derived from the auxiliary Hamiltonian.
+- Classify the stability of these fixed points by linearising the classical equations of motion around them using the Jacobian.
+
+After these steps have been completed will need to move back to the full equations of motion including the quantum fields. This will be dealt with in the next section.
 
 ---
 
@@ -148,7 +149,18 @@ map: FixedPointMap = generate_fixed_point_map(
 )
 ```
 
-The function returns a `FixedPointMap` object containing the fixed points and their stability information across the parameter space. This map is crucial for understanding the bistable regime of the system and locating the switching trajectories between stable states.
+The `FixedPointMap` returned by this function will contain the fixed points across the entire parameter space being studied, which we can now visualise. For example, if we wish to plot the occupation of the oscillator as a function of the drive strength and damping rate, we take
+
+$$
+n = \lvert a_c \rvert^2.
+$$
+
+and from [1] we find
+
+$$
+n = \frac{x_c^2 + p_c^2}{2}
+$$
+
 
 ## References
 
@@ -157,3 +169,14 @@ The function returns a `FixedPointMap` object containing the fixed points and th
 [2] "NumPy roots function documentation", see [numpy.org/doc/2.2/reference/generated/numpy.roots.html](https://numpy.org/doc/2.2/reference/generated/numpy.roots.html).
 
 [3] "SciPy Powell's Hybrid Method Documentation", see [scipy.optimize.root-hybr](https://docs.scipy.org/doc/scipy/reference/optimize.root-hybr.html). This method combines the advantages of quasi-Newton methods and modified Powell updates for solving nonlinear systems of equations.
+
+## Interactive Visualization
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 600px; margin: 0 auto;">
+    <iframe src="examples/occupations.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](fixed_points_l2_norms.html)

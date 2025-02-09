@@ -39,4 +39,4 @@ seed_map.update_map(
 
 fixed_points_map = fill_map(seed_map)
 
-fixed_points_map.save_state(file_path="map-601x401.npz")
+fixed_points_map.save(file_path="map-601x401.npz")

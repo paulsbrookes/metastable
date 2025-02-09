@@ -37,16 +37,18 @@ The equations of motion are then given by
 
 $$
 \begin{align}
-\partial_t x_c =& \delta p_c + 2 \epsilon + 2 \kappa x_q - \kappa x_c + \frac{1}{2} \chi (p_c^3 - 3 p_c x_q^2 + p_c x_c^2 - p_c p_q^2 +2 x_q x_c p_q) \\
-\partial_t p_c =& - \delta x_c - \kappa (p_c - 2 p_q)- \frac{1}{2} \chi (p_c^2 x_c + 2 p_c x_q p_q - x_q^2 x_c + x_c^3 - 3 x_c p_q^2) \\
-\partial_t x_q =& \frac{1}{2} \chi (p_q p_c^2 - p_q^3 + 3 p_q x_c^2 - p_q x_q^2 - x_c p_c x_q) + \delta p_q + \kappa x_q \\
-\partial_t p_q =& \frac{1}{2} \chi (2 p_q p_c x_c + x_q p_q^2 + x_q^3 - x_q x_c^2 - 3 p_c^2 x_q) - \delta x_q + \kappa p_q
+\dot{x}_c =& \delta p_c + 2 \epsilon + 2 \kappa x_q - \kappa x_c + \frac{1}{2} \chi (p_c^3 - 3 p_c x_q^2 + p_c x_c^2 - p_c p_q^2 +2 x_q x_c p_q) \\
+\dot{p}_c =& - \delta x_c - \kappa (p_c - 2 p_q)- \frac{1}{2} \chi (p_c^2 x_c + 2 p_c x_q p_q - x_q^2 x_c + x_c^3 - 3 x_c p_q^2) \\
+\dot{x}_q =& \frac{1}{2} \chi (p_q p_c^2 - p_q^3 + 3 p_q x_c^2 - p_q x_q^2 - x_c p_c x_q) + \delta p_q + \kappa x_q \\
+\dot{p}_q =& \frac{1}{2} \chi (2 p_q p_c x_c + x_q p_q^2 + x_q^3 - x_q x_c^2 - 3 p_c^2 x_q) - \delta x_q + \kappa p_q
 \end{align}
 $$
 
 ---
 
 ## 2. Fixed Point Conditions
+
+### 2.1. General Case
 
 The metastable states of the system correspond to the fixed points of the classical dynamics. To obtain them we now set the quantum fields to zero:
 
@@ -65,6 +67,8 @@ $$
 
 If we now set $\dot{x}_c = \dot{p}_c = 0$ we get coupled cubic equations for $x_c$ and $p_c$. Solving these is a non-trivial task. In general we may not know how many real solutions exist and even if we do, it is not clear how to find them. Root-finding algorithms can be used to find the solutions, but they may fail to converge to all the desired solutions, especially if the solutions are close to each other such as at a saddle-node bifurcation, or if we don't start from a good initial guess.
 
+
+### 2.2. Zero Damping
 At first we can simplify the problem significantly by setting $\kappa = 0$. When $\kappa = 0$, the fixed point conditions become:
 
 $$
@@ -80,24 +84,34 @@ $$
 \frac{\chi}{2}p_c^3 + \delta p_c + 2\varepsilon = 0.
 $$
 
+This cubic equation can be reliably solved either analytically or numerically. In our implementation we use NumPy's `roots` function [2], which finds the roots by computing eigenvalues of the companion matrix of the polynomial. This method is both efficient and numerically stable, able to find all roots simultaneously without requiring initial guesses.
 
----
-
-## 3. Summary
-
-By starting from the auxiliary Hamiltonian derived via a deformation of the quantum fields in the Keldysh formalism, we have obtained the fixed point conditions for the classical dynamics:
+The coefficients of the cubic equation in standard form $ax^3 + bx^2 + cx + d = 0$ are:
 
 $$
 \begin{aligned}
-p_c\left(\delta + \frac{\chi}{2}(x_c^2+p_c^2)\right) - \kappa\,x_c + 2\varepsilon &= 0,\\[1mm]
--x_c\left(\delta + \frac{\chi}{2}(x_c^2+p_c^2)\right) - \kappa\,p_c &= 0.
+a &= \chi / 2, \\
+b &= 0, \\
+c &= \delta, \\
+d &= 2\varepsilon.
 \end{aligned}
 $$
 
-These equations serve as the starting point for further investigations into metastability and switching phenomena in driven–dissipative Kerr oscillators.
+For this cubic equation, the discriminant $\Delta$ determines the number of real roots:
+
+$$
+\begin{aligned}
+\Delta &= 18abcd - 4b^3d + b^2c^2 - 4ac^3 - 27a^2d^2 \\
+      &= -2\chi\delta^3 - 27\chi^2\varepsilon^2.
+\end{aligned}
+$$
+
+When $\Delta > 0$ there are three distinct real roots, and when $\Delta \leq 0$ there is one real root and two complex conjugate roots. The physical solutions correspond only to the real roots, as $p_c$ must be real-valued. When there are three real roots we are in the bistable regime and we can expect to find two stable fixed points and one unstable one.
 
 ---
 
 ## References
 
 [1] "Derivation of the Auxiliary Hamiltonian from the Keldysh Lagrangian", see [KeldyshAuxiliaryHamiltonian.md](../derivation/KeldyshAuxiliaryHamiltonian.md).
+
+[2] "NumPy roots function documentation", see [numpy.org/doc/2.2/reference/generated/numpy.roots.html](https://numpy.org/doc/2.2/reference/generated/numpy.roots.html).

@@ -111,7 +111,52 @@ When $\Delta > 0$ there are three distinct real roots, and when $\Delta < 0$ the
 
 ### 2.3. Stability Analysis
 
+## Linearization Around a Fixed Point
 
+Let
+$$
+\mathbf{z}_c(t) \;=\; \mathbf{z}_{c,0} \;+\; \Delta \mathbf{z}_c(t),
+$$
+where $\mathbf{z}_{c,0}$ is a fixed point satisfying $\dot{\mathbf{z}}_c(\mathbf{z}_{c,0}) = 0$.
+
+To first order in $\Delta \mathbf{z}_c(t)$, the linearized equations of motion take the form
+$$
+\frac{d}{dt}\,\Delta \mathbf{z}_c(t)
+\;=\;
+J\bigl(\mathbf{z}_{c,0}\bigr)\,\Delta \mathbf{z}_c(t),
+$$
+where $J(\mathbf{z}_{c,0})$ is the Jacobian evaluated at the fixed point $\mathbf{z}_{c,0}$.  For classical Hamiltonian dynamics $H_\mathrm{cl}(x_c,p_c)$, the Jacobian is
+$$
+J(\mathbf{z}_{c,0})
+\;=\;
+\begin{pmatrix}
+\displaystyle
+\frac{\partial^2 H_\mathrm{cl}}{\partial p_c \,\partial x_c}
+&
+\quad
+\frac{\partial^2 H_\mathrm{cl}}{\partial p_c^2}
+\\[10pt]
+\displaystyle
+-\,\frac{\partial^2 H_\mathrm{cl}}{\partial x_c^2}
+&
+\quad
+-\,\frac{\partial^2 H_\mathrm{cl}}{\partial x_c \,\partial p_c}
+\end{pmatrix}_{\mathbf{z}_{c,0}}.
+$$
+
+The stability of a fixed point is determined by the eigenvalues of the Jacobian matrix evaluated at that point. For the classical equations of motion, the Jacobian will have two eigenvalues $\lambda_1$ and $\lambda_2$ and the stability classification depends on the real parts of these eigenvalues:
+
+- If both eigenvalues have negative real parts ($\Re(\lambda_1), \Re(\lambda_2) < 0$), the fixed point is **stable**. Small perturbations away from this point will decay back to the fixed point.
+
+- If both eigenvalues have positive real parts ($\Re(\lambda_1), \Re(\lambda_2) > 0$), the fixed point is **unstable**. Any perturbation will cause the system to move away from this point.
+
+- If one eigenvalue has a positive real part and one has a negative real part ($\Re(\lambda_1) > 0$ and $\Re(\lambda_2) < 0$, or vice versa), the fixed point is a **saddle point**. The system will be attracted to the fixed point along one direction (the stable manifold) but repelled along another direction (the unstable manifold).
+
+In our system, when we are in the bistable regime, we typically find:
+- Two stable fixed points: the dim state (low amplitude) and bright state (high amplitude)
+- One saddle point: an unstable fixed point that lies between the dim and bright states
+
+This classification can be implemented numerically by computing the eigenvalues of the Jacobian matrix at each fixed point. This procedure is used to classify fixed points in the `metastable.classify_fixed_points` module [here](https://github.com/paulsbrookes/metastable/blob/feat/tidy-and-document-instanton-method/src/metastable/classify_fixed_points.py).
 
 ---
 

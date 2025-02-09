@@ -238,6 +238,3 @@ The bistable region is where all three fixed points coexist. This region is boun
 [2] "NumPy roots function documentation", see [numpy.org/doc/2.2/reference/generated/numpy.roots.html](https://numpy.org/doc/2.2/reference/generated/numpy.roots.html).
 
 [3] "SciPy Powell's Hybrid Method Documentation", see [scipy.optimize.root-hybr](https://docs.scipy.org/doc/scipy/reference/optimize.root-hybr.html). This method combines the advantages of quasi-Newton methods and modified Powell updates for solving nonlinear systems of equations.
-
-## Interactive Visualization
-

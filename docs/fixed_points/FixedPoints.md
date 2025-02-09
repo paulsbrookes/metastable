@@ -106,7 +106,7 @@ $$
 \end{aligned}
 $$
 
-When $\Delta > 0$ there are three distinct real roots, and when $\Delta \leq 0$ there is one real root and two complex conjugate roots. The physical solutions correspond only to the real roots, as $p_c$ must be real-valued. When there are three real roots we are in the bistable regime and we can expect to find two stable fixed points and one unstable one.
+When $\Delta > 0$ there are three distinct real roots, and when $\Delta < 0$ there is one real root and two complex conjugate roots. Meanwhile when $\Delta = 0$ all three roots are real and at least two of them are equal. The physical solutions correspond only to real roots and when there are three real roots we are in the bistable regime, in which we can expect to find two stable fixed points and one unstable one.
 
 ---
 

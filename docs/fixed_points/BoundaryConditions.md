@@ -119,6 +119,8 @@ A graphical representation (not shown here) can help visualize the stable manifo
 
 # Eigenvalue and Eigenvector Expectations in Stability Analysis
 
+Because the full system is Hamiltonian—with canonical coordinates for the classical and quantum fields—the Jacobian obtained by linearizing the equations of motion is a Hamiltonian (or symplectic) matrix. This fact immediately leads to some general expectations regarding its eigenvalues and eigenvectors.
+
 ## Paired Spectrum
 
 In any Hamiltonian system, if $\lambda$ is an eigenvalue, then $-\lambda$ must also be an eigenvalue. For complex eigenvalues, the spectrum appears in quadruplets: $\lambda$, $-\lambda$, $\bar{\lambda}$, and $-\bar{\lambda}$. This symmetry ensures that the spectrum is symmetric with respect to the real axis, meaning any unstable growth (positive real part) is balanced by an opposing decay (negative real part).

@@ -122,25 +122,25 @@ where $\mathbf{z}_{c,0}$ is a fixed point. To first order in $\Delta \mathbf{z}_
 $$
 \frac{d}{dt}\,\Delta \mathbf{z}_c(t)
 \;=\;
-J\bigl(\mathbf{z}_{c,0}\bigr)\,\Delta \mathbf{z}_c(t),
+J_c\bigl(\mathbf{z}_{c,0}\bigr)\,\Delta \mathbf{z}_c(t),
 $$
 
-where $J(\mathbf{z}\_{c,0})$ is the Jacobian evaluated at $\mathbf{z}\_{c,0}$. For classical Hamiltonian dynamics $H_\mathrm{cl}(x_c,p_c)$ = $H(x_c,p_c,0,0)$ the Jacobian is
+where $J_c(\mathbf{z}\_{c})$ is the Jacobian of the classical equations of motion.
 
 $$
-J(\mathbf{z}_{c,0})
+J_c(\mathbf{z}_{c})
 \;=\;
 \begin{pmatrix}
-\displaystyle \frac{\partial^2 H_\mathrm{cl}}{\partial p_c \,\partial x_c}
+\displaystyle \frac{\partial^2 H}{\partial x_q\partial x_c}
 &
 \quad
-\displaystyle \frac{\partial^2 H_\mathrm{cl}}{\partial p_c^2}
+\displaystyle \frac{\partial^2 H}{\partial x_q\partial p_c}
 \\[10pt]
-\displaystyle -\,\frac{\partial^2 H_\mathrm{cl}}{\partial x_c^2}
+\displaystyle \frac{\partial^2 H}{\partial p_q\partial x_c}
 &
 \quad
-\displaystyle -\,\frac{\partial^2 H_\mathrm{cl}}{\partial x_c \,\partial p_c}
-\end{pmatrix}_{\mathbf{z}_{c,0}}.
+\displaystyle \frac{\partial^2 H}{\partial p_q\partial p_c}
+\end{pmatrix}.
 $$
 
 

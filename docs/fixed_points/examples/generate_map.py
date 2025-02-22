@@ -8,13 +8,13 @@ from metastable.generate_fixed_point_map import generate_fixed_point_map
 # Example usage:
 if __name__ == "__main__":
     map: FixedPointMap = generate_fixed_point_map(
-        epsilon_max=30.0,
-        kappa_max=5.0,
-        epsilon_points=601,
-        kappa_points=401,
+        epsilon_max=1.0,
+        kappa_max=1.0,
+        epsilon_points=101,
+        kappa_points=101,
         delta=7.8,
         chi=-0.1,
         max_workers=20,
     )
 
-    map.save(Path("map.npz"))
+    map.save(Path("map-small.npz"))

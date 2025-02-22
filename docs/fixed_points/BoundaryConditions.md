@@ -1,8 +1,10 @@
 # Stability Analysis of the Full Equations of Motion
 
-In the previous section on the [Fixed Points](./FixedPoints.md) we identified steady states of the classical equations of motion and classified them as either saddles or nodes. But our intention is to find the switching trajectories which allow the system to escape from the nodes and reach the saddle point, and for this we need to extend our analysis to include the quantum fields.
+In the previous section on the [Fixed Points](./FixedPoints.md) we identified steady states of the classical equations of motion and classified them as either saddles or nodes. Our overall goal is to find the switching trajectories which allow the system to escape from the nodes and reach the saddle point, and then calculate the actions of these trajectories with a view to obtaining the switching rates. For this we need to extend our analysis to include the quantum fields.
 
-In this section we will use the Jacobian matrix to linearise the full equations of motion around the nodes and reveal that, although they are classically stable, introducing the quantum fields allows for escape trajectories along new unstable eigenvectors. Meanwhile we will also linearise around the saddle point and reveal a stable eigenvector which allows the system to reach the saddle point from the quantum part of the phase space.
+In this section we will use the Jacobian matrix to linearise the full equations of motion. This will reveal that:
+1. The quantum fields allow for escape trajectories along new unstable eigenvectors leaving the classically stable fixed points. 
+2. Around the saddle point there is a new stable eigenvector which allows the system to reach the saddle point from the quantum part of the phase space.
 
 This stability analysis will be crucial for setting the boundary conditions for the switching trajectories, as we will see in the next section.
 
@@ -21,7 +23,7 @@ H(x_c,p_c,x_q,p_q)=\; & \Biggl(\delta + \frac{\chi}{2}\bigl(x_c^2+p_c^2-x_q^2-p_
 \end{aligned}
 $$
 
-The full dynamics are described in terms of the classical and quantum fields by the Hamilton's equations:
+The full dynamics are described in terms of the classical and quantum fields by Hamilton's equations:
 
 $$
 \dot{\mathbf{z}}_c = \frac{\partial H}{\partial \mathbf{z}_q}, \qquad \dot{\mathbf{z}}_q = -\frac{\partial H}{\partial \mathbf{z}_c},
@@ -33,10 +35,10 @@ $$
 \mathbf{z}_c = (x_c, p_c), \quad \mathbf{z}_q = (x_q, p_q).
 $$
 
-We then define the full state vector as
+For convenience in the next section, we also denote the full state vector by
 
 $$
-\mathbf{Z} = (x_c, p_c, x_q, p_q)
+\mathbf{Z} = (x_c, p_c, x_q, p_q).
 $$
 
 ## 2. Linearisation
@@ -53,24 +55,25 @@ $$
 \mathbf{Z}_0 = (x_{c0}, p_{c0}, x_{q0}, p_{q0})
 $$
 
-denotes the coordinates of a fixed point, and $\Delta \mathbf{Z}(t)$ represents a small deviation from that fixed point. Expanding the equations of motion to first order in $\Delta \mathbf{Z}(t)$ yields
+denotes the coordinates of a fixed point, and $\Delta \mathbf{Z}(t)$ represents a small deviation from that point. Expanding the equations of motion to first order in $\Delta \mathbf{Z}(t)$ yields
 
 $$
 \frac{d}{dt}\,\Delta\mathbf{Z}(t) = J(\mathbf{Z}_0)\,\Delta\mathbf{Z}(t),
 $$
 
-where $J(\mathbf{Z}_0)$ is the Jacobian matrix evaluated at the fixed point $\mathbf{Z}_0$. The Jacobian matrix $J$, evaluated at a fixed point $\mathbf{Z}_0$, is given by:
+where $J(\mathbf{Z}_0)$ is the Jacobian matrix evaluated at $\mathbf{Z}_0$. The Jacobian matrix $J$, evaluated at a fixed point $\mathbf{Z}_0$, is given by
+
 $$
 J(\mathbf{Z}_0)_{ij} = \left.\frac{\partial \dot{\mathbf{Z}}_i}{\partial \mathbf{Z}_j}\right|_{\mathbf{Z}=\mathbf{Z}_0}
 $$
 
-Since the equations of motion can then be written in vector form as
+The equations of motion can be written in vector form as
 
 $$
 \dot{\mathbf{Z}} = (\dot{x}_c, \dot{p}_c, \dot{x}_q, \dot{p}_q) = \left(\frac{\partial H}{\partial x_q}, \frac{\partial H}{\partial p_q}, -\frac{\partial H}{\partial x_c}, -\frac{\partial H}{\partial p_c}\right)
 $$
 
-In explicit form, the $4\times4$ Jacobian matrix is given by:
+and in explicit form, the $4\times4$ Jacobian matrix is given by:
 
 $$
 J(\mathbf{Z}_0) = \begin{pmatrix}
@@ -85,7 +88,9 @@ We can now study the stability of any fixed point by finding the eigenvalues and
 
 ---
 
-## 3. Eigenvector Analysis
+## 3. Stability Analysis
+
+## Background
 
 The eigenvalues and eigenvectors of the Jacobian $J(\mathbf{Z}_0)$ provide the local stability properties of the fixed point. Specifically, consider the eigenvalue problem
 
@@ -107,7 +112,61 @@ $$
 
 This expansion illustrates how $\Delta\mathbf{Z}(t)$ evolves over time: each eigenmode evolves as $e^{\lambda t}$, where the real part of $\lambda$ governs the exponential growth or decay. Specifically, eigenvalues with positive real parts lead to exponential growth of the corresponding perturbations, while those with negative real parts result in exponential decay. Moreover, if an eigenvalue is complex, its imaginary part will introduce oscillatory behavior on top of this exponential trend.
 
-Because the phase space is four-dimensional, the Jacobian has four eigenvalues (and corresponding eigenvectors):
+## Paired Spectrum
+
+Because the full system is Hamiltonian—with canonical coordinates for the classical and quantum fields—the Jacobian obtained by linearizing the equations of motion is a symplectic matrix, meaning it satisfies:
+
+$$
+J^T \Omega J = \Omega, \quad \text{where} \quad \Omega = \begin{pmatrix} 0 & I_2 \\ -I_2 & 0 \end{pmatrix}
+$$
+
+where $I_2$ is the $2\times2$ identity matrix. This fact immediately leads to some general expectations regarding its eigenvalues.
+
+For any symplectic matrix, if $\lambda$ is an eigenvalue, then $-\lambda$ must also be an eigenvalue. Furthmore, any complex eigenvalues also come in conjugate pairs, leading overall to a spectrum that appears in quadruplets: $\lambda$, $-\lambda$, $\lambda^{\*}$, and $-\lambda^{\*}$.
+
+Finally we note that since the Jacobian is not Hermitian, the eigenvectors are not necessarily orthogonal. However, for a symplectic matrix, if $\mathbf{v}$ is a right eigenvector with eigenvalue $\lambda$, then $\Omega\mathbf{v}$ is a left eigenvector with eigenvalue $-\lambda$. This leads to a biorthogonality relation between eigenvectors: if $\mathbf{v}_1$ and $\mathbf{v}_2$ are eigenvectors with eigenvalues $\lambda_1$ and $\lambda_2$, then $\mathbf{v}_1^T\Omega\mathbf{v}_2 = 0$ unless $\lambda_1 = -\lambda_2$. This structure plays an important role in determining the stable and unstable manifolds around the fixed points.
+
+### Stable Points
+
+In the previous chapter we performed stability analysis on the classical equations of motion, which are not Hamiltonian due to the presence of drive and dissipation. Around the stable fixed points we found a conjugate pair of eigenvalues with negative real parts:
+
+$$
+\lambda = - \kappa \pm i \omega.
+$$
+
+When we extend our analysis to include the quantum fields the system becomes Hamiltonian and we find two additional eigenvalues with positive real parts that complete the expected quadruplet:
+
+$$
+\lambda = \kappa \pm i \omega.
+$$
+
+These two pairs of eigenvalues describe spirally motion around the fixed points with the first pair describing decaying motion and the second pair describing diverging motion.
+
+Due to the biorthogonality condition above, each eigenvector from the classical sector is paired with an eigenvector that partially lies in the quantum sector. However we note that the quadruplet of eigenvectors is not orthogonal and the new eigenvectors will in general have components in the classical sector as well as the quantum sector.
+
+### Saddle Point
+
+Our previous analysis of the saddle point revealed two eigenvalues in the classical case:
+
+$$
+\lambda = - \kappa_1 \quad \text{and} \quad \lambda = \kappa_2.
+$$
+
+These describe the incoming and outgoing motion around the saddle point in the classical co-ordinate plane. Again, when we extend our analysis to include the quantum fields these two eigenvalues are paired with two new eigenvalues that describe incoming and outgoing motion along directions in the full four-dimensional phase space:
+
+$$
+\lambda = \kappa_1 \quad \text{and} \quad \lambda = -\kappa_2.
+$$
+
+As above, the new eigenvectors obey a biorthogonality condition with the classical eigenvectors and in general will have components in both the classical and quantum sectors.
+
+## Numerical Results
+
+Now that we have an understanding of the eigenvalues and eigenvectors of the Jacobian, we can use this to study the dynamics of the system across parameter space.
+
+# Next Section
+
+Because the phase space is four-dimensional, the Jacobian has four eigenvalues and eigenvectors:
 
 - For a **metastable fixed point** (bright or dim state), typically two eigenvalues (with eigenvectors that lie predominantly in the classical plane) will have **negative real parts**, indicating that small perturbations in these directions decay. In contrast, the other two eigenvalues (which generally have significant components in the quantum directions) will have **positive real parts**—these indicate the directions along which the system can escape.
   
@@ -158,6 +217,16 @@ the eigenvectors define the directions in phase space along which perturbations 
 
 These stability properties are crucial for defining **boundary conditions** for the switching trajectories, which describe how the system escapes from stable nodes and reaches the saddle point.
 
+
+### Notes
+
+In the classical case, when the system is close to the stable fixed points it spirals around them while decaying towards them. The fixed poitns are stable focus points across most of parameter space, but at the bifurcation points they are nodes and there is no spiralling motion governed by a pair of complex conjugate eigenvalues with a negative real component governing the decay towards the fixed point and an imaginary component governing frequency of the oscillations.
+
+When we extend the system to include the quantum fields, the system is governed Hamiltonian dynamics. The Jacobian is symplectic and has a paired spectrum. For each eigenvalue $\lambda$ there is a corresponding eigenvalue $-\lambda$. Furthermore, if $\lambda$ is complex, then $\lambda^{\*}$ is also an eigenvalue. For this reason we expect the spectrum around the focus points to include both ingoing and outgoing eigenvectors with eigenvalues $\pm \lambda$ and $\pm \lambda^{\*}$.
+
+The beahviour at the saddle points is different. Whereas the in the classical case we had eigenvalues $- \lvert \kappa_1 \rvert$ and $-\lvert \kappa_2 \rvert$ corresponding to the incoming and outgoing directions, in the quantum case the Hamiltonian dynamics will give us a new pair of eigenvectors with opposite eigenvalues $\lvert \kappa_1 \rvert$ and $- \lvert \kappa_2 \rvert$.
+
+We plot these below.
 
 ---
 

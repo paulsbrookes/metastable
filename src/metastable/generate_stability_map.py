@@ -35,7 +35,15 @@ def compute_stability(classical_fixed_point: np.ndarray, params: Params) -> Tupl
         full_fixed_point = extend_to_keldysh_state(classical_fixed_point)
         eom = EOM(params)
         jacobian = eom.jacobian_func(full_fixed_point)
-        return np.linalg.eig(jacobian)
+        eigenvalues, eigenvectors = np.linalg.eig(jacobian)
+        
+        # Filter out imaginary parts where real parts are nan
+        real_parts = eigenvalues.real
+        imag_parts = eigenvalues.imag
+        imag_parts[np.isnan(real_parts)] = np.nan
+        eigenvalues = real_parts + 1j * imag_parts
+        
+        return eigenvalues, eigenvectors
     except Exception:
         logger.exception("Error in compute_stability for fixed point: %s", classical_fixed_point)
         return np.full(4, np.nan, dtype=complex), np.full((4, 4), np.nan, dtype=complex)

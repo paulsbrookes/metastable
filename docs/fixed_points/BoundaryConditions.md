@@ -194,7 +194,9 @@ if __name__ == '__main__':
 
 The `generate_stability_map` function iterates over the fixed points stored in the `FixedPointMap` object and computes the eigenvalues and eigenvectors of the Jacobian at each fixed point. The results can then be accessed at the `FixedPointMap.eigenvalues` and `FixedPointMap.eigenvectors` attributes.
 
-Using the `FixedPointMap` produced in the previous chapter, which we recall had $\chi=-0.1$ and $\delta=7.8$, we now plot the real and imaginary parts of the $\lambda_0$ and $\lambda_1$ eigenvalues around the low amplitude fixed point. We also plot the upper and lower bifurcation lines to clearly mark the limits of the bistable regime.
+### Dim Fixed Point
+
+Using the `FixedPointMap` produced in the previous chapter, which we recall had $\chi=-0.1$ and $\delta=7.8$, we now plot the real and imaginary parts of the $\lambda_0$ and $\lambda_1$ eigenvalues around the dim fixed point. We also plot the upper and lower bifurcation lines to clearly mark the limits of the bistable regime.
 
 <div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
     <iframe src="examples/jacobian_spectrum_dim_fixed_point.html" 
@@ -236,6 +238,8 @@ In the top-right panel we plot the same trajectory close to the cusp point where
 
 We also include a table of the eigenvalues and parameters, as well as the bottom panel to show where the top panels lie within the bistable regime.
 
+### Bright Fixed Point
+
 Next we move on to the bright fixed point. As above we observe complex eigenvalues corresponding to focus points in the majority of the parameter space. At small decay rates the real components of the eigenvalues are close to zero and the motion is almost circular. Just as above we also see that close to the bifurucation point the imaginary components of the eigenvalues vanish and the fixed points become nodes.
 
 <div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
@@ -247,7 +251,9 @@ Next we move on to the bright fixed point. As above we observe complex eigenvalu
 
 [Open visualization in new window](examples/jacobian_spectrum_bright_fixed_point.html)
 
-Finally, we examine the eigenvalue spectrum around the saddle point. Unlike the stable fixed points, the saddle point has real eigenvalues of opposite signs throughout the bistable regime, reflecting its unstable nature. This is consistent with our earlier theoretical analysis where we predicted eigenvalues of the form $\lambda \in \{ -\kappa_1, +\kappa_2, +\kappa_1, -\kappa_2 \}$.
+### Saddle Point
+
+Next, we examine the eigenvalue spectrum around the saddle point. Unlike the stable fixed points, the saddle point has real eigenvalues of opposite signs throughout the bistable regime, reflecting its unstable nature. This is consistent with our earlier theoretical analysis where we predicted eigenvalues of the form $\lambda \in \{ -\kappa_1, +\kappa_2, +\kappa_1, -\kappa_2 \}$.
 
 <div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
     <iframe src="examples/jacobian_spectrum_saddle_fixed_point.html" 
@@ -266,3 +272,29 @@ The key features of the saddle point spectrum are:
 
 3. **Bifurcation Behavior**: Near the bifurcation points, one pair of eigenvalues approaches zero while the other pair remains finite. This corresponds to the merging of the saddle point with one of the stable fixed points at the bifurcation.
 
+
+### Regimes
+
+We note that the Jacobian spectra of both the dim and bright fixed points indicate that we will struggle to find escape trajectories at small decay rates. In the figure below we plot the ratio of the imaginary to real parts of the eigenvalues for the dim and bright fixed points. As expected, the ratio diverges as the decay rate approaches zero, but this can be counteracted to some extent by staying close to a bifurcation point.
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 575px; margin: 0 auto;">
+    <iframe src="examples/instability_ratios.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](examples/instability_ratios.html)
+
+Finally we plot the ratio of the eigenvalues of the Jacobian at the saddle point to illustrate the onset of the soft mode.
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 575px; margin: 0 auto;">
+    <iframe src="examples/saddle_eigenvalue_ratio.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](examples/saddle_eigenvalue_ratio.html)
+
+The vanishing of the $\lambda_0$ eigenvalue at the bifurcation point is indicative of the vanishing of the force pushing the system from the saddle point to the node as they merge.

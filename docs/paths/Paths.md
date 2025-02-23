@@ -6,13 +6,13 @@ In this section we focus on finding the switching trajectories using boundary va
 
 ## 1. Introduction
 
-- **Objective**: Find a trajectory \(\mathbf{Z}(t)\) that connects:
-  - A **stable fixed point** \(\mathbf{Z}_0\) (node or focus)
-  - A **saddle point** \(\mathbf{Z}_s\)
+- **Objective**: Find a trajectory $\mathbf{Z}(t)$ that connects:
+  - A **stable fixed point** $\mathbf{Z}_0$ (node or focus)
+  - A **saddle point** $\mathbf{Z}_s$
 
 - **Approach**: Reformulate the problem as a boundary value problem (BVP) by imposing appropriate conditions at both ends of the trajectory.
 
-- **Rationale**: The eigenvectors of the Jacobian, computed at \(\mathbf{Z}_0\) and \(\mathbf{Z}_s\), provide natural coordinates in which the displacement from these points can be expressed, simplifying the enforcement of boundary conditions.
+- **Rationale**: The eigenvectors of the Jacobian, computed at $\mathbf{Z}_0$ and $\mathbf{Z}_s$, provide natural coordinates in which the displacement from these points can be expressed, simplifying the enforcement of boundary conditions.
 
 ---
 
@@ -80,7 +80,7 @@ where only the modes with $\text{Re}(\mu_j) < 0$ (stable directions) remain boun
 
 ### 3.3. Matching the Trajectory
 
-- The task is to adjust the coefficients \(\{c_i\}\) and \(\{d_j\}\) such that the trajectory \(\mathbf{Z}(t)\) satisfies the equations of motion and simultaneously meets the boundary conditions at both \(\mathbf{Z}_0\) and \(\mathbf{Z}_s\).
+- The task is to adjust the coefficients ${c_i}$ and ${d_j}$ such that the trajectory $\mathbf{Z}(t)$ satisfies the equations of motion and simultaneously meets the boundary conditions at both $\mathbf{Z}_0$ and $\mathbf{Z}_s$.
 
 - Numerical methods (e.g., shooting or collocation techniques) are then applied to iteratively refine the trajectory and ensure that it connects the two fixed points in phase space.
 
@@ -88,15 +88,15 @@ where only the modes with $\text{Re}(\mu_j) < 0$ (stable directions) remain boun
 
 ## 4. Numerical Implementation Outline
 
-- **Initial Guess**: Provide an initial trajectory guess that interpolates between \(\mathbf{Z}_0\) and \(\mathbf{Z}_s\).
+- **Initial Guess**: Provide an initial trajectory guess that interpolates between $\mathbf{Z}_0$ and $\mathbf{Z}_s$.
 
 - **Iterative Solver**: Use a boundary value solver to adjust the trajectory such that:
-  - The residual of \(\dot{\mathbf{Z}} - \mathbf{F}(\mathbf{Z})\) is minimized.
-  - The deviations at \(t \to \pm\infty\) match the prescribed eigenvector expansions.
+  - The residual of $\dot{\mathbf{Z}} - \mathbf{F}(\mathbf{Z})$ is minimized.
+  - The deviations at $t \to \pm\infty$ match the prescribed eigenvector expansions.
 
 - **Validation**: Check that:
-  - Near \(\mathbf{Z}_0\), the trajectory is well approximated by \(\mathbf{Z}_0 + \sum_i c_i\, \mathbf{v}_i\, e^{\lambda_i t}\).
-  - Near \(\mathbf{Z}_s\), the trajectory follows \(\mathbf{Z}_s + \sum_j d_j\, \mathbf{u}_j\, e^{\mu_j t}\).
+  - Near $\mathbf{Z}_0$, the trajectory is well approximated by $\mathbf{Z}_0 + \sum_i c_i\, \mathbf{v}_i\, e^{\lambda_i t}$.
+  - Near $\mathbf{Z}_s$, the trajectory follows $\mathbf{Z}_s + \sum_j d_j\, \mathbf{u}_j\, e^{\mu_j t}$.
 
 ---
 

@@ -32,8 +32,8 @@ def plot_eigenvalues(map_obj: FixedPointMap, fixed_point_type: FixedPointType, f
         filename: The filename for saving the generated HTML plot.
     """
     title_map = {
-        FixedPointType.DIM: 'Low Amplitude',
-        FixedPointType.BRIGHT: 'High Amplitude',
+        FixedPointType.DIM: 'Dim',
+        FixedPointType.BRIGHT: 'Bright',
         FixedPointType.SADDLE: 'Saddle'
     }
 
@@ -119,8 +119,9 @@ def plot_eigenvalues(map_obj: FixedPointMap, fixed_point_type: FixedPointType, f
                     y=lower_line[0],
                     mode='lines',
                     line=dict(color='red', width=2.0),
-                    name='Lower bifurcation',
-                    showlegend=(row == 1 and col == 1)
+                    name='Bright-Saddle Bifurcation',
+                    showlegend=(row == 1 and col == 1),
+                    hoverinfo='skip'  # Disable hover tooltip
                 ),
                 row=row, col=col
             )
@@ -132,8 +133,9 @@ def plot_eigenvalues(map_obj: FixedPointMap, fixed_point_type: FixedPointType, f
                     y=upper_line[0],
                     mode='lines',
                     line=dict(color='cyan', width=2.0),
-                    name='Upper bifurcation',
-                    showlegend=(row == 1 and col == 1)
+                    name='Dim-Saddle Bifurcation',
+                    showlegend=(row == 1 and col == 1),
+                    hoverinfo='skip'  # Disable hover tooltip
                 ),
                 row=row, col=col
             )
@@ -176,12 +178,12 @@ def main() -> None:
     """Main function to load the map and generate eigenvalue plots for all fixed point types."""
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
-    map_obj = FixedPointMap.load("map-with-stability-no-imag.npz")
+    map_obj = FixedPointMap.load("map-with-stability.npz")
 
     # Generate and save plots for each fixed point type
-    plot_eigenvalues(map_obj, FixedPointType.DIM, "dim_fixed_point_jacobian_spectrum.html")
-    plot_eigenvalues(map_obj, FixedPointType.BRIGHT, "bright_fixed_point_jacobian_spectrum.html")
-    plot_eigenvalues(map_obj, FixedPointType.SADDLE, "saddle_fixed_point_jacobian_spectrum.html")
+    plot_eigenvalues(map_obj, FixedPointType.DIM, "jacobian_spectrum_dim_fixed_point.html")
+    plot_eigenvalues(map_obj, FixedPointType.BRIGHT, "jacobian_spectrum_bright_fixed_point.html")
+    plot_eigenvalues(map_obj, FixedPointType.SADDLE, "jacobian_spectrum_saddle_fixed_point.html")
 
 
 if __name__ == "__main__":

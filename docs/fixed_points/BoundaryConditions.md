@@ -194,4 +194,26 @@ if __name__ == '__main__':
 
 The `generate_stability_map` function iterates over the fixed points stored in the `FixedPointMap` object and computes the eigenvalues and eigenvectors of the Jacobian at each fixed point. The results can then be accessed at the `FixedPointMap.eigenvalues` and `FixedPointMap.eigenvectors` attributes.
 
-Using the `FixedPointMap` produced in the previous chapter, we now plot the real and imaginary parts of the $\lambda_0$ and $\lambda_1$ eigenvalues around the low amplitude fixed point.
+Using the `FixedPointMap` produced in the previous chapter, we now plot the real and imaginary parts of the $\lambda_0$ and $\lambda_1$ eigenvalues around the low amplitude fixed point. We also plot the upper and lower bifurcation lines to clearly mark the limits of the bistable regime.
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
+    <iframe src="examples/jacobian_spectrum_dim_fixed_point.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](examples/jacobian_spectrum_dim_fixed_point.html)
+
+Let's examine the key features of the eigenvalue spectrum:
+
+1. **Complex Eigenvalues and Oscillatory Motion**: Across most of the parameter space, the eigenvalues form complex conjugate pairs. This indicates oscillatory motion near the fixed points, classifying them as focus points.
+
+2. **Relationship to Decay Rate**: For focus points, the real component's magnitude equals the system decay rate $\kappa$. As $\kappa \to 0$, while the real component vanishes, the imaginary component persists. This suggests that oscillatory motion occurs on a much faster timescale than decay or escape processes.
+
+3. **Behavior Near Bifurcation**: Near the dim-saddle bifurcation point, the eigenvalues become purely real, transforming the fixed point into a node. At this transition:
+   - The previously equal real parts take on different values.
+   - One eigenvalue approaches zero while the other remains finite.
+   - The vanishing eigenvalue reveals a soft mode connecting the fixed point to the saddle point
+   This regime corresponds to the one-dimensional Kramers problem discussed in [REFERENCE].
+

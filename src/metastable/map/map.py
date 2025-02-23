@@ -272,6 +272,21 @@ class FixedPointMap:
         """Set the eigenvectors array."""
         self._eigenvectors = value
 
+    @property
+    def bistable_region(self) -> NDArray[np.bool_]:
+        """
+        Boolean array indicating which parameter combinations are in the bistable regime.
+
+        The array has shape (epsilon_points, kappa_points) where True values indicate
+        parameter combinations where all three fixed points (saddle, bright, dim) exist.
+        This is determined by checking for non-NaN values in both x and p coordinates
+        of all fixed points.
+
+        Returns:
+            NDArray[np.bool_]: 2D boolean array of bistable parameter combinations
+        """
+        return ~np.isnan(self.fixed_points).any(axis=(2, 3))
+
     def update_map(
         self, epsilon_idx: int, kappa_idx: int, new_fixed_points: NDArray[np.float_]
     ) -> None:
@@ -354,3 +369,40 @@ class FixedPointMap:
             eigenvalues=self.eigenvalues.copy(),
             eigenvectors=self.eigenvectors.copy(),
         )
+
+    @property
+    def bifurcation_lines(self) -> Tuple[NDArray[np.float_], NDArray[np.float_]]:
+        """
+        Get the upper and lower bifurcation lines that bound the bistable region.
+
+        The bifurcation lines are found by identifying the epsilon values where the system
+        transitions between bistable and monostable behavior for each kappa value.
+        For each kappa, the lower line is the smallest epsilon value where bistability exists,
+        and the upper line is the largest such epsilon value.
+
+        Returns:
+            Tuple[NDArray[np.float_], NDArray[np.float_]]: A tuple containing:
+                - lower_line: Array of shape (2, n_points) containing (epsilon, kappa) coordinates
+                  of the lower bifurcation boundary
+                - upper_line: Array of shape (2, n_points) containing (epsilon, kappa) coordinates
+                  of the upper bifurcation boundary
+                Points are ordered by increasing kappa value. Only includes points where
+                bifurcations are found (no NaN values).
+        """
+        bistable = self.bistable_region
+        lower_points = []
+        upper_points = []
+
+        for j, kap in enumerate(self.kappa_linspace):
+            bistable_epsilon = np.where(bistable[:, j])[0]
+            if len(bistable_epsilon) > 0:
+                lower_points.append([self.epsilon_linspace[bistable_epsilon[0]], kap])
+                upper_points.append([self.epsilon_linspace[bistable_epsilon[-1]], kap])
+
+        if not lower_points:  # No bistable points found
+            return np.empty((2, 0)), np.empty((2, 0))
+
+        lower_line = np.array(lower_points).T
+        upper_line = np.array(upper_points).T
+
+        return lower_line, upper_line

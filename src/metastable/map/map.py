@@ -46,6 +46,10 @@ class FixedPointMap:
             where the last two dimensions represent fixed point type and (x, p) coordinates
         checked_points (NDArray[np.bool_]): Boolean mask of analyzed parameter combinations
         path_results (NDArray[object]): Array of path calculation results between fixed points
+        eigenvalues (NDArray[np.complex_]): Eigenvalues array with shape (n_epsilon, n_kappa, 3, 4)
+            where the last two dimensions represent fixed point type and eigenvalue index
+        eigenvectors (NDArray[np.complex_]): Eigenvectors array with shape (n_epsilon, n_kappa, 3, 4, 4)
+            where the last three dimensions represent fixed point type, eigenvalue index, and eigenvector components
     """
 
     def __init__(
@@ -59,6 +63,8 @@ class FixedPointMap:
         path_results: Optional[
             NDArray[object]
         ] = None,  # Actually NDArray[Optional[BVPResult]]
+        eigenvalues: Optional[NDArray[np.complex_]] = None,
+        eigenvectors: Optional[NDArray[np.complex_]] = None,
     ):
         self._epsilon_linspace: Final[NDArray] = epsilon_linspace
         self._kappa_linspace: Final[NDArray] = kappa_linspace
@@ -91,6 +97,26 @@ class FixedPointMap:
             else np.empty(
                 shape=(len(epsilon_linspace), len(kappa_linspace), 2),
                 dtype=object,
+            )
+        )
+
+        self._eigenvalues = (
+            eigenvalues
+            if eigenvalues is not None
+            else np.full(
+                shape=(len(epsilon_linspace), len(kappa_linspace), 3, 4),
+                fill_value=np.nan,
+                dtype=complex,
+            )
+        )
+
+        self._eigenvectors = (
+            eigenvectors
+            if eigenvectors is not None
+            else np.full(
+                shape=(len(epsilon_linspace), len(kappa_linspace), 3, 4, 4),
+                fill_value=np.nan,
+                dtype=complex,
             )
         )
 
@@ -203,6 +229,49 @@ class FixedPointMap:
         """
         self._checked_points = value
 
+    @property
+    def eigenvalues(self) -> NDArray[np.complex_]:
+        """
+        Array containing the eigenvalues for each fixed point and parameter combination.
+
+        The array has shape (epsilon_points, kappa_points, 3, 4) where:
+        - First dimension: different epsilon (drive amplitude) values
+        - Second dimension: different kappa (damping rate) values
+        - Third dimension: three types of fixed points (saddle, bright, dim)
+        - Fourth dimension: four eigenvalues for each fixed point
+
+        Returns:
+            NDArray[np.complex_]: 4D array of eigenvalues
+        """
+        return self._eigenvalues
+
+    @eigenvalues.setter
+    def eigenvalues(self, value: NDArray[np.complex_]):
+        """Set the eigenvalues array."""
+        self._eigenvalues = value
+
+    @property
+    def eigenvectors(self) -> NDArray[np.complex_]:
+        """
+        Array containing the eigenvectors for each fixed point and parameter combination.
+
+        The array has shape (epsilon_points, kappa_points, 3, 4, 4) where:
+        - First dimension: different epsilon (drive amplitude) values
+        - Second dimension: different kappa (damping rate) values
+        - Third dimension: three types of fixed points (saddle, bright, dim)
+        - Fourth dimension: four eigenvalues
+        - Fifth dimension: four components of each eigenvector
+
+        Returns:
+            NDArray[np.complex_]: 5D array of eigenvectors
+        """
+        return self._eigenvectors
+
+    @eigenvectors.setter
+    def eigenvectors(self, value: NDArray[np.complex_]):
+        """Set the eigenvectors array."""
+        self._eigenvectors = value
+
     def update_map(
         self, epsilon_idx: int, kappa_idx: int, new_fixed_points: NDArray[np.float_]
     ) -> None:
@@ -255,6 +324,8 @@ class FixedPointMap:
             fixed_points=self.fixed_points,
             checked_points=self.checked_points,
             path_results=self.path_results,
+            eigenvalues=self.eigenvalues,
+            eigenvectors=self.eigenvectors,
         )
 
     @classmethod
@@ -280,4 +351,6 @@ class FixedPointMap:
             fixed_points=self.fixed_points.copy(),
             checked_points=self.checked_points.copy(),
             path_results=self.path_results.copy(),
+            eigenvalues=self.eigenvalues.copy(),
+            eigenvectors=self.eigenvectors.copy(),
         )

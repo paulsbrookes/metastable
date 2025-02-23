@@ -128,41 +128,72 @@ Finally we note that since the Jacobian is not Hermitian, the eigenvectors are n
 
 ### Stable Points
 
-In the previous chapter we performed stability analysis on the classical equations of motion, which are not Hamiltonian due to the presence of drive and dissipation. Around the stable fixed points we found a conjugate pair of eigenvalues with negative real parts:
+In the previous chapter we performed stability analysis on the classical equations of motion, which are not Hamiltonian due to the presence of drive and dissipation. Around the stable fixed points the eigenvalues are given either by:
 
 $$
-\lambda = - \kappa \pm i \omega.
+\lambda \in \{ -\kappa_1, -\kappa_2 \}
 $$
 
-When we extend our analysis to include the quantum fields the system becomes Hamiltonian and we find two additional eigenvalues with positive real parts that complete the expected quadruplet:
+near a saddle-node bifurcation, or by
 
 $$
-\lambda = \kappa \pm i \omega.
+\lambda \in \{ - \kappa - i \omega, - \kappa + i \omega \}
 $$
 
-These two pairs of eigenvalues describe spirally motion around the fixed points with the first pair describing decaying motion and the second pair describing diverging motion.
+deeper into the bistable regime. The first case describes a node with different decay rates in the two directions, while the second describes a focus point with a spiralling decaying motion.
 
-Due to the biorthogonality condition above, each eigenvector from the classical sector is paired with an eigenvector that partially lies in the quantum sector. However we note that the quadruplet of eigenvectors is not orthogonal and the new eigenvectors will in general have components in the classical sector as well as the quantum sector.
+
+When we extend our analysis to include the quantum fields the system becomes Hamiltonian and we find two additional eigenvalues with positive real parts that complete the expected quadruplets. So we find either:
+
+$$
+\lambda \in \{ -\kappa_1, -\kappa_2, \kappa_1, \kappa_2 \}
+$$
+
+near a saddle-node bifurcation, or
+
+$$
+\lambda \in \{ - \kappa - i \omega, - \kappa + i \omega, \kappa - i \omega, \kappa + i \omega \}
+$$
+
+away from it. Due to the biorthogonality condition above, each eigenvector from the classical sector is paired with an eigenvector that partially lies in the quantum sector. However we note that the quadruplet of eigenvectors is not orthogonal and the new eigenvectors will in general have components in the classical sector as well as the quantum sector.
 
 ### Saddle Point
 
-Our previous analysis of the saddle point revealed two eigenvalues in the classical case:
+Meanwhile, the saddle point we find two eigenvalues in the classical case:
 
 $$
-\lambda = - \kappa_1 \quad \text{and} \quad \lambda = \kappa_2.
+\lambda \in \{ -\kappa_1, +\kappa_2 \}.
 $$
 
 These describe the incoming and outgoing motion around the saddle point in the classical co-ordinate plane. Again, when we extend our analysis to include the quantum fields these two eigenvalues are paired with two new eigenvalues that describe incoming and outgoing motion along directions in the full four-dimensional phase space:
 
 $$
-\lambda = \kappa_1 \quad \text{and} \quad \lambda = -\kappa_2.
+\lambda \in \{ -\kappa_1, +\kappa_2, +\kappa_1, -\kappa_2 \}.
 $$
 
 As above, the new eigenvectors obey a biorthogonality condition with the classical eigenvectors and in general will have components in both the classical and quantum sectors.
 
 ## Numerical Results
 
-Now that we have an understanding of the eigenvalues and eigenvectors of the Jacobian, we can use this to study the dynamics of the system across parameter space.
+Now that we have an understanding of the eigenvalues and eigenvectors of the Jacobian, we can use this to study the dynamics of the system across parameter space. We first plot the real and imaginary parts of 0th and 1st eigenvalues around the low amplitude fixed point.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Next Section
 

@@ -121,11 +121,12 @@ def calculate_and_plot_trajectory(
 
     # Update layout for consistent axis scaling and styling
     fig.update_layout(
-        xaxis_title=r'$x_\mathrm{c}$',
-        yaxis_title=r'$p_\mathrm{c}$',
+        xaxis_title='x',
+        yaxis_title='p',
         template='plotly_white',
         showlegend=True,
-        yaxis=dict(scaleanchor='x', scaleratio=1)
+        yaxis=dict(scaleanchor='x', scaleratio=1),
+        font=dict(size=14)
     )
 
     return fig
@@ -147,7 +148,7 @@ def main() -> None:
                [{"colspan": 2, "type": "table"}, None],
                [{"colspan": 2}, None]],
         vertical_spacing=0.12,
-        row_heights=[0.4, 0.175, 0.35]
+        row_heights=[0.4, 0.2, 0.35]
     )
 
     # Generate trajectory for the Low Decay Rate operating point
@@ -200,8 +201,9 @@ def main() -> None:
     table = go.Table(
         header=dict(
             values=['Operating Point', 'State', 'λ₀', 'λ₁'],
-            font=dict(size=12),
-            align='center'
+            font=dict(size=16),
+            align='center',
+            height=30
         ),
         cells=dict(
             values=[
@@ -213,8 +215,9 @@ def main() -> None:
                 [f'{dim1_eigs[1]:.3f}<br>{saddle1_eigs[1]:.3f}',
                  f'{dim2_eigs[1]:.3f}<br>{saddle2_eigs[1]:.3f}']
             ],
-            font=dict(size=11),
-            align='center'
+            font=dict(size=14),
+            align='center',
+            height=30
         )
     )
     fig.add_trace(table, row=2, col=1)
@@ -273,14 +276,15 @@ def main() -> None:
         showlegend=True,
         height=1000,
         width=800,
-        margin=dict(t=100, b=50, l=50, r=50, pad=20)
+        margin=dict(t=100, b=50, l=50, r=50, pad=20),
+        font=dict(size=14)
     )
-    fig.update_xaxes(title=r'$x_c$', scaleanchor='y', scaleratio=1, row=1, col=1)
-    fig.update_xaxes(title=r'$x_c$', scaleanchor='y', scaleratio=1, row=1, col=2)
-    fig.update_yaxes(title=r'$p_c$', row=1, col=1)
-    fig.update_yaxes(title=r'$p_c$', row=1, col=2)
-    fig.update_xaxes(title=r'$\kappa$', range=[0, 5.1], row=3, col=1)
-    fig.update_yaxes(title=r'$\epsilon$', range=[0, 30.0], row=3, col=1)
+    fig.update_xaxes(title='x', scaleanchor='y', scaleratio=1, row=1, col=1)
+    fig.update_xaxes(title='x', scaleanchor='y', scaleratio=1, row=1, col=2)
+    fig.update_yaxes(title='p', row=1, col=1)
+    fig.update_yaxes(title='p', row=1, col=2)
+    fig.update_xaxes(title='κ', range=[0, 5.1], row=3, col=1)
+    fig.update_yaxes(title='ε', range=[0, 30.0], row=3, col=1)
 
     # Save and display the final interactive plot
     fig.write_html("trajectories_and_bifurcation.html")

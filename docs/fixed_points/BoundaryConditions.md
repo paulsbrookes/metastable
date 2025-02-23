@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
 The `generate_stability_map` function iterates over the fixed points stored in the `FixedPointMap` object and computes the eigenvalues and eigenvectors of the Jacobian at each fixed point. The results can then be accessed at the `FixedPointMap.eigenvalues` and `FixedPointMap.eigenvectors` attributes.
 
-Using the `FixedPointMap` produced in the previous chapter, we now plot the real and imaginary parts of the $\lambda_0$ and $\lambda_1$ eigenvalues around the low amplitude fixed point. We also plot the upper and lower bifurcation lines to clearly mark the limits of the bistable regime.
+Using the `FixedPointMap` produced in the previous chapter, which we recall had $\chi=-0.1$ and $\delta=7.8$, we now plot the real and imaginary parts of the $\lambda_0$ and $\lambda_1$ eigenvalues around the low amplitude fixed point. We also plot the upper and lower bifurcation lines to clearly mark the limits of the bistable regime.
 
 <div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
     <iframe src="examples/jacobian_spectrum_dim_fixed_point.html" 
@@ -216,4 +216,53 @@ Let's examine the key features of the eigenvalue spectrum:
    - One eigenvalue approaches zero while the other remains finite.
    - The vanishing eigenvalue reveals a soft mode connecting the fixed point to the saddle point
    This regime corresponds to the one-dimensional Kramers problem discussed in [REFERENCE].
+
+These points can be illustrated in more detail by examining specific trajectories near the fixed points:
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 1050px; margin: 0 auto;">
+    <iframe src="examples/trajectories_and_bifurcation.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](examples/trajectories_and_bifurcation.html)
+
+In the figure above we plot two classical trajectories of the system as it decays from the saddle point to the dim fixed point. In the top-left panel we choose to examine the system at small decay rate ($\kappa=0.1$, $\epsilon=10.0$) deep within the bistable regime.As mentioned above, this leads to a focus point with a decaying spiralling motion. The small value of the decay rate causes the motion to be almost circular. 
+
+This will pose a significant challenge for us in the next chapter we attempt to find escape trajectories. The eigenvectors of the Jacobian which allow escape are part of the same quadruplet as ingoing eigenvectors which control decaying motion. Just as the decaying path has significant spiralling motion with slow relaxation to the fixed point, the escaping trajectories will have significant spiralling motion with slow escape rate. The widely differing timescales and the accumulation of numerical errors will make it challenging to find the exact path going from the fixed point to the saddle point.
+
+In the top-right panel we plot the same trajectory close to the cusp point where the bistable regime closes ($\kappa=4.3$, $\epsilon=25.6$). The motion is quite different. We now see that the dim fixed point is a node and the system moves almost linearly from one point to the other. This makes it much easier to find the exact trajectory.
+
+We also include a table of the eigenvalues and parameters, as well as the bottom panel to show where the top panels lie within the bistable regime.
+
+Next we move on to the bright fixed point. As above we observe complex eigenvalues corresponding to focus points in the majority of the parameter space. At small decay rates the real components of the eigenvalues are close to zero and the motion is almost circular. Just as above we also see that close to the bifurucation point the imaginary components of the eigenvalues vanish and the fixed points become nodes.
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
+    <iframe src="examples/jacobian_spectrum_bright_fixed_point.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](examples/jacobian_spectrum_bright_fixed_point.html)
+
+Finally, we examine the eigenvalue spectrum around the saddle point. Unlike the stable fixed points, the saddle point has real eigenvalues of opposite signs throughout the bistable regime, reflecting its unstable nature. This is consistent with our earlier theoretical analysis where we predicted eigenvalues of the form $\lambda \in \{ -\kappa_1, +\kappa_2, +\kappa_1, -\kappa_2 \}$.
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
+    <iframe src="examples/jacobian_spectrum_saddle_fixed_point.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](examples/jacobian_spectrum_saddle_fixed_point.html)
+
+The key features of the saddle point spectrum are:
+
+1. **Pure Real Eigenvalues**: Unlike the stable fixed points which typically show complex conjugate pairs, the saddle point maintains real eigenvalues throughout the parameter space, indicating pure exponential growth or decay without oscillations.
+
+2. **Symmetry in Magnitude**: The eigenvalues appear in pairs of equal magnitude but opposite sign, reflecting the Hamiltonian nature of the full system and ensuring conservation of phase space volume.
+
+3. **Bifurcation Behavior**: Near the bifurcation points, one pair of eigenvalues approaches zero while the other pair remains finite. This corresponds to the merging of the saddle point with one of the stable fixed points at the bifurcation.
 

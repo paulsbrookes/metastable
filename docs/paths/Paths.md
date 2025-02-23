@@ -123,4 +123,3 @@ where only the modes with $\text{Re}(\mu_j) < 0$ (stable directions) remain boun
   - Detail the specific numerical methods (e.g., shooting, collocation) and their implementation.
   - Present sample results and discuss the challenges in convergence and accuracy.
 
-This outline sets the stage for a detailed discussion of boundary value methods applied to the switching trajectories, emphasizing both the theoretical framework and the practical numerical implementation.

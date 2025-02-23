@@ -2,19 +2,20 @@
 
 In this section we focus on finding the switching trajectories using boundary value methods. The goal is to determine the optimal escape path that connects a stable fixed point to a saddle point, taking advantage of the eigenstructure of the Jacobian matrices at these points.
 
----
-
-## 1. Introduction
+## 1. Problem Overview
 
 - **Objective**: Find a trajectory $\mathbf{Z}(t)$ that connects:
   - A **stable fixed point** $\mathbf{Z}_0$ (node or focus)
   - A **saddle point** $\mathbf{Z}_s$
 
-- **Approach**: Reformulate the problem as a boundary value problem (BVP) by imposing appropriate conditions at both ends of the trajectory.
+- **Key Idea**: Use the eigenvectors of the Jacobian at both points to:
+  1. Express deviations from fixed points naturally
+  2. Set appropriate boundary conditions
+  3. Guide numerical solution methods
 
-- **Rationale**: The eigenvectors of the Jacobian, computed at $\mathbf{Z}_0$ and $\mathbf{Z}_s$, provide natural coordinates in which the displacement from these points can be expressed, simplifying the enforcement of boundary conditions.
+## 2. Mathematical Framework
 
----
+### 2.1. System Dynamics
 
 ## 2. Displacement from Fixed Points in the Eigenvector Basis
 
@@ -50,7 +51,21 @@ where:
 
 ## 3. Formulating the Boundary Value Problem
 
-### 3.1. Differential Equations
+### 3.1. Physical Interpretation of Boundary Conditions
+
+The switching trajectory represents the optimal (least-action) path connecting a metastable fixed point to the saddle point. The eigenvector analysis provides natural boundary conditions:
+
+- **At the Stable Fixed Point $\mathbf{Z}_0$:**
+  - The trajectory must *depart* along the unstable manifold
+  - Initial deviation $\Delta \mathbf{Z}(t)$ aligns with eigenvectors having $\text{Re}(\lambda_i) > 0$
+  - These directions indicate where fluctuations can push the system out of the basin of attraction
+
+- **At the Saddle Point $\mathbf{Z}_s$:**
+  - The trajectory must *arrive* along the stable manifold
+  - Final deviation $\Delta \mathbf{Z}(t)$ lies in the subspace of eigenvectors with $\text{Re}(\mu_j) < 0$
+  - This ensures smooth connection to classical dynamics leading to the other metastable state
+
+### 3.2. Differential Equations
 
 - The full dynamics are governed by the Hamiltonian equations of motion:
 
@@ -60,7 +75,7 @@ $$
   
 where $\mathbf{F}(\mathbf{Z})$ represents the set of equations derived from the full Hamiltonian.
 
-### 3.2. Boundary Conditions
+### 3.3. Boundary Conditions
 
 - **At $t \to -\infty$** (approaching the stable fixed point):
   
@@ -78,7 +93,7 @@ $$
   
 where only the modes with $\text{Re}(\mu_j) < 0$ (stable directions) remain bounded.
 
-### 3.3. Matching the Trajectory
+### 3.4. Matching the Trajectory
 
 - The task is to adjust the coefficients ${c_i}$ and ${d_j}$ such that the trajectory $\mathbf{Z}(t)$ satisfies the equations of motion and simultaneously meets the boundary conditions at both $\mathbf{Z}_0$ and $\mathbf{Z}_s$.
 

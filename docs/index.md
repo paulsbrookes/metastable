@@ -9,7 +9,9 @@ This repository contains research and documentation on the study of switching dy
 3. [Auxiliary Hamiltonian](derivation/KeldyshAuxiliaryHamiltonian.md) - Analysis of the auxiliary Hamiltonian system
 4. [Original Equations of Motion](derivation/OriginalEom.md) - Derivation and analysis of the system's equations of motion
 5. [Fixed Points](fixed_points/FixedPoints.md) - Analysis of the fixed points of the auxiliary Hamiltonian
-6. [Boundary Conditions](fixed_points/BoundaryConditions.md) - Analysis of the boundary conditions for the switching trajectories
+6. [Stability Analysis](fixed_points/StabilityAnalysis.md) - Analysis of the boundary conditions for the switching trajectories
+7. [Paths](paths/Paths.md) - Analysis of the paths for the switching trajectories
+
 ## About
 
 This documentation covers research into quantum activation in driven dissipative systems far from equilibrium. The work focuses on understanding how quantum noise associated with relaxation can lead to transitions between metastable states, even at zero temperature.

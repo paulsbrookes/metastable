@@ -18,4 +18,5 @@ nav:
   - Keldysh Auxiliary Hamiltonian: explain/KeldyshAuxiliaryHamiltonian.md
   - Quantum Imaginary Time: explain/QuantumImaginary.md
   - Fixed Points: explain/FixedPoints.md
-  - Boundary Conditions: explain/BoundaryConditions.md
+  - Stability Analysis: explain/StabilityAnalysis.md
+  - Paths: paths/Paths.md

@@ -1,4 +1,4 @@
-# Stability Analysis of the Full Equations of Motion
+# Stability Analysis
 
 In the previous section on the [Fixed Points](./FixedPoints.md) we identified steady states of the classical equations of motion and classified them as either saddles or nodes. Our overall goal is to find the switching trajectories which allow the system to escape from the nodes and reach the saddle point, and then calculate the actions of these trajectories with a view to obtaining the switching rates. For this we need to extend our analysis to include the quantum fields.
 

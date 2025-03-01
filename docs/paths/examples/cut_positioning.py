@@ -15,8 +15,3 @@ if __name__ == "__main__":
     # Create and display the bifurcation diagram
     fig = plot_bifurcation_diagram(fixed_point_map)
     fig.show()
-    
-    # Print some information about the map
-    print(f"Map contains {fixed_point_map.epsilon_linspace.size} epsilon values and {fixed_point_map.kappa_linspace.size} kappa values")
-    print(f"Delta: {fixed_point_map.delta}, Chi: {fixed_point_map.chi}")
-    print(f"Number of points in bistable region: {np.sum(fixed_point_map.bistable_region)}")

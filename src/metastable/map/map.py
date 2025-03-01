@@ -46,6 +46,8 @@ class FixedPointMap:
             where the last two dimensions represent fixed point type and (x, p) coordinates
         checked_points (NDArray[np.bool_]): Boolean mask of analyzed parameter combinations
         path_results (NDArray[object]): Array of path calculation results between fixed points
+        path_actions (NDArray[np.float_]): Array of action values and errors with shape (n_epsilon, n_kappa, 2, 2)
+            where the third dimension represents path type and the fourth dimension contains [value, error]
         eigenvalues (NDArray[np.complex_]): Eigenvalues array with shape (n_epsilon, n_kappa, 3, 4)
             where the last two dimensions represent fixed point type and eigenvalue index
         eigenvectors (NDArray[np.complex_]): Eigenvectors array with shape (n_epsilon, n_kappa, 3, 4, 4)
@@ -63,6 +65,7 @@ class FixedPointMap:
         path_results: Optional[
             NDArray[object]
         ] = None,  # Actually NDArray[Optional[BVPResult]]
+        path_actions: Optional[NDArray[np.float_]] = None,
         eigenvalues: Optional[NDArray[np.complex_]] = None,
         eigenvectors: Optional[NDArray[np.complex_]] = None,
     ):
@@ -91,12 +94,22 @@ class FixedPointMap:
             )
         )
 
-        self.path_results = (
+        self._path_results = (
             path_results
             if path_results is not None
             else np.empty(
                 shape=(len(epsilon_linspace), len(kappa_linspace), 2),
                 dtype=object,
+            )
+        )
+
+        self._path_actions = (
+            path_actions
+            if path_actions is not None
+            else np.full(
+                shape=(len(epsilon_linspace), len(kappa_linspace), 2, 2),
+                fill_value=np.nan,
+                dtype=float,
             )
         )
 
@@ -230,6 +243,63 @@ class FixedPointMap:
         self._checked_points = value
 
     @property
+    def path_results(self) -> NDArray[object]:
+        """
+        Array containing the results of path calculations between fixed points.
+
+        The array has shape (epsilon_points, kappa_points, 2) where:
+        - First dimension: different epsilon (drive amplitude) values
+        - Second dimension: different kappa (damping rate) values
+        - Third dimension: two types of paths (bright-to-saddle, dim-to-saddle) as defined in PathType
+
+        Returns:
+            NDArray[object]: 3D array of path calculation results
+        """
+        return self._path_results
+
+    @path_results.setter
+    def path_results(self, value: NDArray[object]):
+        """
+        Set the path results array.
+
+        Args:
+            value (NDArray[object]): 3D array with shape (epsilon_points, kappa_points, 2)
+                                    containing the results of path calculations for each path type
+                                    and parameter combination
+        """
+        self._path_results = value
+
+    @property
+    def path_actions(self) -> NDArray[np.float_]:
+        """
+        Array containing the action values and errors calculated along paths between fixed points.
+        
+        The array has shape (epsilon_points, kappa_points, 2, 2) where:
+        - First dimension: different epsilon (drive amplitude) values
+        - Second dimension: different kappa (damping rate) values
+        - Third dimension: two types of paths (bright-to-saddle, dim-to-saddle) as defined in PathType
+        - Fourth dimension: [action_value, error_estimate] pair for each path calculation
+        
+        NaN values indicate parameter combinations where actions haven't been calculated or paths don't exist.
+        
+        Returns:
+            NDArray[np.float_]: 4D array of action values and errors
+        """
+        return self._path_actions
+    
+    @path_actions.setter
+    def path_actions(self, value: NDArray[np.float_]):
+        """
+        Set the path actions array.
+        
+        Args:
+            value (NDArray[np.float_]): 4D array with shape (epsilon_points, kappa_points, 2, 2)
+                                      containing the action values and errors for each path type
+                                      and parameter combination
+        """
+        self._path_actions = value
+
+    @property
     def eigenvalues(self) -> NDArray[np.complex_]:
         """
         Array containing the eigenvalues for each fixed point and parameter combination.
@@ -339,6 +409,7 @@ class FixedPointMap:
             fixed_points=self.fixed_points,
             checked_points=self.checked_points,
             path_results=self.path_results,
+            path_actions=self.path_actions,
             eigenvalues=self.eigenvalues,
             eigenvectors=self.eigenvectors,
         )
@@ -366,6 +437,7 @@ class FixedPointMap:
             fixed_points=self.fixed_points.copy(),
             checked_points=self.checked_points.copy(),
             path_results=self.path_results.copy(),
+            path_actions=self.path_actions.copy(),
             eigenvalues=self.eigenvalues.copy(),
             eigenvectors=self.eigenvectors.copy(),
         )

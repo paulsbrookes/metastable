@@ -18,7 +18,7 @@ if __name__ == "__main__":
     # Create the bifurcation diagram
     fig = plot_bifurcation_diagram(fixed_point_map)
 
-    epsilon_idx = 375
+    epsilon_idx = 450
     kappa_boundaries: BistableBoundaries = get_bistable_kappa_range(fixed_point_map.bistable_region, epsilon_idx)
     
     # Add points to the plot
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         fig.add_scatter(x=[kappa_start, kappa_end], y=[epsilon_value, epsilon_value], 
                         mode='markers', marker=dict(size=10, color='red'), name='Bistable Range (κ)')
     
-    kappa_idx = 20
+    kappa_idx = 300
     epsilon_boundaries: BistableBoundaries = get_bistable_epsilon_range(fixed_point_map.bistable_region, kappa_idx)
     epsilon_cuts: Cuts = generate_cuts(epsilon_boundaries)
     
@@ -92,9 +92,14 @@ if __name__ == "__main__":
 
     output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output")
 
-    # Begin mapping switching paths
+    # # Begin mapping switching paths
+    # results = map_switching_paths(
+    #     fixed_point_map, epsilon_cuts.bright_saddle, output_path, endpoint_type=FixedPointType.BRIGHT
+    # )
+
+        # Begin mapping switching paths
     results = map_switching_paths(
-        fixed_point_map, epsilon_cuts.bright_saddle, output_path, endpoint_type=FixedPointType.BRIGHT
+        fixed_point_map, epsilon_cuts.dim_saddle, output_path/"2", endpoint_type=FixedPointType.DIM
     )
 
 

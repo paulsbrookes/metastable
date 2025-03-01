@@ -1,18 +1,20 @@
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
+import pyarrow as pa
 
-# Read data from Parquet files
-actions_bright_to_saddle = pd.read_parquet("actions_bright_to_saddle.parquet")
+# Read data from Parquet files - specify engine="pyarrow" to avoid the fastparquet issue
+actions_bright_to_saddle = pd.read_parquet("actions_bright_to_saddle.parquet", engine="pyarrow")
 actions_bright_to_saddle.columns = ["Bright to Saddle"]
-actions_dim_to_saddle = pd.read_parquet("actions_dim_to_saddle.parquet")
+actions_dim_to_saddle = pd.read_parquet("actions_dim_to_saddle.parquet", engine="pyarrow")
 actions_dim_to_saddle.columns = ["Dim to Saddle"]
 
 dykman_actions_bright_to_saddle = pd.read_parquet(
-    "dykman_actions_bright_to_saddle.parquet"
+    "dykman_actions_bright_to_saddle.parquet", engine="pyarrow"
 )
 dykman_actions_bright_to_saddle.columns = ["Dykman: Bright to Saddle"]
 
-dykman_actions_dim_to_saddle = pd.read_parquet("dykman_actions_dim_to_saddle.parquet")
+dykman_actions_dim_to_saddle = pd.read_parquet("dykman_actions_dim_to_saddle.parquet", engine="pyarrow")
 dykman_actions_dim_to_saddle.columns = ["Dykman: Dim to Saddle"]
 
 # Create the plot
@@ -34,4 +36,5 @@ axes.set_ylabel("action", fontsize=fs)
 axes.legend(fontsize=fs)
 
 # Show the plot
-plt.show()
+plt.savefig("plot.png")  # Save the plot as a PNG file
+# plt.show()  # Comment this out if saving to a file

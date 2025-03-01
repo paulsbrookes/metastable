@@ -10,7 +10,7 @@ from metastable.rescaled import (
 )
 
 
-map_path = "/home/paul/Projects/keldysh/metastable/experiments/backup-map/map-601x401-bright-to-saddle.npz"
+map_path = "/home/paul/Projects/misc/keldysh/metastable/experiments/backup-map/map-601x401-bright-to-saddle.npz"
 fixed_point_map = FixedPointMap.load(map_path)
 fig = plot_fixed_point_map(fixed_point_map)
 

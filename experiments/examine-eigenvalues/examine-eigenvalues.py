@@ -11,7 +11,7 @@ from metastable.eom import EOM, Params
 
 
 map_path = Path(
-    "/home/paul/Projects/keldysh/metastable/experiments/output/output_map.npz"
+    "/home/paul/Projects/misc/keldysh/metastable/experiments/output/output_map.npz"
 )
 
 # Load the map of fixed points

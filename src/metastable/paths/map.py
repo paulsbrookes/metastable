@@ -4,7 +4,7 @@ import io
 import logging
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 from tqdm import tqdm
 from pathlib import Path
 from scipy.integrate import solve_bvp
@@ -22,6 +22,17 @@ from metastable.generate_boundary_conditions import generate_boundary_condition_
 class IndexPair:
     epsilon_idx: int
     kappa_idx: int
+
+@dataclass
+class BistableBoundaries:
+    dim_saddle: Optional[IndexPair]
+    bright_saddle: Optional[IndexPair]
+
+@dataclass
+class Cuts:
+    """Paths traversing the bistable region from each boundary point."""
+    dim_saddle: List[IndexPair]  # Path starting at the dim-saddle bifurcation
+    bright_saddle: List[IndexPair]  # Path starting at the bright-saddle bifurcation
 
 
 def configure_logging(file_name):
@@ -215,3 +226,128 @@ def map_switching_paths(
         results.append(path_result)
 
     return results
+
+
+def get_bistable_epsilon_range(
+    bistable_region: np.ndarray, kappa_idx: int
+) -> BistableBoundaries:
+    """
+    Get the epsilon indices at the bistable boundaries for a given kappa index.
+    
+    This function identifies the lower and upper epsilon indices that bound the bistable
+    region at a specific kappa value.
+    
+    Args:
+        bistable_region: 2D boolean array indicating where the system is bistable
+        kappa_idx: Index in the kappa dimension
+        
+    Returns:
+        BistableBoundary: A dataclass containing:
+            - bright_saddle: IndexPair at the bright-saddle bifurcation (lower epsilon boundary)
+            - dim_saddle: IndexPair at the dim-saddle bifurcation (upper epsilon boundary)
+            Both values are None if no bistable region exists at the specified kappa.
+    """
+    bistable_epsilon = np.where(bistable_region[:, kappa_idx])[0]
+    
+    if len(bistable_epsilon) == 0:
+        return BistableBoundaries(bright_saddle=None, dim_saddle=None)
+        
+    bright_saddle_idx = bistable_epsilon[0]  # Lower boundary is bright-saddle bifurcation
+    dim_saddle_idx = bistable_epsilon[-1]    # Upper boundary is dim-saddle bifurcation
+    
+    bright_saddle_pair = IndexPair(epsilon_idx=bright_saddle_idx, kappa_idx=kappa_idx)
+    dim_saddle_pair = IndexPair(epsilon_idx=dim_saddle_idx, kappa_idx=kappa_idx)
+    
+    return BistableBoundaries(bright_saddle=bright_saddle_pair, dim_saddle=dim_saddle_pair)
+
+
+def get_bistable_kappa_range(
+    bistable_region: np.ndarray, epsilon_idx: int
+) -> BistableBoundaries:
+    """
+    Get the kappa indices at the bistable boundaries for a given epsilon index.
+    
+    This function identifies the lower and upper kappa indices that bound the bistable
+    region at a specific epsilon value.
+    
+    Args:
+        bistable_region: 2D boolean array indicating where the system is bistable
+        epsilon_idx: Index in the epsilon dimension
+        
+    Returns:
+        BistableBoundary: A dataclass containing:
+            - dim_saddle: IndexPair at the dim-saddle bifurcation (lower kappa boundary)
+            - bright_saddle: IndexPair at the bright-saddle bifurcation (upper kappa boundary)
+            Both values are None if no bistable region exists at the specified epsilon.
+    """
+    bistable_kappa = np.where(bistable_region[epsilon_idx, :])[0]
+    
+    if len(bistable_kappa) == 0:
+        return BistableBoundaries(dim_saddle=None, bright_saddle=None)
+        
+    dim_saddle_idx = bistable_kappa[0]       # Lower boundary is dim-saddle bifurcation
+    bright_saddle_idx = bistable_kappa[-1]   # Upper boundary is bright-saddle bifurcation
+    
+    dim_saddle_pair = IndexPair(epsilon_idx=epsilon_idx, kappa_idx=dim_saddle_idx)
+    bright_saddle_pair = IndexPair(epsilon_idx=epsilon_idx, kappa_idx=bright_saddle_idx)
+    
+    return BistableBoundaries(dim_saddle=dim_saddle_pair, bright_saddle=bright_saddle_pair)
+
+
+def generate_cuts(
+    boundary: BistableBoundaries, 
+    n_points: Optional[int] = None
+) -> Cuts:
+    """
+    Generate paths of IndexPair objects that traverse the bistable region.
+    
+    Args:
+        boundary: BistableBoundary object containing the dim_saddle and bright_saddle points
+        n_points: Optional number of points to include in each path. If None, uses the maximum
+                 distance between indices (either epsilon or kappa) as the number of points.
+        
+    Returns:
+        Cuts object containing:
+            - dim_saddle: List of IndexPair objects from dim_saddle toward bright_saddle
+            - bright_saddle: List of IndexPair objects from bright_saddle toward dim_saddle
+            
+    Raises:
+        ValueError: If boundary points are None or invalid
+    """
+    if boundary.dim_saddle is None or boundary.bright_saddle is None:
+        raise ValueError("Both boundary points must be defined")
+    
+    # Extract coordinates
+    dim_epsilon = boundary.dim_saddle.epsilon_idx
+    dim_kappa = boundary.dim_saddle.kappa_idx
+    bright_epsilon = boundary.bright_saddle.epsilon_idx
+    bright_kappa = boundary.bright_saddle.kappa_idx
+    
+    # Determine number of points if not specified
+    if n_points is None:
+        epsilon_distance = abs(dim_epsilon - bright_epsilon)
+        kappa_distance = abs(dim_kappa - bright_kappa)
+        n_points = max(epsilon_distance, kappa_distance) + 1  # +1 to include both endpoints
+    
+    # Ensure we have at least 2 points (start and end)
+    n_points = max(2, n_points)
+    
+    # Create evenly spaced points for dim to bright path
+    dim_to_bright = []
+    for i in range(n_points):
+        # Linear interpolation between endpoints
+        t = i / (n_points - 1)  # t goes from 0 to 1
+        epsilon_idx = round(dim_epsilon + t * (bright_epsilon - dim_epsilon))
+        kappa_idx = round(dim_kappa + t * (bright_kappa - dim_kappa))
+        dim_to_bright.append(IndexPair(epsilon_idx=epsilon_idx, kappa_idx=kappa_idx))
+    
+    # Create evenly spaced points for bright to dim path
+    bright_to_dim = []
+    for i in range(n_points):
+        # Linear interpolation between endpoints
+        t = i / (n_points - 1)  # t goes from 0 to 1
+        epsilon_idx = round(bright_epsilon + t * (dim_epsilon - bright_epsilon))
+        kappa_idx = round(bright_kappa + t * (dim_kappa - bright_kappa))
+        bright_to_dim.append(IndexPair(epsilon_idx=epsilon_idx, kappa_idx=kappa_idx))
+    
+    return Cuts(dim_saddle=dim_to_bright, bright_saddle=bright_to_dim)

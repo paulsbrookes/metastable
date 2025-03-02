@@ -3,7 +3,7 @@ from metastable.map.map import FixedPointMap, FixedPointType
 from metastable.map.visualisations.bifurcation_lines import plot_bifurcation_diagram
 from metastable.paths.map import (
     get_bistable_kappa_range, 
-    generate_cuts,
+    generate_sweep_index_pairs,
     map_switching_paths
 )
 import numpy as np
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     kappa_boundaries = get_bistable_kappa_range(fixed_point_map.bistable_region, epsilon_idx)
     
     # Generate kappa cuts
-    kappa_cuts = generate_cuts(kappa_boundaries)
+    kappa_cuts = generate_sweep_index_pairs(kappa_boundaries)
     
     # Get the actual epsilon value from index
     epsilon_value = fixed_point_map.epsilon_linspace[epsilon_idx]

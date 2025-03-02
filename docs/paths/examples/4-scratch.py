@@ -1,7 +1,7 @@
 from pathlib import Path
 from metastable.map.map import FixedPointMap, FixedPointType
 from metastable.map.visualisations.bifurcation_lines import plot_bifurcation_diagram
-from metastable.paths.map import get_bistable_kappa_range, get_bistable_epsilon_range, IndexPair, BistableBoundaries, Cuts, generate_cuts
+from metastable.paths.map import get_bistable_kappa_range, get_bistable_epsilon_range, IndexPair, BistableBoundaries, Sweeps, generate_sweep_index_pairs
 import numpy as np
 from typing import Optional, Tuple
 from metastable.paths.map import map_switching_paths
@@ -34,10 +34,10 @@ if __name__ == "__main__":
     
     kappa_idx = 300
     epsilon_boundaries: BistableBoundaries = get_bistable_epsilon_range(fixed_point_map.bistable_region, kappa_idx)
-    epsilon_cuts: Cuts = generate_cuts(epsilon_boundaries)
+    epsilon_cuts: Sweeps = generate_sweep_index_pairs(epsilon_boundaries)
     
     # Generate kappa cuts
-    kappa_cuts: Cuts = generate_cuts(kappa_boundaries)
+    kappa_cuts: Sweeps = generate_sweep_index_pairs(kappa_boundaries)
     
     # Add points to the plot
     # Get the actual epsilon and kappa values from indices

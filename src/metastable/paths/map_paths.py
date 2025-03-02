@@ -4,12 +4,11 @@ from pathlib import Path
 from tqdm import tqdm
 from typing import List, Optional
 
-from metastable.map.map import FixedPointMap, FixedPointType, PathType
-from metastable.generate_guess import generate_guess_from_sol
 
+from metastable.map.map import FixedPointMap, FixedPointType, PathType
 from metastable.paths.data_structures import IndexPair
 from metastable.paths.logging_utils import configure_logging
-from metastable.paths.parameter_utils import generate_linear_guess_from_map
+from metastable.paths.guess_generation import generate_linear_guess_from_map, generate_guess_from_sol
 from metastable.paths.path_solvers import process_index
 from metastable.paths.visualization import plot_solution
 
@@ -39,6 +38,10 @@ def map_switching_paths(
     Returns:
         List of BVPResult objects for each calculated path
     """
+    # Check if output directory exists and raise exception if overwrite_existing is False
+    if output_path.exists() and not overwrite_existing:
+        raise FileExistsError(f"Output path '{output_path}' already exists and overwrite_existing is False")
+    
     # Create output directory if it doesn't exist
     output_path.mkdir(parents=True, exist_ok=True)
     

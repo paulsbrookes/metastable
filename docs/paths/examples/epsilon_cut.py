@@ -65,13 +65,13 @@ if __name__ == "__main__":
     fig = plot_bifurcation_diagram(fixed_point_map)
 
     # Choose a kappa index for the epsilon cut
-    kappa_idx = 40
+    kappa_idx = 60
     
     # Get the bistable epsilon range for this kappa
     epsilon_boundaries = get_bistable_epsilon_range(fixed_point_map.bistable_region, kappa_idx)
     
     # Generate epsilon sweeps
-    epsilon_sweeps = generate_sweep_index_pairs(epsilon_boundaries, sweep_fraction=0.1)
+    epsilon_sweeps = generate_sweep_index_pairs(epsilon_boundaries, sweep_fraction=0.15)
     
     # Get the actual kappa value from index
     kappa_value = fixed_point_map.kappa_linspace[kappa_idx]

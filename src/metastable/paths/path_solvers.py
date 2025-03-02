@@ -8,7 +8,7 @@ from scipy.integrate._bvp import BVPResult
 
 from metastable.map.map import FixedPointMap, FixedPointType
 from metastable.eom import EOM
-from metastable.generate_boundary_conditions import generate_boundary_condition_func
+from metastable.paths.boundary_conditions.boundary_conditions_alt import generate_boundary_condition_func
 
 from metastable.paths.data_structures import IndexPair
 from metastable.paths.parameter_utils import extract_params, prepare_saddle_and_focus_points

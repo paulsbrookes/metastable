@@ -329,8 +329,8 @@ class FixedPointMap:
         - First dimension: different epsilon (drive amplitude) values
         - Second dimension: different kappa (damping rate) values
         - Third dimension: three types of fixed points (saddle, bright, dim)
-        - Fourth dimension: four eigenvalues
-        - Fifth dimension: four components of each eigenvector
+        - Fourth dimension: four components of each eigenvector
+        - Fifth dimension: indexes which eigenvalue the eigenvector belongs to
 
         Returns:
             NDArray[np.complex_]: 5D array of eigenvectors

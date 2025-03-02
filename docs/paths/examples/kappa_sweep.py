@@ -19,7 +19,7 @@ if __name__ == "__main__":
     )
     fixed_point_map = FixedPointMap.load(map_path)
 
-    output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/1")
+    output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/5")
     
     # Create the bifurcation diagram
     fig = plot_bifurcation_diagram(fixed_point_map)
@@ -54,14 +54,14 @@ if __name__ == "__main__":
     # Display the plot
     fig.show()
     
-    # Map switching paths for bright fixed point
-    path_results_bright = map_switching_paths(
-        fixed_point_map, 
-        kappa_cuts.bright_saddle, 
-        output_path,
-        t_end=10.0,
-        endpoint_type=FixedPointType.BRIGHT
-    )
+    # # Map switching paths for bright fixed point
+    # path_results_bright = map_switching_paths(
+    #     fixed_point_map, 
+    #     kappa_cuts.bright_saddle, 
+    #     output_path,
+    #     t_end=9.0,
+    #     endpoint_type=FixedPointType.BRIGHT
+    # )
     
     # Map switching paths for dim fixed point
     path_results_dim = map_switching_paths(

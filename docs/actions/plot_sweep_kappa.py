@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from metastable.map.map import FixedPointMap, PathType
 
 # Load the fixed point map
-path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/1/output_map_with_actions.npz")
+path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/3/output_map_with_actions.npz")
 fixed_point_map = FixedPointMap.load(path)
 
 # Get the parameter grids

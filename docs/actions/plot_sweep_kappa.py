@@ -1,28 +1,25 @@
 from pathlib import Path
 import numpy as np
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from metastable.map.map import FixedPointMap, PathType
 
 # Load the fixed point map
-path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/4/dim_kappa_cut/output_map_with_actoins.npz")
+path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/1/output_map_with_actions.npz")
 fixed_point_map = FixedPointMap.load(path)
 
 # Get the parameter grids
 epsilon = fixed_point_map.epsilon_linspace
 kappa = fixed_point_map.kappa_linspace
 
+# Calculate normalized kappa values (kappa/delta)
+normalized_kappa = kappa / fixed_point_map.delta
+
 # Extract action values and errors for each path type
 bright_to_saddle_actions = fixed_point_map.path_actions[:, :, PathType.BRIGHT_TO_SADDLE.value]
 dim_to_saddle_actions = fixed_point_map.path_actions[:, :, PathType.DIM_TO_SADDLE.value]
 
-# Create subplots
-fig = make_subplots(
-    rows=1, cols=2,
-    subplot_titles=("Bright to Saddle Action", "Dim to Saddle Action"),
-    shared_xaxes=True, shared_yaxes=True,
-    horizontal_spacing=0.05
-)
+# Create a single plot instead of subplots
+fig = go.Figure()
 
 # Function to check if a cut has valid data
 def has_valid_data(data_slice):
@@ -35,18 +32,18 @@ colors = [f'rgb({int(255*i/len(epsilon))}, {int(100+155*(1-i/len(epsilon)))}, {i
 # For bright to saddle
 for i, eps in enumerate(epsilon):
     # Get the cut along kappa at this epsilon
-    bright_cut_values = bright_to_saddle_actions[i, :, 0]  # Action values
+    bright_cut_values = -bright_to_saddle_actions[i, :, 0]  # Negative action values
     bright_cut_errors = bright_to_saddle_actions[i, :, 1]  # Error values
     
     # Only plot if there's valid data
-    if has_valid_data(bright_cut_values):
+    if has_valid_data(bright_to_saddle_actions[i, :, 0]):  # Check original values for validity
         fig.add_trace(
             go.Scatter(
-                x=kappa,
+                x=normalized_kappa,
                 y=bright_cut_values,
                 mode='lines',
                 line=dict(color=colors[i], width=2),
-                name=f'ε = {eps:.4f}',
+                name=f'Bright to Saddle, ε = {eps:.4f}',
                 legendgroup=f'epsilon_{i}',
                 error_y=dict(
                     type='data',
@@ -56,27 +53,25 @@ for i, eps in enumerate(epsilon):
                     thickness=1,
                     width=3
                 )
-            ),
-            row=1, col=1
+            )
         )
 
 # For dim to saddle
 for i, eps in enumerate(epsilon):
     # Get the cut along kappa at this epsilon
-    dim_cut_values = dim_to_saddle_actions[i, :, 0]  # Action values
+    dim_cut_values = -dim_to_saddle_actions[i, :, 0]  # Negative action values
     dim_cut_errors = dim_to_saddle_actions[i, :, 1]  # Error values
     
     # Only plot if there's valid data
-    if has_valid_data(dim_cut_values):
+    if has_valid_data(dim_to_saddle_actions[i, :, 0]):  # Check original values for validity
         fig.add_trace(
             go.Scatter(
-                x=kappa,
+                x=normalized_kappa,
                 y=dim_cut_values,
                 mode='lines',
-                line=dict(color=colors[i], width=2),
-                name=f'ε = {eps:.4f}',
+                line=dict(color=colors[i], width=2, dash='dash'),  # Use dashed lines for dim to saddle
+                name=f'Dim to Saddle, ε = {eps:.4f}',
                 legendgroup=f'epsilon_{i}',
-                showlegend=False,  # Don't show duplicate legends
                 error_y=dict(
                     type='data',
                     array=dim_cut_errors,
@@ -85,8 +80,7 @@ for i, eps in enumerate(epsilon):
                     thickness=1,
                     width=3
                 )
-            ),
-            row=1, col=2
+            )
         )
 
 # Add bifurcation lines if available
@@ -99,17 +93,16 @@ if lower_line.size > 0 and upper_line.size > 0:
 
 # Update layout
 fig.update_layout(
-    title="Action Values vs Damping Rate (κ) for Different Drive Amplitudes (ε)",
-    xaxis_title="κ (Damping Rate)",
-    yaxis_title="Action",
-    xaxis2_title="κ (Damping Rate)",
+    title="Negative Action Values vs Normalized Damping Rate (κ/Δ) for Different Drive Amplitudes (ε)",
+    xaxis_title="κ/Δ (Normalized Damping Rate)",
+    yaxis_title="-Action",
     height=600,
-    width=1200,
+    width=1000,
     legend=dict(
         yanchor="top",
         y=0.99,
-        xanchor="left",
-        x=0.01
+        xanchor="right",
+        x=0.99
     )
 )
 

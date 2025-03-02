@@ -9,18 +9,22 @@ from metastable.paths import (
 import numpy as np
 
 
-def plot_epsilon_sweeps(fig, fixed_point_map, sweeps):
+def plot_parameter_sweeps(fixed_point_map, sweeps, fig=None):
     """
-    Plot epsilon cuts on a bifurcation diagram.
+    Plot parameter sweeps on a bifurcation diagram.
     
     Args:
-        fig: The plotly figure to add the cuts to
         fixed_point_map: The FixedPointMap containing parameter data
-        sweeps: The epsilon sweep index pairs
+        sweeps: The parameter sweep index pairs
+        fig: Optional existing plotly figure. If None, a new figure will be created.
         
     Returns:
-        The updated figure
+        The updated figure with parameter sweeps
     """
+    # Create bifurcation diagram if no figure is provided
+    if fig is None:
+        fig = plot_bifurcation_diagram(fixed_point_map)
+    
     if sweeps.bright_saddle and sweeps.dim_saddle:
         # Extract kappa and epsilon values for the bright_saddle cut
         bright_cut_kappas = [fixed_point_map.kappa_linspace[pair.kappa_idx] for pair in sweeps.bright_saddle]
@@ -89,7 +93,7 @@ if __name__ == "__main__":
         )
     
     # Plot the epsilon cuts
-    fig = plot_epsilon_sweeps(fig, fixed_point_map, epsilon_sweeps)
+    fig = plot_parameter_sweeps(fixed_point_map, epsilon_sweeps, fig)
     
     # Display the plot
     fig.show()

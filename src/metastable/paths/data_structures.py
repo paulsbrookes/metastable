@@ -8,8 +8,8 @@ class IndexPair:
 
 @dataclass
 class BistableBoundaries:
-    dim_saddle: Optional[IndexPair]
-    bright_saddle: Optional[IndexPair]
+    dim_saddle: IndexPair
+    bright_saddle: IndexPair
 
 @dataclass
 class Sweeps:

@@ -2,7 +2,7 @@ import numpy as np
 import logging
 from pathlib import Path
 from tqdm import tqdm
-from typing import List, Optional
+from typing import List
 
 
 from metastable.map.map import FixedPointMap, FixedPointType, PathType
@@ -11,6 +11,7 @@ from metastable.paths.logging_utils import configure_logging
 from metastable.paths.guess_generation import generate_linear_guess_from_map, generate_guess_from_sol
 from metastable.paths.path_solvers import process_index
 from metastable.paths.visualization import plot_solution
+
 
 def map_switching_paths(
     fixed_point_map: FixedPointMap,

@@ -5,10 +5,11 @@ from tqdm import tqdm
 from typing import List, Optional
 
 from metastable.map.map import FixedPointMap, FixedPointType, PathType
+from metastable.generate_guess import generate_guess_from_sol
 
 from metastable.paths.data_structures import IndexPair
 from metastable.paths.logging_utils import configure_logging
-from metastable.paths.guess_generators import generate_linear_guess_from_map, generate_guess_from_sol
+from metastable.paths.parameter_utils import generate_linear_guess_from_map
 from metastable.paths.path_solvers import process_index
 from metastable.paths.visualization import plot_solution
 

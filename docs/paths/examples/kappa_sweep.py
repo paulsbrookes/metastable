@@ -19,7 +19,7 @@ if __name__ == "__main__":
     )
     fixed_point_map = FixedPointMap.load(map_path)
 
-    output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/5")
+    output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/4")
     
     # Create the bifurcation diagram
     fig = plot_bifurcation_diagram(fixed_point_map)
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     kappa_boundaries = get_bistable_kappa_range(fixed_point_map.bistable_region, epsilon_idx)
     
     # Generate kappa cuts
-    kappa_cuts = generate_sweep_index_pairs(kappa_boundaries, sweep_fraction=0.5)
+    kappa_cuts = generate_sweep_index_pairs(kappa_boundaries, sweep_fraction=0.25)
     
     # Get the actual epsilon value from index
     epsilon_value = fixed_point_map.epsilon_linspace[epsilon_idx]

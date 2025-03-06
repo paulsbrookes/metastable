@@ -17,7 +17,7 @@ def extract_params(fixed_point_map: FixedPointMap, index_pair: IndexPair) -> Par
     )
 
 
-def prepare_saddle_and_focus_points(
+def prepare_saddle_and_stable_points(
     fixed_point_map: FixedPointMap,
     index_pair: IndexPair,
     fixed_point_type: FixedPointType,

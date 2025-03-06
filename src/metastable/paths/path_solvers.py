@@ -8,10 +8,10 @@ from scipy.integrate._bvp import BVPResult
 
 from metastable.map.map import FixedPointMap, FixedPointType
 from metastable.eom import EOM
-from metastable.paths.boundary_conditions.boundary_conditions_alt import generate_boundary_condition_func
+from metastable.paths.boundary_conditions.boundary_conditions import generate_boundary_condition_func
 
 from metastable.paths.data_structures import IndexPair
-from metastable.paths.parameter_utils import extract_params, prepare_saddle_and_focus_points
+from metastable.paths.parameter_utils import extract_params, prepare_saddle_and_stable_points
 
 def solve_path(
     eom, boundary_condition_func, t_guess: np.ndarray, y_guess: np.ndarray
@@ -51,7 +51,7 @@ def process_index(
 
     eom = EOM(params=params)
 
-    keldysh_saddle_point, keldysh_focus_point = prepare_saddle_and_focus_points(
+    keldysh_saddle_point, keldysh_focus_point = prepare_saddle_and_stable_points(
         fixed_point_map, index_pair, endpoint_type
     )
 

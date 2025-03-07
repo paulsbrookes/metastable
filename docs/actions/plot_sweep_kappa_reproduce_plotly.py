@@ -25,7 +25,7 @@ fig = make_subplots(
 )
 
 # Load data
-map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/4/output_map_with_actions.npz"
+map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/1/output_map_with_actions.npz"
 fixed_point_map = FixedPointMap.load(map_path)
 
 kappa_rescaled_linspace = calculate_kappa_rescaled(

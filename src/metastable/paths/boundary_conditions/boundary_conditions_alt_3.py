@@ -108,7 +108,14 @@ def generate_boundary_condition_func(
         """
         
         # Combine the components for the boundary conditions
-        return np.abs(np.hstack([stable_components[0]+stable_components[1], stable_components[0]-stable_components[1], saddle_components[2:4]]))
+        # First two conditions unchanged, third is only saddle_components[2],
+        # fourth is the absolute magnitude of stable_components set to 0.0001
+        return np.hstack([
+            stable_components[0]+stable_components[1], 
+            # stable_components[0]-stable_components[1], 
+            saddle_components[2:4],
+            np.linalg.norm(stable_components) - 0.000001
+        ])
 
     def boundary_condition_func(ya: NDArray, yb: NDArray):
         """

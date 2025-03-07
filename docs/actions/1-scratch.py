@@ -13,7 +13,7 @@ import numpy as np
 import plotly.graph_objects as go
 from metastable.paths.parameter_utils import prepare_saddle_and_stable_points, IndexPair, extract_params
 from metastable.manifold_inverses import calculate_manifold_inverses
-from metastable.paths.boundary_conditions.boundary_conditions_alt import calculate_jacobian_properties
+from metastable.paths.boundary_conditions.boundary_conditions_alt import calculate_jacobian_eigenbasis
 
 if __name__ == "__main__":
 
@@ -44,22 +44,22 @@ if __name__ == "__main__":
 
 
     # Calculate Jacobian properties at the saddle point
-    saddle_eigenvalues, saddle_eigenvectors, saddle_recip_eigenvectors = calculate_jacobian_properties(
+    saddle_eigenvalues, saddle_recip_eigenvectors, saddle_eigenvectors = calculate_jacobian_eigenbasis(
         keldysh_saddle_point, params
     )
     
     # Calculate Jacobian properties at the stable point
-    stable_eigenvalues, stable_eigenvectors, stable_recip_eigenvectors = calculate_jacobian_properties(
+    stable_eigenvalues, stable_recip_eigenvectors, stable_eigenvectors = calculate_jacobian_eigenbasis(
         keldysh_stable_point, params
     )
 
     # Extract unstable manifold inverse from saddle point (positive real eigenvalues)
     unstable_indices = np.where(np.real(saddle_eigenvalues) > 0)[0]
-    saddle_point_unstable_manifold_inverse_alt = saddle_recip_eigenvectors[:, unstable_indices]
+    saddle_point_unstable_manifold_inverse_alt = saddle_recip_eigenvectors[unstable_indices, :]
     
     # Extract stable manifold inverse from stable point (negative real eigenvalues)
     stable_indices = np.where(np.real(stable_eigenvalues) < 0)[0]
-    stable_point_stable_manifold_inverse_alt = stable_recip_eigenvectors[:, stable_indices]
+    stable_point_stable_manifold_inverse_alt = stable_recip_eigenvectors[stable_indices, :]
 
     ...
 

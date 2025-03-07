@@ -108,7 +108,7 @@ def generate_boundary_condition_func(
         """
         
         # Combine the components for the boundary conditions
-        return np.abs(np.hstack([stable_components[0]+stable_components[1], stable_components[0]-stable_components[1], saddle_components[2:4]]))
+        return np.hstack([stable_components[0], stable_components[1], saddle_components[2:4]])
 
     def boundary_condition_func(ya: NDArray, yb: NDArray):
         """

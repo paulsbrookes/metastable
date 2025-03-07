@@ -17,11 +17,11 @@ if __name__ == "__main__":
 
     # Load the fixed point map
     map_path = Path(
-        "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/0/output_map_with_actions.npz"
+        "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/1/output_map_with_actions.npz"
     )
     fixed_point_map = FixedPointMap.load(map_path)
     epsilon_idx = 380
-    kappa_idx = 114
+    kappa_idx = 150
     path_result = fixed_point_map.path_results[epsilon_idx,kappa_idx,1]
     print(path_result)
     

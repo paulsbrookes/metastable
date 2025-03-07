@@ -9,23 +9,23 @@ from metastable.rescaled import (
     map_beta_to_epsilon,
 )
 from metastable.rescaled.barriers import dykman_actions_calc
-from metastable.paths import get_bistable_kappa_range
+from metastable.paths import get_bistable_epsilon_range
 
 # Set global parameters
 delta = 7.8  # Scaling factor
-x_max = 0.6  # Upper limit for x-axis
+y_max = 0.6  # Upper limit for y-axis
 
-# Create figure with two rows and one column, sharing x-axis
+# Create figure with two rows and one column, NOT sharing x-axis
 fig = make_subplots(
     rows=2, 
     cols=1, 
-    shared_xaxes=True,
+    shared_xaxes=False,
     vertical_spacing=0.05,
     row_heights=[0.5, 0.5]
 )
 
 # Load data
-map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/0/output_map_with_actions.npz"
+map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/8/output_map_with_actions.npz"
 fixed_point_map = FixedPointMap.load(map_path)
 
 kappa_rescaled_linspace = calculate_kappa_rescaled(
@@ -36,46 +36,46 @@ epsilon_limits_array = map_beta_to_epsilon(
     beta_limits_array, chi=fixed_point_map.chi, delta=fixed_point_map.delta
 )
 
-# Lower row: Custom graph data
-epsilon_idx = 380
-# this is a dataframe with an index containing kappa
+# Left column: Fixed kappa, sweep epsilon
+kappa_idx = 325
+# this is a dataframe with an index containing epsilon
 actions_bright_to_saddle = pd.DataFrame(
-    fixed_point_map.path_actions[epsilon_idx, :, PathType.BRIGHT_TO_SADDLE.value, 0],
-    index=fixed_point_map.kappa_linspace,
+    fixed_point_map.path_actions[:, kappa_idx, PathType.BRIGHT_TO_SADDLE.value, 0],
+    index=fixed_point_map.epsilon_linspace,
     columns=[r"$R_{b \to u}$"]
 )
 
 actions_dim_to_saddle = pd.DataFrame(
-    fixed_point_map.path_actions[epsilon_idx, :, PathType.DIM_TO_SADDLE.value, 0],
-    index=fixed_point_map.kappa_linspace,
+    fixed_point_map.path_actions[:, kappa_idx, PathType.DIM_TO_SADDLE.value, 0],
+    index=fixed_point_map.epsilon_linspace,
     columns=[r"$R_{d \to u}$"]
 )
 
-# Get epsilon value from the fixed point map
-epsilon = fixed_point_map.epsilon_linspace[epsilon_idx]
+# Get kappa value from the fixed point map
+kappa = fixed_point_map.kappa_linspace[kappa_idx]
 
-kappa_boundaries = get_bistable_kappa_range(fixed_point_map.bistable_region, epsilon_idx)
-kappa_min = kappa_boundaries.dim_saddle.kappa_idx
-kappa_max = kappa_boundaries.bright_saddle.kappa_idx
+epsilon_boundaries = get_bistable_epsilon_range(fixed_point_map.bistable_region, kappa_idx)
+epsilon_min = epsilon_boundaries.bright_saddle.epsilon_idx
+epsilon_max = epsilon_boundaries.dim_saddle.epsilon_idx
 
 # Calculate Dykman actions - function returns both bright_to_saddle and dim_to_saddle values
 dykman_bright_to_saddle_values, dykman_dim_to_saddle_values = dykman_actions_calc(
     delta=fixed_point_map.delta,
     chi=fixed_point_map.chi,
-    eps=epsilon,
-    kappa=fixed_point_map.kappa_linspace[kappa_min:kappa_max],
+    eps=fixed_point_map.epsilon_linspace[epsilon_min:epsilon_max],
+    kappa=kappa,
 )
 
 # Create DataFrames with calculated values
 dykman_actions_bright_to_saddle = pd.DataFrame(
     dykman_bright_to_saddle_values,
-    index=fixed_point_map.kappa_linspace[kappa_min:kappa_max],
+    index=fixed_point_map.epsilon_linspace[epsilon_min:epsilon_max],
     columns=[r"$R_{b \to u}$"]
 )
 
 dykman_actions_dim_to_saddle = pd.DataFrame(
     dykman_dim_to_saddle_values,
-    index=fixed_point_map.kappa_linspace[kappa_min:kappa_max],
+    index=fixed_point_map.epsilon_linspace[epsilon_min:epsilon_max],
     columns=[r"$R_{d \to u}$"]
 )
 
@@ -89,28 +89,34 @@ for df in [
     df.index = df.index / delta
 
 # Get the upper limit from dykman_actions_bright_to_saddle and lower limit from dykman_actions_dim_to_saddle
-lower_epsilon = dykman_actions_bright_to_saddle.index.min()
-upper_epsilon = dykman_actions_bright_to_saddle.index.max()
+lower_kappa = dykman_actions_bright_to_saddle.index.min()
+upper_kappa = dykman_actions_bright_to_saddle.index.max()
+
+# Plot left panel data - bifurcation diagram
+# Create arrays for the bifurcation curves
+kappa_values = fixed_point_map.kappa_linspace / delta
+epsilon_unstable_bright = epsilon_limits_array[0] / delta
+epsilon_unstable_dim = epsilon_limits_array[1] / delta
 
 # Add light grey shading to upper panel
-fig.add_shape(
-    type="rect",
-    x0=lower_epsilon,
-    x1=upper_epsilon,
-    y0=0,
-    y1=3.5,
-    fillcolor="lightgrey",
-    opacity=0.5,
-    layer="below",
-    line_width=0,
-    row=1, col=1
-)
+# fig.add_shape(
+#     type="rect",
+#     x0=lower_kappa,
+#     x1=upper_kappa,
+#     y0=0,
+#     y1=3.5,
+#     fillcolor="lightgrey",
+#     opacity=0.5,
+#     layer="below",
+#     line_width=0,
+#     row=1, col=1
+# )
 
-# Plot upper panel data
+# Plot upper panel data - bifurcation diagram
 fig.add_trace(
     go.Scatter(
-        x=fixed_point_map.kappa_linspace / delta,
-        y=epsilon_limits_array[0] / delta,
+        x=kappa_values,
+        y=epsilon_unstable_bright,
         mode="lines",
         name="Unstable-Bright",
         line=dict(color="red", width=3),
@@ -121,8 +127,8 @@ fig.add_trace(
 
 fig.add_trace(
     go.Scatter(
-        x=fixed_point_map.kappa_linspace / delta,
-        y=epsilon_limits_array[1] / delta,
+        x=kappa_values,
+        y=epsilon_unstable_dim,
         mode="lines",
         name="Unstable-Dim",
         line=dict(color="blue", width=3),
@@ -131,11 +137,11 @@ fig.add_trace(
     row=1, col=1
 )
 
-# Add dashed black line at epsilon = 19.0 / delta
+# Add dashed black line at kappa = kappa / delta
 fig.add_trace(
     go.Scatter(
-        x=[0, x_max],
-        y=[19.0 / delta, 19.0 / delta],
+        x=[kappa / delta, kappa / delta],
+        y=[0, 3.5],
         mode="lines",
         line=dict(color="black", width=3, dash="dash"),
         showlegend=False
@@ -144,20 +150,20 @@ fig.add_trace(
 )
 
 # Add light grey shading to lower panel
-fig.add_shape(
-    type="rect",
-    x0=lower_epsilon,
-    x1=upper_epsilon,
-    y0=0,
-    y1=8.0,
-    fillcolor="lightgrey",
-    opacity=0.5,
-    layer="below",
-    line_width=0,
-    row=2, col=1
-)
+# fig.add_shape(
+#     type="rect",
+#     x0=lower_kappa,
+#     x1=upper_kappa,
+#     y0=0,
+#     y1=8.0,
+#     fillcolor="lightgrey",
+#     opacity=0.5,
+#     layer="below",
+#     line_width=0,
+#     row=2, col=1
+# )
 
-# Plot lower panel data
+# Plot lower panel data - actions
 fig.add_trace(
     go.Scatter(
         x=actions_bright_to_saddle.index,
@@ -213,9 +219,13 @@ fig.update_layout(
         font=dict(size=18),
         groupclick="toggleitem"
     ),
-    xaxis2=dict(
+    xaxis=dict(
         title=dict(text="κ/δ", font=dict(size=20)),
-        range=[0, x_max],
+        tickformat=".1f"
+    ),
+    xaxis2=dict(
+        title=dict(text="ε/δ", font=dict(size=20)),
+        range=[0, 3.5],
         tickformat=".1f"
     ),
     yaxis=dict(

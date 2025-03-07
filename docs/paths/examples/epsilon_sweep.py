@@ -18,13 +18,13 @@ if __name__ == "__main__":
     )
     fixed_point_map = FixedPointMap.load(map_path)
 
-    output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/8")
+    output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/0")
     
     # Create the bifurcation diagram
     fig = plot_bifurcation_diagram(fixed_point_map)
 
     # Choose a kappa index for the epsilon cut
-    kappa_idx = 325
+    kappa_idx = 50
     
     # Get the bistable epsilon range for this kappa
     epsilon_boundaries = get_bistable_epsilon_range(fixed_point_map.bistable_region, kappa_idx)
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         fixed_point_map,
         epsilon_sweeps.bright_saddle, 
         output_path,
-        t_end=10.0,
+        t_end=10.5,
         endpoint_type=FixedPointType.BRIGHT
     )
     
@@ -67,6 +67,6 @@ if __name__ == "__main__":
         fixed_point_map, 
         epsilon_sweeps.dim_saddle, 
         output_path,
-        t_end=10.0,
+        t_end=10.5,
         endpoint_type=FixedPointType.DIM
     )

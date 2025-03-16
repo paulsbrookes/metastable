@@ -1,6 +1,6 @@
 # Stability Analysis
 
-In the previous section on the [Fixed Points](./FixedPoints.md) we identified steady states of the classical equations of motion and classified them as either saddles or nodes. Our overall goal is to find the switching trajectories which allow the system to escape from the nodes and reach the saddle point, and then calculate the actions of these trajectories with a view to obtaining the switching rates. For this we need to extend our analysis to include the quantum fields.
+In the previous section on the [Fixed Points](./FixedPoints.md) we identified steady states of the classical equations of motion and classified them as either saddles or stable points. Our overall goal is to find the switching trajectories which allow the system to escape from the stable points and reach the saddle point, and then calculate the actions of these trajectories with a view to obtain the switching rates. These paths don't exist in the classical case, but they do in the full system including the quantum fields.
 
 In this section we will use the Jacobian matrix to linearise the full equations of motion. This will reveal that:
 1. The quantum fields allow for escape trajectories along new unstable eigenvectors leaving the classically stable fixed points. 

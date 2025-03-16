@@ -1,28 +1,20 @@
-# Boundary Value Methods for Switching Trajectories
+# Switching Paths
 
-In this section we focus on finding the switching trajectories using boundary value methods. The goal is to determine the optimal escape path that connects a stable fixed point to a saddle point, taking advantage of the eigenstructure of the Jacobian matrices at these points.
+In this section we can now turn our attention to finding the switching paths connecting the stable fixed points to the saddle point. We will use our [Stability Analysis](../fixed_points/StabilityAnalysis.md) from the previous section to set the boundary conditions for the switching paths. We will then use a collocation method implemented in SciPy [1] to solve the resulting boundary value problem and find the switching paths.
 
 ## 1. Problem Overview
 
-- **Objective**: Find a trajectory $\mathbf{Z}(t)$ that connects:
-  - A **stable fixed point** $\mathbf{Z}_0$ (node or focus)
-  - A **saddle point** $\mathbf{Z}_s$
+Our key objective is to find a path $\mathbf{Z}(t)$ that connects a **stable fixed point** $\mathbf{Z}_0$ (node or focus) to a **saddle point** $\mathbf{Z}_s$.
 
-- **Key Idea**: Use the eigenvectors of the Jacobian at both points to:
-  1. Express deviations from fixed points naturally
-  2. Set appropriate boundary conditions
-  3. Guide numerical solution methods
+The key idea is to use the eigenvectors of the Jacobian at both points to set the boundary conditions. Small deviations from the fixed points can be expressed in the eigenvector basis of the Jacobian and we control the boundary conditions by specifying the coefficients of the eigenvectors in those deviations.
+
+At each fixed point the Jacobian has a pair of incoming and outgoing eigenvectors. We simply apply the condition that at the start of the path the deviation is purely along the eigenvectors leaving the stable point and at the end of the path the deviation is purely along the eigenvectors arriving at the saddle point.
 
 ## 2. Mathematical Framework
 
-### 2.1. System Dynamics
-
-## 2. Displacement from Fixed Points in the Eigenvector Basis
-
 ### 2.1. At the Stable Fixed Point
 
-- Let $\mathbf{Z}_0$ denote the coordinates of the stable fixed point.
-- Small deviations from $\mathbf{Z}_0$ can be expressed in the eigenvector basis of the Jacobian $J(\mathbf{Z}_0)$:
+Let $\mathbf{Z}_0$ denote the coordinates of the stable fixed point. Small deviations from $\mathbf{Z}_0$ can be expressed in the eigenvector basis of the Jacobian $J(\mathbf{Z}_0)$:
   
 $$
 \Delta \mathbf{Z}(t) \equiv \mathbf{Z}(t) - \mathbf{Z}_0 = \sum_{i=1}^{4} c_i\, \mathbf{v}_i\, e^{\lambda_i t},
@@ -53,21 +45,20 @@ where:
 
 ### 3.1. Physical Interpretation of Boundary Conditions
 
-The switching trajectory represents the optimal (least-action) path connecting a metastable fixed point to the saddle point. The eigenvector analysis provides natural boundary conditions:
+The switching trajectory represents the optimal (least-action) path connecting a metastable fixed point to the saddle point. It is a solution to the equations of motion derived from the Hamiltonian. The eigenvector analysis provides natural boundary conditions:
 
-- **At the Stable Fixed Point $\mathbf{Z}_0$:**
-  - The trajectory must *depart* along the unstable manifold
-  - Initial deviation $\Delta \mathbf{Z}(t)$ aligns with eigenvectors having $\text{Re}(\lambda_i) > 0$
-  - These directions indicate where fluctuations can push the system out of the basin of attraction
+**At the Stable Fixed Point $\mathbf{Z}_0$**
 
-- **At the Saddle Point $\mathbf{Z}_s$:**
-  - The trajectory must *arrive* along the stable manifold
-  - Final deviation $\Delta \mathbf{Z}(t)$ lies in the subspace of eigenvectors with $\text{Re}(\mu_j) < 0$
-  - This ensures smooth connection to classical dynamics leading to the other metastable state
+The trajectory must *depart* within the unstable subspace. Therefore the initial deviation $\Delta \mathbf{Z}(t)$ aligns with eigenvectors having $\text{Re}(\lambda_i) > 0$. Depending on exactly which initial direction we choose, the system will follow a different path. Our goal is to the path which connects to the saddle point.
+
+**At the Saddle Point $\mathbf{Z}_s$**
+
+The trajectory must *arrive* within the stable subspace. The final deviation $\Delta \mathbf{Z}(t)$ lies in the subspace of eigenvectors with $\text{Re}(\mu_j) < 0$. If we have chosen the correct initial trajectory, the system will follow a path that naturally arrives at the saddle point within this subspace.
+
 
 ### 3.2. Differential Equations
 
-- The full dynamics are governed by the Hamiltonian equations of motion:
+The full dynamics are governed by the Hamiltonian equations of motion:
 
 $$
 \dot{\mathbf{Z}} = \mathbf{F}(\mathbf{Z}),
@@ -122,4 +113,8 @@ where only the modes with $\text{Re}(\mu_j) < 0$ (stable directions) remain boun
 - **Next Steps**: 
   - Detail the specific numerical methods (e.g., shooting, collocation) and their implementation.
   - Present sample results and discuss the challenges in convergence and accuracy.
+
+## References
+
+[1] "SciPy Boundary Value Problem Solver Documentation", see [scipy.integrate.solve_bvp](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_bvp.html).
 

@@ -6,6 +6,7 @@ from metastable.paths import (
     generate_sweep_index_pairs,
     map_switching_paths
 )
+from metastable.action.map import map_actions
 # Import the plotting function from epsilon_sweep
 from metastable.paths.visualization import plot_parameter_sweeps
 from metastable.paths.boundary_conditions.boundary_conditions_lock import BoundaryLockParams
@@ -16,7 +17,7 @@ if __name__ == "__main__":
 
     # Load the fixed point map
     map_path = Path(
-        "/home/paul/Projects/misc/keldysh/metastable/docs/fixed_points/examples/map-with-stability.npz"
+        "../../../fixed_points/examples/map-with-stability.npz"
     )
     fixed_point_map = FixedPointMap.load(map_path)
 
@@ -70,7 +71,7 @@ if __name__ == "__main__":
         saddle_linear_coefficient=0.0
     )
     
-    output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/kappa/9")
+    output_path = Path("sweep_1")
 
     # Map switching paths for bright fixed point
     path_results_bright = map_switching_paths(
@@ -91,3 +92,9 @@ if __name__ == "__main__":
         endpoint_type=FixedPointType.DIM,
         lock_params=dim_lock_params
     )
+    
+    # Calculate actions for all switching paths
+    fixed_point_map = FixedPointMap.load(output_path / "output_map.npz")
+    fixed_point_map_with_actions = map_actions(fixed_point_map)
+    fixed_point_map_with_actions.save(output_path / "output_map.npz")
+

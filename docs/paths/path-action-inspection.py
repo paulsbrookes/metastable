@@ -74,7 +74,7 @@ app.layout = html.Div([
 def update_figure(click_data, path_type_slider, show_action):
     # Load the fixed point map
     map_path = Path(
-        "/home/paul/Projects/misc/keldysh/metastable/docs/paths/sweeps/kappa/sweep_1/output_map.npz"
+        "/home/paul/Projects/misc/keldysh/metastable/docs/paths/sweeps/epsilon/sweep_4/output_map.npz"
     )
     fixed_point_map = FixedPointMap.load(map_path)
     

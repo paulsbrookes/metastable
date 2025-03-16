@@ -6,19 +6,19 @@ from metastable.paths import (
     generate_sweep_index_pairs,
     map_switching_paths
 )
+from metastable.action.map import map_actions
 # Import the plotting function from visualization module
 from metastable.paths.visualization import plot_parameter_sweeps
+from metastable.paths.boundary_conditions.boundary_conditions_lock import BoundaryLockParams
 import numpy as np
 
 
 if __name__ == "__main__":
     # Load the fixed point map
     map_path = Path(
-        "/home/paul/Projects/misc/keldysh/metastable/docs/fixed_points/examples/map-with-stability.npz"
+        "../../../fixed_points/examples/map-with-stability.npz"
     )
     fixed_point_map = FixedPointMap.load(map_path)
-
-    output_path = Path("/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/19")
     
     # Create the bifurcation diagram
     fig = plot_bifurcation_diagram(fixed_point_map)
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     epsilon_boundaries = get_bistable_epsilon_range(fixed_point_map.bistable_region, kappa_idx)
     
     # Generate epsilon sweeps
-    epsilon_sweeps = generate_sweep_index_pairs(epsilon_boundaries, sweep_fraction=1.0)
+    epsilon_sweeps = generate_sweep_index_pairs(epsilon_boundaries, sweep_fraction=0.3)
     
     # Get the actual kappa value from index
     kappa_value = fixed_point_map.kappa_linspace[kappa_idx]
@@ -52,15 +52,34 @@ if __name__ == "__main__":
     
     # Display the plot
     fig.show()
-    
-    # Map switching paths for bright fixed point
-    path_results_bright = map_switching_paths(
-        fixed_point_map,
-        epsilon_sweeps.bright_saddle, 
-        output_path,
-        t_end=11.0,
-        endpoint_type=FixedPointType.BRIGHT
+
+    # Configure boundary lock parameters for bright fixed point
+    bright_lock_params = BoundaryLockParams(
+        stable_threshold=1e-2,
+        stable_linear_coefficient=0.0,
+        saddle_threshold=1e-2,
+        saddle_linear_coefficient=0.0
     )
+    
+    # Configure boundary lock parameters for dim fixed point
+    dim_lock_params = BoundaryLockParams(
+        stable_threshold=1e-2,
+        stable_linear_coefficient=0.0,
+        saddle_threshold=1e-2,
+        saddle_linear_coefficient=1.0
+    )
+
+    output_path = Path("sweep_4")
+    
+    # # Map switching paths for bright fixed point
+    # path_results_bright = map_switching_paths(
+    #     fixed_point_map,
+    #     epsilon_sweeps.bright_saddle, 
+    #     output_path,
+    #     t_end=11.0,
+    #     endpoint_type=FixedPointType.BRIGHT,
+    #     lock_params=bright_lock_params
+    # )
     
     # Map switching paths for dim fixed point
     path_results_dim = map_switching_paths(
@@ -68,5 +87,11 @@ if __name__ == "__main__":
         epsilon_sweeps.dim_saddle, 
         output_path,
         t_end=11.0,
-        endpoint_type=FixedPointType.DIM
+        endpoint_type=FixedPointType.DIM,
+        lock_params=dim_lock_params
     )
+
+    # Calculate actions for all switching paths
+    fixed_point_map = FixedPointMap.load(output_path / "output_map.npz")
+    fixed_point_map_with_actions = map_actions(fixed_point_map)
+    fixed_point_map_with_actions.save(output_path / "output_map.npz")

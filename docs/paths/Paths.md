@@ -22,7 +22,7 @@ $$
   
 where:
   - $\mathbf{v}_i$ are the eigenvectors,
-  - $\lambda_i$ are the corresponding eigenvalues,
+  - $\lambda_i$ are the corresponding eigenvalues, ordered by their real parts with $\text{Re}(\lambda_1), \text{Re}(\lambda_2) < 0$ (stable) and $\text{Re}(\lambda_3), \text{Re}(\lambda_4) > 0$ (unstable),
   - $c_i$ are coefficients determined by the initial displacement.
 
 ### 2.2. At the Saddle Point
@@ -36,7 +36,7 @@ $$
   
 where:
   - $\mathbf{u}_j$ are the eigenvectors at the saddle,
-  - $\mu_j$ are the corresponding eigenvalues,
+  - $\mu_j$ are the corresponding eigenvalues, ordered by their real parts with $\text{Re}(\mu_1), \text{Re}(\mu_2) < 0$ (stable) and $\text{Re}(\mu_3), \text{Re}(\mu_4) > 0$ (unstable),
   - $d_j$ are coefficients that characterize the deviation.
 
 ---
@@ -47,13 +47,33 @@ where:
 
 The switching trajectory represents the optimal (least-action) path connecting a metastable fixed point to the saddle point. It is a solution to the equations of motion derived from the Hamiltonian. The eigenvector analysis provides natural boundary conditions:
 
-**At the Stable Fixed Point $\mathbf{Z}_0$**
+**Stable Fixed Point $\mathbf{Z}_0$**
 
-The trajectory must *depart* within the unstable subspace. Therefore the initial deviation $\Delta \mathbf{Z}(t)$ aligns with eigenvectors having $\text{Re}(\lambda_i) > 0$. Depending on exactly which initial direction we choose, the system will follow a different path. Our goal is to the path which connects to the saddle point.
+At $t \to -\infty$ (approaching the stable fixed point) we have:
+  
+$$
+\mathbf{Z}(t) \to \mathbf{Z}_0 \quad \Longrightarrow \quad \Delta \mathbf{Z}(t) \approx \sum_{i} c_i\, \mathbf{v}_i\, e^{\lambda_i t},
+$$
 
-**At the Saddle Point $\mathbf{Z}_s$**
+Since the trajectory must *depart* within the unstable subspace, the initial deviation $\Delta \mathbf{Z}(t)$ aligns with eigenvectors having $\text{Re}(\lambda_i) > 0$ and we can set $c_0 = 0$ and $c_1 = 0$.
 
-The trajectory must *arrive* within the stable subspace. The final deviation $\Delta \mathbf{Z}(t)$ lies in the subspace of eigenvectors with $\text{Re}(\mu_j) < 0$. If we have chosen the correct initial trajectory, the system will follow a path that naturally arrives at the saddle point within this subspace.
+Depending on exactly which initial direction we choose, the system will follow a different path. Our goal is to the path which connects to the saddle point.
+
+**Saddle Point $\mathbf{Z}_s$**
+
+At $t \to +\infty$ (approaching the saddle point):
+  
+$$
+\mathbf{Z}(t) \to \mathbf{Z}_s \quad \Longrightarrow \quad \Delta \mathbf{Z}(t) \approx \sum_{j} d_j\, \mathbf{u}_j\, e^{\mu_j t},
+$$
+
+Since the trajectory must *arrive* within the stable subspace, the final deviation $\Delta \mathbf{Z}(t)$ lies in the subspace of eigenvectors with $\text{Re}(\mu_j) < 0$. Therefore we can set $d_2 = 0$ and $d_3 = 0$. If we have chosen the correct initial trajectory, the system will follow a path that naturally arrives at the saddle point within this subspace.
+
+### 3.3. Matching the Trajectory
+
+- The task is to adjust the coefficients ${c_i}$ and ${d_j}$ such that the trajectory $\mathbf{Z}(t)$ satisfies the equations of motion and simultaneously meets the boundary conditions at both $\mathbf{Z}_0$ and $\mathbf{Z}_s$.
+
+- Numerical methods (e.g., shooting or collocation techniques) are then applied to iteratively refine the trajectory and ensure that it connects the two fixed points in phase space.
 
 
 ### 3.2. Differential Equations
@@ -65,30 +85,6 @@ $$
 $$
   
 where $\mathbf{F}(\mathbf{Z})$ represents the set of equations derived from the full Hamiltonian.
-
-### 3.3. Boundary Conditions
-
-- **At $t \to -\infty$** (approaching the stable fixed point):
-  
-$$
-\mathbf{Z}(t) \to \mathbf{Z}_0 \quad \Longrightarrow \quad \Delta \mathbf{Z}(t) \approx \sum_{i} c_i\, \mathbf{v}_i\, e^{\lambda_i t},
-$$
-  
-where only the modes with $\text{Re}(\lambda_i) > 0$ (unstable directions) are allowed to grow.
-
-- **At $t \to +\infty$** (approaching the saddle point):
-  
-$$
-\mathbf{Z}(t) \to \mathbf{Z}_s \quad \Longrightarrow \quad \Delta \mathbf{Z}(t) \approx \sum_{j} d_j\, \mathbf{u}_j\, e^{\mu_j t},
-$$
-  
-where only the modes with $\text{Re}(\mu_j) < 0$ (stable directions) remain bounded.
-
-### 3.4. Matching the Trajectory
-
-- The task is to adjust the coefficients ${c_i}$ and ${d_j}$ such that the trajectory $\mathbf{Z}(t)$ satisfies the equations of motion and simultaneously meets the boundary conditions at both $\mathbf{Z}_0$ and $\mathbf{Z}_s$.
-
-- Numerical methods (e.g., shooting or collocation techniques) are then applied to iteratively refine the trajectory and ensure that it connects the two fixed points in phase space.
 
 ---
 

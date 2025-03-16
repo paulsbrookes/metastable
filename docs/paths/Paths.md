@@ -4,11 +4,30 @@ In this section we can now turn our attention to finding the switching paths con
 
 ## 1. Problem Overview
 
+### 1.1. Path
+
 Our key objective is to find a path $\mathbf{Z}(t)$ that connects a **stable fixed point** $\mathbf{Z}_0$ (node or focus) to a **saddle point** $\mathbf{Z}_s$.
 
 The key idea is to use the eigenvectors of the Jacobian at both points to set the boundary conditions. Small deviations from the fixed points can be expressed in the eigenvector basis of the Jacobian and we control the boundary conditions by specifying the coefficients of the eigenvectors in those deviations.
 
 At each fixed point the Jacobian has a pair of incoming and outgoing eigenvectors. We simply apply the condition that at the start of the path the deviation is purely along the eigenvectors leaving the stable point and at the end of the path the deviation is purely along the eigenvectors arriving at the saddle point.
+
+### 1.2. Action
+
+With these paths we can finally calculate the corresponding actions using the formula shown in [Keldysh Auxiliary Hamiltonian](../derivation/KeldyshAuxiliaryHamiltonian.md):
+
+$$
+\begin{aligned}
+S_{\mathrm{aux}} = -\int dt\Bigl[\dot{x}_c\,x_q + \dot{p}_c\,p_q - H(x_c,p_c,x_q,p_q)\Bigr].
+\end{aligned}
+$$
+
+Since the Hamiltonian is conservative (i.e. time independent) and the initial and final points are in the classical plane where $H=0$, the action can be simplified to:
+
+$$
+S_{\mathrm{aux}} = -\int dt\Bigl[\dot{x}_c\,x_q + \dot{p}_c\,p_q\Bigr].
+$$
+
 
 ## 2. Mathematical Framework
 
@@ -45,7 +64,7 @@ where:
 
 ### 3.1. Physical Interpretation of Boundary Conditions
 
-The switching trajectory represents the optimal (least-action) path connecting a metastable fixed point to the saddle point. It is a solution to the equations of motion derived from the Hamiltonian. The eigenvector analysis provides natural boundary conditions:
+The switching trajectory represents the optimal (least-action) path connecting a metastable fixed point to the saddle point. It is a solution to the equations of motion derived from the auxiliary Hamiltonian as seen in [FixedPoints](../fixed_points/FixedPoints.md). The eigenvector analysis from the [Stability Analysis](../fixed_points/StabilityAnalysis.md) then provides natural boundary conditions:
 
 **Stable Fixed Point $\mathbf{Z}_0$**
 
@@ -69,48 +88,49 @@ $$
 
 Since the trajectory must *arrive* within the stable subspace, the final deviation $\Delta \mathbf{Z}(t)$ lies in the subspace of eigenvectors with $\text{Re}(\mu_j) < 0$. Therefore we can set $d_2 = 0$ and $d_3 = 0$. If we have chosen the correct initial trajectory, the system will follow a path that naturally arrives at the saddle point within this subspace.
 
-### 3.3. Matching the Trajectory
+### 3.2 Projection
 
-- The task is to adjust the coefficients ${c_i}$ and ${d_j}$ such that the trajectory $\mathbf{Z}(t)$ satisfies the equations of motion and simultaneously meets the boundary conditions at both $\mathbf{Z}_0$ and $\mathbf{Z}_s$.
+To enforce our asymptotic boundary conditions at finite times $t_i$ and $t_f$, we must project the deviations onto the eigenbasis of the Jacobian at the fixed points. This is achieved by using the left eigenvectors to extract the coefficients in the expansion of the deviation in terms of the right eigenvectors.
 
-- Numerical methods (e.g., shooting or collocation techniques) are then applied to iteratively refine the trajectory and ensure that it connects the two fixed points in phase space.
+Let $\Delta Z(t)$ be the deviation from a fixed point (either $Z_0$ or $Z_s$). Suppose the right eigenvectors are arranged in a matrix $R$ and the corresponding left eigenvectors (normalized such that $L_i \cdot R_j = \delta_{ij}$) are arranged in a matrix $L$. Then the expansion
 
+$$\Delta Z(t) = \sum_i c_i v_i \iff \Delta Z(t) = R c$$
 
-### 3.2. Differential Equations
+allows us to extract the coefficients by projecting onto the left eigenvectors:
 
-The full dynamics are governed by the Hamiltonian equations of motion:
+$$c = L \Delta Z(t).$$
 
-$$
-\dot{\mathbf{Z}} = \mathbf{F}(\mathbf{Z}),
-$$
-  
-where $\mathbf{F}(\mathbf{Z})$ represents the set of equations derived from the full Hamiltonian.
+At the stable fixed point, for instance, we only want deviations along the unstable directions. This requirement translates into setting the coefficients corresponding to the stable modes to zero:
 
----
+$$c_i = L_i \cdot [Z(t) - Z_0] = 0 \text{ for stable modes.}$$
 
-## 4. Numerical Implementation Outline
+Similarly, at the saddle point, to ensure the trajectory approaches along the stable manifold, the coefficients for the unstable directions must vanish:
 
-- **Initial Guess**: Provide an initial trajectory guess that interpolates between $\mathbf{Z}_0$ and $\mathbf{Z}_s$.
+$$d_j = L_j \cdot [Z(t) - Z_s] = 0 \text{ for unstable modes.}$$
 
-- **Iterative Solver**: Use a boundary value solver to adjust the trajectory such that:
-  - The residual of $\dot{\mathbf{Z}} - \mathbf{F}(\mathbf{Z})$ is minimized.
-  - The deviations at $t \to \pm\infty$ match the prescribed eigenvector expansions.
+By enforcing these constraints at $t_i$ and $t_f$, the finite-time boundary value problem inherits the correct asymptotic behavior, ensuring that the switching trajectory departs and arrives in the proper subspaces.
 
-- **Validation**: Check that:
-  - Near $\mathbf{Z}_0$, the trajectory is well approximated by $\mathbf{Z}_0 + \sum_i c_i\, \mathbf{v}_i\, e^{\lambda_i t}$.
-  - Near $\mathbf{Z}_s$, the trajectory follows $\mathbf{Z}_s + \sum_j d_j\, \mathbf{u}_j\, e^{\mu_j t}$.
+### 3.3. Numerical Solution
 
----
+The task of finding the switching paths is now cast as a boundary value problem (BVP). Our next task is apply a numerical method to find a solution. For this we will use SciPy's `solve_bvp` [1] implementation of a collocation method, meaning a numerical technique for solving differential equations by approximating the solution using a set of basis functions, such as cubic splines, and enforcing the differential equations are satisfied to a given tolerance at specific points called collocation points.
 
-## 5. Summary and Next Steps
+#### Convergence
 
-- **Summary**: We have recast the problem of finding switching trajectories as a boundary value problem, expressing the displacements from both the fixed point and the saddle in terms of the eigenvectors of the Jacobian.
+When applying this solver to our problem there are two key considerations to check convergence of the solution:
 
-- **Next Steps**: 
-  - Detail the specific numerical methods (e.g., shooting, collocation) and their implementation.
-  - Present sample results and discuss the challenges in convergence and accuracy.
+1. **Finite Time Domain**: Since we cannot numerically integrate from $t \to -\infty$ to $t \to +\infty$, we must choose finite initial and final times $t_i$ and $t_f$. These should be chosen such that the system is sufficiently close to the fixed points at the boundaries. 
+
+2. **Numerical Parameters**: The key parameter for solution quality is the error tolerance, which caps the allowed residuals at the collocation points [1]. Lower error tolerances can be reached by increasing the number of collocation points, at the cost of increased computational time and memory usage.
+
+Whether or not they are we have converged to a desired solution can be judged by whether or not the action along the path has reached to a stable value. This can be checked by recalculating the paths and actions using different values of $t_f - t_i$, error tolerances and numbers of collocation points and checking if the resulting actions are consistent.
+
+#### Initial Guess
+
+The BVP solver requires an initial guess for the solution. This can be constructed by linear interpolation between the fixed points. This initial guess is most effective near the saddle-node bifurcations where the stable and saddle points are closest to each other. For more distant points we can reuse solutions from neighbouring points in the parameter space.
 
 ## References
 
-[1] "SciPy Boundary Value Problem Solver Documentation", see [scipy.integrate.solve_bvp](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_bvp.html).
+[1] SciPy documentation, "scipy.integrate.solve_bvp", [https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_bvp.html](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_bvp.html).
+
+[2] J. Kierzenka, L. F. Shampine, "A BVP Solver Based on Residual Control and the Maltab PSE", ACM Trans. Math. Softw., Vol. 27, Number 3, pp. 299-316, 2001.
 

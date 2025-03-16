@@ -128,6 +128,14 @@ Whether or not they are we have converged to a desired solution can be judged by
 
 The BVP solver requires an initial guess for the solution. This can be constructed by linear interpolation between the fixed points. This initial guess is most effective near the saddle-node bifurcations where the stable and saddle points are closest to each other. For more distant points with more complex paths, this linear guess may not converge to a solution, in which case we can reuse solutions from neighbouring points in the parameter space (numerical continuation).
 
+## 4. Results
+
+We continue to examine the system studied in [Stability Analysis](../fixed_points/StabilityAnalysis.md). We begin by finding the switching paths and actions as a function of $\kappa$ at ...
+
+Figure
+commentary
+
+
 ## References
 
 [1] SciPy documentation, "scipy.integrate.solve_bvp", [https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_bvp.html](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_bvp.html).

@@ -107,8 +107,24 @@ def generate_boundary_condition_func(
             Array of boundary condition values
         """
         
+        # Check if magnitude of stable_components[2:4] is less than 1e-4
+        stable_comp_magnitude = np.linalg.norm(stable_components[2:4])
+        # Make stable_comp_condition increase linearly above the threshold
+        threshold = 1e-1
+        stable_comp_condition = 0.0 #if stable_comp_magnitude < threshold else (stable_comp_magnitude - threshold)
+        
+        # Check if magnitude of saddle_components[0:2] is less than threshold
+        saddle_comp_magnitude = np.linalg.norm(saddle_components[0:2])
+        # Make saddle_comp_condition increase linearly above the threshold
+        saddle_comp_condition = 0.0 if saddle_comp_magnitude < threshold else (saddle_comp_magnitude - threshold)
+        
         # Combine the components for the boundary conditions
-        return np.hstack([stable_components[0], stable_components[1], saddle_components[2:4]])
+        return np.hstack([
+            np.abs(stable_components[0]+stable_components[1]) + stable_comp_condition,
+            np.abs(stable_components[0]-stable_components[1]) + stable_comp_condition,
+            np.abs(saddle_components[2]) + saddle_comp_condition,
+            np.abs(saddle_components[3]) + saddle_comp_condition,
+            ])
 
     def boundary_condition_func(ya: NDArray, yb: NDArray):
         """

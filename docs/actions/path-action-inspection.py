@@ -42,10 +42,24 @@ app.layout = html.Div([
                 style={'display': 'inline-block', 'margin': '10px auto'}
             )
         ], style={'text-align': 'center'}),
+        html.Div([  # New container for action calculation toggle
+            html.Label("Show Action Calculation:"),
+            dcc.RadioItems(
+                id='action-toggle',
+                options=[
+                    {'label': 'Yes', 'value': True},
+                    {'label': 'No', 'value': False}
+                ],
+                value=True,
+                inline=True,
+                labelStyle={'margin-right': '15px'},
+                style={'display': 'inline-block', 'margin': '10px auto'}
+            )
+        ], style={'text-align': 'center'}),
         dcc.Graph(id='interactive-plot', style={'height': '600px'}),
     ]),
     html.Div([
-        html.P("Click on any dot to see the corresponding action integrand plot.", 
+        html.P("Click on any dot to see the corresponding path visualization.", 
                style={'font-style': 'italic', 'margin-top': '10px'})
     ])
 ])
@@ -54,12 +68,13 @@ app.layout = html.Div([
 @app.callback(
     Output('interactive-plot', 'figure'),
     [Input('interactive-plot', 'clickData'),
-     Input('path-type-toggle', 'value')]
+     Input('path-type-toggle', 'value'),
+     Input('action-toggle', 'value')]  # Add the new input
 )
-def update_figure(click_data, path_type_slider):
+def update_figure(click_data, path_type_slider, show_action):
     # Load the fixed point map
     map_path = Path(
-        "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/8/output_map_with_actions.npz"
+        "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/12/output_map_with_actions.npz"
     )
     fixed_point_map = FixedPointMap.load(map_path)
     
@@ -74,12 +89,22 @@ def update_figure(click_data, path_type_slider):
     epsilon_values_dim = fixed_point_map.epsilon_linspace[epsilon_indices_dim]
     kappa_values_dim = fixed_point_map.kappa_linspace[kappa_indices_dim]
     
-    # Create a figure with 2 subplots side by side
+    # Determine number of rows based on whether action is shown
+    if show_action:
+        num_rows = 3
+        row_heights = [0.4, 0.3, 0.3]
+        subplot_titles = ('Map of Available Paths', 'Action Integrand vs Time', 'Path First Coordinate vs Time')
+    else:
+        num_rows = 2
+        row_heights = [0.6, 0.4]
+        subplot_titles = ('Map of Available Paths', 'Path First Coordinate vs Time')
+    
+    # Create a figure with appropriate subplots
     fig = make_subplots(
-        rows=1, cols=2,
-        subplot_titles=('Map of Available Paths', 'Action Integrand vs Time'),
-        column_widths=[0.5, 0.5],
-        specs=[[{"type": "scatter"}, {"type": "scatter"}]]
+        rows=num_rows, cols=1,
+        subplot_titles=subplot_titles,
+        row_heights=row_heights,
+        specs=[[{"type": "scatter"}]] * num_rows
     )
     
     # Calculate bifurcation lines
@@ -160,11 +185,15 @@ def update_figure(click_data, path_type_slider):
             row=1, col=1
         )
     
-    # Initialize empty trace for the integrand plot
+    # Initialize empty traces for the integrand plot and path coordinate plot
     t_points = []
     integrand_values = []
+    path_x_values = []
+    fixed_point_markers_x = []
+    fixed_point_markers_y = []
+    fixed_point_labels = []
     
-    # If a point was clicked, update the integrand plot
+    # If a point was clicked, update the plots
     if click_data:
         # Print the click_data to debug
         print("Click data:", click_data)
@@ -190,7 +219,7 @@ def update_figure(click_data, path_type_slider):
                 path_type = PathType.DIM_TO_SADDLE.value
                 valid_point = True
         else:
-            # If a bifurcation line was clicked, don't update the integrand plot
+            # If a bifurcation line was clicked, don't update the plots
             valid_point = False
         
         # Get the path result for these indices if a valid path type was selected
@@ -198,81 +227,154 @@ def update_figure(click_data, path_type_slider):
             path_result = fixed_point_map.path_results[epsilon_idx, kappa_idx, path_type]
             
             if path_result is not None:
-                # Calculate the integrand values
+                # Calculate the time points
                 t_max = path_result.x[-1]
                 t_points = np.linspace(0, t_max, 500)
-                integrand_values = [integrand_func(t, path_result) for t in t_points]
+                
+                # Calculate the integrand values if action calculation is enabled
+                if show_action:
+                    integrand_values = [integrand_func(t, path_result) for t in t_points]
+                
+                # Extract the first coordinate of the path
+                # Interpolate the path at the same time points
+                path_x_values = [path_result.sol(t)[0] for t in t_points]
+                
+                # Get the fixed point values from the map
+                if path_type == PathType.BRIGHT_TO_SADDLE.value:
+                    start_point_type = FixedPointType.BRIGHT.value
+                    end_point_type = FixedPointType.SADDLE.value
+                else:  # DIM_TO_SADDLE
+                    start_point_type = FixedPointType.DIM.value
+                    end_point_type = FixedPointType.SADDLE.value
+                
+                # Get the fixed point coordinates
+                start_x = fixed_point_map.fixed_points[epsilon_idx, kappa_idx, start_point_type, 0]
+                end_x = fixed_point_map.fixed_points[epsilon_idx, kappa_idx, end_point_type, 0]
+                
+                # Create markers for the fixed points
+                fixed_point_markers_x = [0, t_max]  # Time points for start and end
+                fixed_point_markers_y = [start_x, end_x]  # x-coordinate values at fixed points
+                
+                # Create labels for the markers
+                start_label = "Bright" if start_point_type == FixedPointType.BRIGHT.value else "Dim"
+                fixed_point_labels = [f"{start_label} State", "Saddle"]
                 
                 # Get path type name for the title
                 path_type_name = "Bright to Saddle" if path_type == PathType.BRIGHT_TO_SADDLE.value else "Dim to Saddle"
                 
-                # Update subplot title
-                fig.update_layout(
-                    annotations=[
-                        dict(
-                            text='Map of Available Paths',
-                            x=0.25, y=1.0,
-                            xref='paper', yref='paper',
-                            showarrow=False
-                        ),
+                # Update subplot titles based on whether action is shown
+                annotations = [
+                    dict(
+                        text=f'Map of Available {path_type_name} Paths',
+                        x=0.5, y=1.0,
+                        xref='paper', yref='paper',
+                        showarrow=False
+                    )
+                ]
+                
+                if show_action:
+                    annotations.append(
                         dict(
                             text=f"{path_type_name} Action Integrand (ε={fixed_point_map.epsilon_linspace[epsilon_idx]:.4f}, κ={fixed_point_map.kappa_linspace[kappa_idx]:.4f})",
-                            x=0.75, y=1.0,
+                            x=0.5, y=0.63,
                             xref='paper', yref='paper',
                             showarrow=False
                         )
-                    ]
-                )
+                    )
+                    annotations.append(
+                        dict(
+                            text=f"{path_type_name} Path First Coordinate (ε={fixed_point_map.epsilon_linspace[epsilon_idx]:.4f}, κ={fixed_point_map.kappa_linspace[kappa_idx]:.4f})",
+                            x=0.5, y=0.3,
+                            xref='paper', yref='paper',
+                            showarrow=False
+                        )
+                    )
+                else:
+                    annotations.append(
+                        dict(
+                            text=f"{path_type_name} Path First Coordinate (ε={fixed_point_map.epsilon_linspace[epsilon_idx]:.4f}, κ={fixed_point_map.kappa_linspace[kappa_idx]:.4f})",
+                            x=0.5, y=0.4,
+                            xref='paper', yref='paper',
+                            showarrow=False
+                        )
+                    )
+                
+                fig.update_layout(annotations=annotations)
                 
                 # Print debug info
                 print(f"Selected point: epsilon_idx={epsilon_idx}, kappa_idx={kappa_idx}, path_type={path_type}")
     
-    # Add the integrand trace
+    # Add the integrand trace if action calculation is enabled
+    if show_action:
+        fig.add_trace(
+            go.Scatter(
+                x=t_points, 
+                y=integrand_values, 
+                mode='lines',
+                name='Action Integrand'
+            ),
+            row=2, col=1
+        )
+        
+        # Add the path first coordinate trace in the third row
+        path_row = 3
+    else:
+        # Add the path first coordinate trace in the second row
+        path_row = 2
+    
+    # Add the path first coordinate trace
     fig.add_trace(
         go.Scatter(
             x=t_points, 
-            y=integrand_values, 
+            y=path_x_values, 
             mode='lines',
-            name='Action Integrand'
+            name='Path First Coordinate'
         ),
-        row=1, col=2
+        row=path_row, col=1
+    )
+    
+    # Add markers for fixed points
+    fig.add_trace(
+        go.Scatter(
+            x=fixed_point_markers_x,
+            y=fixed_point_markers_y,
+            mode='markers+text',
+            marker=dict(
+                size=10,
+                color='red',
+                symbol='star'
+            ),
+            text=fixed_point_labels,
+            textposition="top center",
+            name='Fixed Points'
+        ),
+        row=path_row, col=1
     )
     
     # Update layout
     fig.update_layout(
         template='plotly_white',
         hovermode='closest',
-        height=600,
+        height=900 if show_action else 700,  # Adjust height based on number of plots
         showlegend=True,
         uirevision='constant'  # Keep zoom level when switching between path types
     )
     
-    # Update subplot title based on slider value
-    path_type_title = "Bright to Saddle" if path_type_slider == 0 else "Dim to Saddle"
-    fig.update_layout(
-        annotations=[
-            dict(
-                text=f'Map of Available {path_type_title} Paths',
-                x=0.25, y=1.0,
-                xref='paper', yref='paper',
-                showarrow=False
-            ),
-            dict(
-                text='Action Integrand vs Time',
-                x=0.75, y=1.0,
-                xref='paper', yref='paper',
-                showarrow=False
-            )
-        ]
-    )
-    
+    # Update axes labels
     fig.update_xaxes(title_text='κ', row=1, col=1)
     fig.update_yaxes(title_text='ε', row=1, col=1)
-    fig.update_xaxes(title_text='Time', row=1, col=2)
-    fig.update_yaxes(title_text='Integrand Value', row=1, col=2)
+    
+    if show_action:
+        fig.update_xaxes(title_text='Time', row=2, col=1)
+        fig.update_yaxes(title_text='Integrand Value', row=2, col=1)
+        fig.update_xaxes(title_text='Time', row=3, col=1)
+        fig.update_yaxes(title_text='x₁', row=3, col=1)
+    else:
+        fig.update_xaxes(title_text='Time', row=2, col=1)
+        fig.update_yaxes(title_text='x₁', row=2, col=1)
     
     return fig
 
 # Run the app
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=8050)

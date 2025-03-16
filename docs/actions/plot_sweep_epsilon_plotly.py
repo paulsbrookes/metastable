@@ -25,7 +25,7 @@ fig = make_subplots(
 )
 
 # Load data
-map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/8/output_map_with_actions.npz"
+map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/examples/output/18/output_map_with_actions.npz"
 fixed_point_map = FixedPointMap.load(map_path)
 
 kappa_rescaled_linspace = calculate_kappa_rescaled(
@@ -37,17 +37,29 @@ epsilon_limits_array = map_beta_to_epsilon(
 )
 
 # Left column: Fixed kappa, sweep epsilon
-kappa_idx = 325
-# this is a dataframe with an index containing epsilon
+kappa_idx = 150
+# Filter actions to only include successful paths
+successful_bright_to_saddle_mask = np.array([
+    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.BRIGHT_TO_SADDLE.value] is not None and
+    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.BRIGHT_TO_SADDLE.value].success 
+    for eps_idx in range(len(fixed_point_map.epsilon_linspace))
+])
+successful_dim_to_saddle_mask = np.array([
+    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.DIM_TO_SADDLE.value] is not None and
+    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.DIM_TO_SADDLE.value].success 
+    for eps_idx in range(len(fixed_point_map.epsilon_linspace))
+])
+
+# Create DataFrames with only successful paths
 actions_bright_to_saddle = pd.DataFrame(
-    fixed_point_map.path_actions[:, kappa_idx, PathType.BRIGHT_TO_SADDLE.value, 0],
-    index=fixed_point_map.epsilon_linspace,
+    fixed_point_map.path_actions[successful_bright_to_saddle_mask, kappa_idx, PathType.BRIGHT_TO_SADDLE.value, 0],
+    index=fixed_point_map.epsilon_linspace[successful_bright_to_saddle_mask],
     columns=[r"$R_{b \to u}$"]
 )
 
 actions_dim_to_saddle = pd.DataFrame(
-    fixed_point_map.path_actions[:, kappa_idx, PathType.DIM_TO_SADDLE.value, 0],
-    index=fixed_point_map.epsilon_linspace,
+    fixed_point_map.path_actions[successful_dim_to_saddle_mask, kappa_idx, PathType.DIM_TO_SADDLE.value, 0],
+    index=fixed_point_map.epsilon_linspace[successful_dim_to_saddle_mask],
     columns=[r"$R_{d \to u}$"]
 )
 

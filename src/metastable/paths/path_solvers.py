@@ -8,7 +8,7 @@ from scipy.integrate._bvp import BVPResult
 
 from metastable.map.map import FixedPointMap, FixedPointType
 from metastable.eom import EOM
-from metastable.paths.boundary_conditions.boundary_conditions_alt import generate_boundary_condition_func
+from metastable.paths.boundary_conditions.boundary_conditions_alt_3 import generate_boundary_condition_func
 from metastable.paths.data_structures import IndexPair
 from metastable.paths.parameter_utils import extract_params, prepare_saddle_and_stable_points
 
@@ -28,7 +28,7 @@ def solve_path(
             t_guess,
             y_guess,
             tol=1e-3,
-            max_nodes=1000000,
+            max_nodes=10000000,
             verbose=2,
         )
 

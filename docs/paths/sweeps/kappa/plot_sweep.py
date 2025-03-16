@@ -114,7 +114,8 @@ fig.add_trace(
         mode="lines",
         name="Unstable-Bright",
         line=dict(color="red", width=3),
-        legendgroup="bifurcation"
+        legendgroup="bifurcation",
+        legendgrouptitle_text="Bifurcation Diagram"
     ),
     row=1, col=1
 )
@@ -165,7 +166,9 @@ fig.add_trace(
         mode="lines",
         name="Keldysh R<sub>b→u</sub>",
         line=dict(color="red", width=3),
-        legendgroup="keldysh"
+        legendgroup="actions",
+        legendgrouptitle_text="Action Values",
+        showlegend=True
     ),
     row=2, col=1
 )
@@ -177,7 +180,8 @@ fig.add_trace(
         mode="lines",
         name="Keldysh R<sub>d→u</sub>",
         line=dict(color="blue", width=3),
-        legendgroup="keldysh"
+        legendgroup="actions",
+        showlegend=True
     ),
     row=2, col=1
 )
@@ -189,7 +193,8 @@ fig.add_trace(
         mode="lines",
         name="Kramers R<sub>b→u</sub>",
         line=dict(color="purple", width=3, dash="dashdot"),
-        legendgroup="kramers"
+        legendgroup="actions",
+        showlegend=True
     ),
     row=2, col=1
 )
@@ -201,7 +206,8 @@ fig.add_trace(
         mode="lines",
         name="Kramers R<sub>d→u</sub>",
         line=dict(color="green", width=3, dash="dashdot"),
-        legendgroup="kramers"
+        legendgroup="actions",
+        showlegend=True
     ),
     row=2, col=1
 )
@@ -211,7 +217,8 @@ fig.update_layout(
     font=dict(size=20),
     legend=dict(
         font=dict(size=18),
-        groupclick="toggleitem"
+        groupclick="toggleitem",
+        tracegroupgap=10
     ),
     xaxis2=dict(
         title=dict(text="κ/δ", font=dict(size=20)),
@@ -233,5 +240,12 @@ fig.update_layout(
     margin=dict(l=80, r=50, t=50, b=80),
     template="plotly_white"
 )
+
+# Create separate legends for each subplot
+for trace in fig.data:
+    if trace.legendgroup == "bifurcation":
+        trace.update(legendgrouptitle_font=dict(size=16))
+    elif trace.legendgroup == "actions":
+        trace.update(legendgrouptitle_font=dict(size=16))
 
 fig.show()

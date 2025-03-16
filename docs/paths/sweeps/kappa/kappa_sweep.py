@@ -71,7 +71,7 @@ if __name__ == "__main__":
         saddle_linear_coefficient=0.0
     )
     
-    output_path = Path("sweep_1")
+    output_path = Path("sweep")
 
     # Map switching paths for bright fixed point
     path_results_bright = map_switching_paths(

@@ -132,8 +132,28 @@ The BVP solver requires an initial guess for the solution. This can be construct
 
 We continue to examine the system studied in [Stability Analysis](../fixed_points/StabilityAnalysis.md). We begin by finding the switching paths and actions as a function of $\kappa$ at ...
 
-Figure
-commentary
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 575px; margin: 0 auto;">
+    <iframe src="epsilon_sweep_with_actions.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](kappa_sweep_with_actions.html)
+
+
+Then as a function of $\epsilon$ at ...
+
+<div class="plotly-container" style="position: relative; width: 100%; height: 575px; margin: 0 auto;">
+    <iframe src="epsilon_sweep_with_actions.html" 
+            style="position: absolute; width: 100%; height: 100%; border: none;"
+            allowfullscreen>
+    </iframe>
+</div>
+
+[Open visualization in new window](epsilon_sweep_with_actions.html)
+
 
 
 ## References

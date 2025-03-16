@@ -25,7 +25,7 @@ fig = make_subplots(
 )
 
 # Load data
-map_path = "sweep_4/output_map.npz"
+map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/sweeps/epsilon/archive/18/output_map_with_actions.npz"
 fixed_point_map = FixedPointMap.load(map_path)
 
 kappa_rescaled_linspace = calculate_kappa_rescaled(
@@ -132,7 +132,8 @@ fig.add_trace(
         mode="lines",
         name="Unstable-Bright",
         line=dict(color="red", width=3),
-        legendgroup="bifurcation"
+        legendgroup="bifurcation",
+        legendgrouptitle_text="Bifurcation Diagram"
     ),
     row=1, col=1
 )
@@ -183,7 +184,9 @@ fig.add_trace(
         mode="lines",
         name="Keldysh R<sub>b→u</sub>",
         line=dict(color="red", width=3),
-        legendgroup="keldysh"
+        legendgroup="actions",
+        legendgrouptitle_text="Action Values",
+        showlegend=True
     ),
     row=2, col=1
 )
@@ -195,7 +198,8 @@ fig.add_trace(
         mode="lines",
         name="Keldysh R<sub>d→u</sub>",
         line=dict(color="blue", width=3),
-        legendgroup="keldysh"
+        legendgroup="actions",
+        showlegend=True
     ),
     row=2, col=1
 )
@@ -207,7 +211,8 @@ fig.add_trace(
         mode="lines",
         name="Kramers R<sub>b→u</sub>",
         line=dict(color="purple", width=3, dash="dashdot"),
-        legendgroup="kramers"
+        legendgroup="actions",
+        showlegend=True
     ),
     row=2, col=1
 )
@@ -219,7 +224,8 @@ fig.add_trace(
         mode="lines",
         name="Kramers R<sub>d→u</sub>",
         line=dict(color="green", width=3, dash="dashdot"),
-        legendgroup="kramers"
+        legendgroup="actions",
+        showlegend=True
     ),
     row=2, col=1
 )
@@ -229,7 +235,8 @@ fig.update_layout(
     font=dict(size=20),
     legend=dict(
         font=dict(size=18),
-        groupclick="toggleitem"
+        groupclick="toggleitem",
+        tracegroupgap=10
     ),
     xaxis=dict(
         title=dict(text="κ/δ", font=dict(size=20)),
@@ -250,10 +257,23 @@ fig.update_layout(
         range=[0, 8.0],
         tickformat=".1f"
     ),
-    width=1000,
+    width=800,
     height=800,
     margin=dict(l=80, r=50, t=50, b=80),
-    template="plotly_white"
+    template="plotly_white",
+    title="Epsilon Sweep with Action Values"
 )
+
+# Create separate legends for each subplot
+for trace in fig.data:
+    if trace.legendgroup == "bifurcation":
+        trace.update(legendgrouptitle_font=dict(size=16))
+    elif trace.legendgroup == "actions":
+        trace.update(legendgrouptitle_font=dict(size=16))
+
+# Save the plot to an HTML file
+output_filename = "epsilon_sweep_with_actions.html"
+fig.write_html(output_filename)
+print(f"Saved plot to {output_filename}")
 
 fig.show()

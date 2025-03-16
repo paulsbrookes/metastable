@@ -25,7 +25,7 @@ fig = make_subplots(
 )
 
 # Load data
-map_path = "sweep/output_map.npz"
+map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/sweeps/kappa/sweep/output_map.npz"
 fixed_point_map = FixedPointMap.load(map_path)
 
 kappa_rescaled_linspace = calculate_kappa_rescaled(
@@ -235,10 +235,11 @@ fig.update_layout(
         range=[0, 8.0],
         tickformat=".1f"
     ),
-    width=1000,
+    width=800,
     height=800,
     margin=dict(l=80, r=50, t=50, b=80),
-    template="plotly_white"
+    template="plotly_white",
+    title="Kappa Sweep with Action Values"
 )
 
 # Create separate legends for each subplot
@@ -248,4 +249,10 @@ for trace in fig.data:
     elif trace.legendgroup == "actions":
         trace.update(legendgrouptitle_font=dict(size=16))
 
+# Save the plot to an HTML file
+output_filename = "kappa_sweep_with_actions.html"
+fig.write_html(output_filename)
+print(f"Saved plot to {output_filename}")
+
+# Display the figure
 fig.show()

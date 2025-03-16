@@ -124,7 +124,7 @@ where $I_2$ is the $2\times2$ identity matrix. This fact immediately leads to so
 
 For any symplectic matrix, if $\lambda$ is an eigenvalue, then $-\lambda$ must also be an eigenvalue. Furthmore, any complex eigenvalues also come in conjugate pairs, leading overall to a spectrum that appears in quadruplets: $\lambda$, $-\lambda$, $\lambda^{\*}$, and $-\lambda^{\*}$.
 
-Finally we note that since the Jacobian is not Hermitian, the eigenvectors are not necessarily orthogonal. However, for a symplectic matrix, if $\mathbf{v}$ is a right eigenvector with eigenvalue $\lambda$, then $\Omega\mathbf{v}$ is a left eigenvector with eigenvalue $-\lambda$. This leads to a biorthogonality relation between eigenvectors: if $\mathbf{v}_1$ and $\mathbf{v}_2$ are eigenvectors with eigenvalues $\lambda_1$ and $\lambda_2$, then $\mathbf{v}_1^T\Omega\mathbf{v}_2 = 0$ unless $\lambda_1 = -\lambda_2$. This structure plays an important role in determining the stable and unstable manifolds around the fixed points.
+Finally we note that since the Jacobian is not Hermitian, the eigenvectors are not necessarily orthogonal. However, for a symplectic matrix, if $\mathbf{v}$ is a right eigenvector with eigenvalue $\lambda$, then $\Omega\mathbf{v}$ is a left eigenvector with eigenvalue $-\lambda$. This leads to a biorthogonality relation between eigenvectors: if $\mathbf{v}_1$ and $\mathbf{v}_2$ are eigenvectors with eigenvalues $\lambda_1$ and $\lambda_2$, then $\mathbf{v}_1^T\Omega\mathbf{v}_2 = 0$ unless $\lambda_1 = -\lambda_2$. This structure plays an important role in determining the stable and unstable subspaces around the fixed points.
 
 ### Stable Points
 

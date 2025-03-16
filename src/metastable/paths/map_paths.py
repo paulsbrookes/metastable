@@ -2,7 +2,7 @@ import numpy as np
 import logging
 from pathlib import Path
 from tqdm import tqdm
-from typing import List
+from typing import List, Optional
 
 
 from metastable.map.map import FixedPointMap, FixedPointType, PathType
@@ -11,6 +11,7 @@ from metastable.paths.logging_utils import configure_logging
 from metastable.paths.guess_generation import generate_linear_guess_from_map, generate_guess_from_sol
 from metastable.paths.path_solvers import process_index
 from metastable.paths.visualization import plot_solution
+from metastable.paths.boundary_conditions.boundary_conditions_lock import BoundaryLockParams
 
 
 def map_switching_paths(
@@ -21,6 +22,7 @@ def map_switching_paths(
     endpoint_type: FixedPointType = FixedPointType.BRIGHT,
     enable_logging: bool = False,
     overwrite_existing: bool = True,
+    lock_params: Optional[BoundaryLockParams] = None,
 ) -> List:
     """
     Calculate switching paths for a list of parameter points and store results in the fixed_point_map.
@@ -35,6 +37,7 @@ def map_switching_paths(
         endpoint_type: Type of fixed point to use as endpoint (BRIGHT or DIM)
         enable_logging: Whether to enable detailed logging
         overwrite_existing: Whether to overwrite existing results
+        lock_params: Parameters controlling the boundary condition locking behavior
         
     Returns:
         List of BVPResult objects for each calculated path
@@ -77,7 +80,7 @@ def map_switching_paths(
 
         # Core processing - always happens
         path_result = process_index(
-            fixed_point_map, index_pair, t_guess, y_guess, endpoint_type
+            fixed_point_map, index_pair, t_guess, y_guess, endpoint_type, lock_params=lock_params
         )
         
         # Store results and update guess - always happens

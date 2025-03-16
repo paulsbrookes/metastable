@@ -4,7 +4,9 @@ from metastable.paths.data_structures import IndexPair, BistableBoundaries, Swee
 def generate_sweep_index_pairs(
     boundary: BistableBoundaries, 
     max_points: Optional[int] = None,
-    sweep_fraction: float = 1.0
+    sweep_fraction: float = 1.0,
+    dim_sweep_fraction: Optional[float] = None,
+    bright_sweep_fraction: Optional[float] = None
 ) -> Sweeps:
     """
     Generate paths of IndexPair objects that traverse the bistable region.
@@ -16,6 +18,11 @@ def generate_sweep_index_pairs(
         sweep_fraction: Float between 0 and 1 indicating what fraction of the path to traverse.
                  1.0 means go all the way from one endpoint to the other.
                  0.5 means go halfway from each endpoint toward the other.
+                 This is used as the default for both paths if specific fractions are not provided.
+        dim_sweep_fraction: Optional float between 0 and 1 for the dim_saddle path specifically.
+                 If provided, overrides sweep_fraction for the dim_saddle path.
+        bright_sweep_fraction: Optional float between 0 and 1 for the bright_saddle path specifically.
+                 If provided, overrides sweep_fraction for the bright_saddle path.
         
     Returns:
         Sweeps object containing:
@@ -23,7 +30,7 @@ def generate_sweep_index_pairs(
             - bright_saddle: List of IndexPair objects from bright_saddle toward dim_saddle
             
     Raises:
-        ValueError: If boundary points are None or invalid or if sweep_fraction is outside [0,1]
+        ValueError: If boundary points are None or invalid or if any sweep_fraction is outside [0,1]
     """
     if boundary.dim_saddle is None or boundary.bright_saddle is None:
         raise ValueError("Both boundary points must be defined")
@@ -31,17 +38,27 @@ def generate_sweep_index_pairs(
     if not 0 <= sweep_fraction <= 1:
         raise ValueError("sweep_fraction must be between 0 and 1")
     
+    # Use specific sweep fractions if provided, otherwise use the default
+    dim_fraction = dim_sweep_fraction if dim_sweep_fraction is not None else sweep_fraction
+    bright_fraction = bright_sweep_fraction if bright_sweep_fraction is not None else sweep_fraction
+    
+    # Validate the specific sweep fractions
+    if not 0 <= dim_fraction <= 1:
+        raise ValueError("dim_sweep_fraction must be between 0 and 1")
+    if not 0 <= bright_fraction <= 1:
+        raise ValueError("bright_sweep_fraction must be between 0 and 1")
+    
     # Extract coordinates
     dim_epsilon = boundary.dim_saddle.epsilon_idx
     dim_kappa = boundary.dim_saddle.kappa_idx
     bright_epsilon = boundary.bright_saddle.epsilon_idx
     bright_kappa = boundary.bright_saddle.kappa_idx
     
-    # Calculate target points based on sweep_fraction
-    target_dim_epsilon = dim_epsilon + sweep_fraction * (bright_epsilon - dim_epsilon)
-    target_dim_kappa = dim_kappa + sweep_fraction * (bright_kappa - dim_kappa)
-    target_bright_epsilon = bright_epsilon + sweep_fraction * (dim_epsilon - bright_epsilon)
-    target_bright_kappa = bright_kappa + sweep_fraction * (dim_kappa - bright_kappa)
+    # Calculate target points based on sweep_fractions
+    target_dim_epsilon = dim_epsilon + dim_fraction * (bright_epsilon - dim_epsilon)
+    target_dim_kappa = dim_kappa + dim_fraction * (bright_kappa - dim_kappa)
+    target_bright_epsilon = bright_epsilon + bright_fraction * (dim_epsilon - bright_epsilon)
+    target_bright_kappa = bright_kappa + bright_fraction * (dim_kappa - bright_kappa)
     
     # Determine number of points if not specified, based on distance to target
     if max_points is None:

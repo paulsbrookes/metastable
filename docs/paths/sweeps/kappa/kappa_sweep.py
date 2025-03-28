@@ -16,9 +16,7 @@ import numpy as np
 if __name__ == "__main__":
 
     # Load the fixed point map
-    map_path = Path(
-        "../../../fixed_points/examples/map-with-stability.npz"
-    )
+    map_path = Path(__file__).parent.parent.parent.parent.parent / "fixed_points/examples/map-with-stability.npz"
     fixed_point_map = FixedPointMap.load(map_path)
 
     
@@ -71,7 +69,7 @@ if __name__ == "__main__":
         saddle_linear_coefficient=0.0
     )
     
-    output_path = Path("sweep")
+    output_path = Path(__file__).parent / "sweep"
 
     # Map switching paths for bright fixed point
     path_results_bright = map_switching_paths(
@@ -94,7 +92,7 @@ if __name__ == "__main__":
     )
     
     # Calculate actions for all switching paths
-    fixed_point_map = FixedPointMap.load(output_path / "output_map.npz")
+    fixed_point_map = FixedPointMap.load(output_path / "map.npz")
     fixed_point_map_with_actions = map_actions(fixed_point_map)
-    fixed_point_map_with_actions.save(output_path / "output_map.npz")
+    fixed_point_map_with_actions.save(output_path / "map.npz")
 

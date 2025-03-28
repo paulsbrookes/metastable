@@ -10,10 +10,16 @@ from metastable.rescaled import (
 )
 from metastable.rescaled.barriers import dykman_actions_calc
 from metastable.paths import get_bistable_kappa_range
+import argparse
 
 # Set global parameters
 delta = 7.8  # Scaling factor
 x_max = 0.6  # Upper limit for x-axis
+
+# Set up command line argument parsing
+parser = argparse.ArgumentParser(description='Plot kappa sweep with actions')
+parser.add_argument('map_path', type=str, help='Path to the output map NPZ file')
+args = parser.parse_args()
 
 # Create figure with two rows and one column, sharing x-axis
 fig = make_subplots(
@@ -25,8 +31,7 @@ fig = make_subplots(
 )
 
 # Load data
-map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/sweeps/kappa/sweep/output_map.npz"
-fixed_point_map = FixedPointMap.load(map_path)
+fixed_point_map = FixedPointMap.load(args.map_path)
 
 kappa_rescaled_linspace = calculate_kappa_rescaled(
     fixed_point_map.kappa_linspace, delta=fixed_point_map.delta

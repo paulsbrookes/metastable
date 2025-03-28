@@ -30,7 +30,7 @@ if __name__ == "__main__":
     epsilon_boundaries = get_bistable_epsilon_range(fixed_point_map.bistable_region, kappa_idx)
     
     # Generate epsilon sweeps
-    epsilon_sweeps = generate_sweep_index_pairs(epsilon_boundaries, sweep_fraction=0.3)
+    epsilon_sweeps = generate_sweep_index_pairs(epsilon_boundaries, sweep_fraction=0.4)
     
     # Get the actual kappa value from index
     kappa_value = fixed_point_map.kappa_linspace[kappa_idx]
@@ -64,12 +64,12 @@ if __name__ == "__main__":
     # Configure boundary lock parameters for dim fixed point
     dim_lock_params = BoundaryLockParams(
         stable_threshold=1e-2,
-        stable_linear_coefficient=0.0,
+        stable_linear_coefficient=1.0,
         saddle_threshold=1e-2,
         saddle_linear_coefficient=1.0
     )
 
-    output_path = Path("sweep_4")
+    output_path = Path("sweep_16")
     
     # # Map switching paths for bright fixed point
     # path_results_bright = map_switching_paths(
@@ -78,7 +78,9 @@ if __name__ == "__main__":
     #     output_path,
     #     t_end=11.0,
     #     endpoint_type=FixedPointType.BRIGHT,
-    #     lock_params=bright_lock_params
+    #     lock_params=bright_lock_params,
+    #     tol=1e-3,
+    #     max_nodes=1000000
     # )
     
     # Map switching paths for dim fixed point
@@ -88,7 +90,9 @@ if __name__ == "__main__":
         output_path,
         t_end=11.0,
         endpoint_type=FixedPointType.DIM,
-        lock_params=dim_lock_params
+        lock_params=dim_lock_params,
+        tol=1e-2,
+        max_nodes=1000000
     )
 
     # Calculate actions for all switching paths

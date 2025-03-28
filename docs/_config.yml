@@ -20,3 +20,6 @@ nav:
   - Fixed Points: explain/FixedPoints.md
   - Stability Analysis: explain/StabilityAnalysis.md
   - Paths: paths/Paths.md
+
+exclude:
+  - "**/*.npz"    # Excludes all NPZ files in any directory

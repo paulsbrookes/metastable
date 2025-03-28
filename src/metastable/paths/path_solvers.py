@@ -13,7 +13,7 @@ from metastable.paths.data_structures import IndexPair
 from metastable.paths.parameter_utils import extract_params, prepare_saddle_and_stable_points
 
 def solve_path(
-    eom, boundary_condition_func, t_guess: np.ndarray, y_guess: np.ndarray
+    eom, boundary_condition_func, t_guess: np.ndarray, y_guess: np.ndarray, tol: float = 1e-3, max_nodes: int = 1000000
 ) -> BVPResult:
     wrapper = lambda x, y: eom.y_dot_func(y)
 
@@ -27,8 +27,8 @@ def solve_path(
             boundary_condition_func,
             t_guess,
             y_guess,
-            tol=1e-3,
-            max_nodes=1000000,
+            tol=tol,
+            max_nodes=max_nodes,
             verbose=2,
         )
 
@@ -44,6 +44,8 @@ def process_index(
     y_guess: np.ndarray,
     endpoint_type: FixedPointType,
     lock_params: Optional[BoundaryLockParams] = None,
+    tol: float = 1e-3,
+    max_nodes: int = 1000000,
 ) -> BVPResult:
     params = extract_params(fixed_point_map, index_pair)
     print(params)
@@ -63,6 +65,6 @@ def process_index(
         keldysh_saddle_point, keldysh_focus_point, params, lock_params=lock_params
     )
 
-    path_result = solve_path(eom, boundary_condition_func, t_guess, y_guess)
+    path_result = solve_path(eom, boundary_condition_func, t_guess, y_guess, tol, max_nodes)
 
     return path_result 

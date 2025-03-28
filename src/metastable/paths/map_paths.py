@@ -23,6 +23,8 @@ def map_switching_paths(
     enable_logging: bool = False,
     overwrite_existing: bool = True,
     lock_params: Optional[BoundaryLockParams] = None,
+    tol: float = 1e-3,
+    max_nodes: int = 1000000,
 ) -> List:
     """
     Calculate switching paths for a list of parameter points and store results in the fixed_point_map.
@@ -80,7 +82,7 @@ def map_switching_paths(
 
         # Core processing - always happens
         path_result = process_index(
-            fixed_point_map, index_pair, t_guess, y_guess, endpoint_type, lock_params=lock_params
+            fixed_point_map, index_pair, t_guess, y_guess, endpoint_type, lock_params=lock_params, tol=tol, max_nodes=max_nodes
         )
         
         # Store results and update guess - always happens

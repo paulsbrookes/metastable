@@ -25,7 +25,8 @@ fig = make_subplots(
 )
 
 # Load data
-map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/sweeps/epsilon/archive/18/output_map_with_actions.npz"
+map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/sweeps/epsilon/sweep_16/output_map.npz"
+# map_path = "/home/paul/Projects/misc/keldysh/metastable/docs/paths/sweeps/epsilon/archive/18/output_map_with_actions.npz"
 fixed_point_map = FixedPointMap.load(map_path)
 
 kappa_rescaled_linspace = calculate_kappa_rescaled(
@@ -40,13 +41,13 @@ epsilon_limits_array = map_beta_to_epsilon(
 kappa_idx = 150
 # Filter actions to only include successful paths
 successful_bright_to_saddle_mask = np.array([
-    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.BRIGHT_TO_SADDLE.value] is not None and
-    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.BRIGHT_TO_SADDLE.value].success 
+    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.BRIGHT_TO_SADDLE.value] is not None
+    and fixed_point_map.path_results[eps_idx, kappa_idx, PathType.BRIGHT_TO_SADDLE.value].success 
     for eps_idx in range(len(fixed_point_map.epsilon_linspace))
 ])
 successful_dim_to_saddle_mask = np.array([
-    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.DIM_TO_SADDLE.value] is not None and
-    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.DIM_TO_SADDLE.value].success 
+    fixed_point_map.path_results[eps_idx, kappa_idx, PathType.DIM_TO_SADDLE.value] is not None
+    and fixed_point_map.path_results[eps_idx, kappa_idx, PathType.DIM_TO_SADDLE.value].success 
     for eps_idx in range(len(fixed_point_map.epsilon_linspace))
 ])
 

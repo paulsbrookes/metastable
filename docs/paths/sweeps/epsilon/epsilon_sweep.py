@@ -69,19 +69,19 @@ if __name__ == "__main__":
         saddle_linear_coefficient=1.0
     )
 
-    output_path = Path("sweep_16")
+    output_path = Path("sweep")
     
-    # # Map switching paths for bright fixed point
-    # path_results_bright = map_switching_paths(
-    #     fixed_point_map,
-    #     epsilon_sweeps.bright_saddle, 
-    #     output_path,
-    #     t_end=11.0,
-    #     endpoint_type=FixedPointType.BRIGHT,
-    #     lock_params=bright_lock_params,
-    #     tol=1e-3,
-    #     max_nodes=1000000
-    # )
+    # Map switching paths for bright fixed point
+    path_results_bright = map_switching_paths(
+        fixed_point_map,
+        epsilon_sweeps.bright_saddle, 
+        output_path,
+        t_end=11.0,
+        endpoint_type=FixedPointType.BRIGHT,
+        lock_params=bright_lock_params,
+        tol=1e-3,
+        max_nodes=1000000
+    )
     
     # Map switching paths for dim fixed point
     path_results_dim = map_switching_paths(
@@ -96,6 +96,6 @@ if __name__ == "__main__":
     )
 
     # Calculate actions for all switching paths
-    fixed_point_map = FixedPointMap.load(output_path / "output_map.npz")
+    fixed_point_map = FixedPointMap.load(output_path / "map.npz")
     fixed_point_map_with_actions = map_actions(fixed_point_map)
-    fixed_point_map_with_actions.save(output_path / "output_map.npz")
+    fixed_point_map_with_actions.save(output_path / "map.npz")

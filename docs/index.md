@@ -14,7 +14,9 @@ This repository contains research and documentation on the study of switching dy
 
 ## About
 
-This documentation covers research into quantum activation in driven dissipative systems far from equilibrium. The work focuses on understanding how quantum noise associated with relaxation can lead to transitions between metastable states, even at zero temperature.
+This documentation accompanies the research paper ["A Real-time Instanton Approach to Quantum Activation"](https://arxiv.org/abs/2409.00681) (arXiv:2409.00681) by Chang-Woo Lee, Paul Brookes, Kee-Su Park, Marzena H. Szymańska, and Eran Ginossar.
+
+This work covers research into quantum activation in driven dissipative systems far from equilibrium. The paper and this documentation focus on understanding how quantum noise associated with relaxation can lead to transitions between metastable states, even at zero temperature.
 
 Key areas of investigation include:
 - Analysis of fixed points in the bistable regime

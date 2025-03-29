@@ -13,9 +13,9 @@ kramdown:
 # Navigation
 nav:
   - Overview: /derivation/Overview
-  - Original EoM: /derivation/OriginalEom
   - Keldysh Lagrangian: /derivation/KeldyshLagrangian
-  - Keldysh Auxiliary Hamiltonian: /derivation/KeldyshAuxiliaryHamiltonian
+  - Auxiliary Hamiltonian: /derivation/KeldyshAuxiliaryHamiltonian
+  - Original EoM: /derivation/OriginalEom
   - Fixed Points: /fixed_points/FixedPoints
   - Stability Analysis: /fixed_points/StabilityAnalysis
   - Paths: /paths/Paths

@@ -135,51 +135,73 @@ Here's an example of how to implement the switching paths calculation in Python 
 ```python
 from pathlib import Path
 from metastable.map.map import FixedPointMap, FixedPointType
+from metastable.map.visualisations.bifurcation_lines import plot_bifurcation_diagram
 from metastable.paths import (
     get_bistable_kappa_range, 
     generate_sweep_index_pairs,
     map_switching_paths
 )
 from metastable.action.map import map_actions
-from metastable.paths.boundary_conditions.boundary_conditions_lock import BoundaryLockParams
+from metastable.paths.visualization import plot_parameter_sweeps
+
 
 # Load the fixed point map
 map_path = Path("fixed_points/examples/map-with-stability.npz")
 fixed_point_map = FixedPointMap.load(map_path)
 
-# Choose parameter values for the sweep
-epsilon_idx = 380  # Fixed epsilon value
+# Create the bifurcation diagram
+fig = plot_bifurcation_diagram(fixed_point_map)
+
+# Choose an epsilon index for the kappa cut
+epsilon_idx = 380
+
+# Get the bistable kappa range for this epsilon
 kappa_boundaries = get_bistable_kappa_range(fixed_point_map.bistable_region, epsilon_idx)
 
-# Generate parameter sweeps
-kappa_cuts = generate_sweep_index_pairs(
-    kappa_boundaries, 
-    bright_sweep_fraction=0.4,  # Sweep 40% of the way from bright to saddle
-    dim_sweep_fraction=0.95     # Sweep 95% of the way from dim to saddle
-)
+# Generate kappa cuts
+kappa_cuts = generate_sweep_index_pairs(kappa_boundaries, bright_sweep_fraction=0.4, dim_sweep_fraction=0.95)
 
-# Configure boundary conditions
-bright_lock_params = BoundaryLockParams(
-    stable_threshold=1e-2,      # Threshold for stable manifold
-    stable_linear_coefficient=0.0,
-    saddle_threshold=1e-2,      # Threshold for saddle manifold
-    saddle_linear_coefficient=0.0
-)
+# Get the actual epsilon value from index
+epsilon_value = fixed_point_map.epsilon_linspace[epsilon_idx]
 
-# Calculate switching paths
+# Plot the bistable range
+if kappa_boundaries.dim_saddle is not None:
+    kappa_start = fixed_point_map.kappa_linspace[kappa_boundaries.dim_saddle.kappa_idx]
+    kappa_end = fixed_point_map.kappa_linspace[kappa_boundaries.bright_saddle.kappa_idx]
+    fig.add_scatter(
+        x=[kappa_start, kappa_end], 
+        y=[epsilon_value, epsilon_value], 
+        mode='markers', 
+        marker=dict(size=10, color='red'), 
+        name='Bistable Range (κ)'
+    )
+
+# Plot parameter sweeps
+fig = plot_parameter_sweeps(fixed_point_map, kappa_cuts, fig)
+
 output_path = Path("sweep")
+
+# Map switching paths for bright fixed point
 path_results_bright = map_switching_paths(
     fixed_point_map, 
     kappa_cuts.bright_saddle, 
     output_path,
-    t_end=10.0,                # Integration time
+    t_end=10.0,
     endpoint_type=FixedPointType.BRIGHT,
-    lock_params=bright_lock_params,
-    tol=1e-3,                  # Error tolerance
-    max_nodes=1000000          # Maximum number of collocation points
+    max_nodes=1000000,
+    tol=1e-3
 )
 
-# Calculate actions for the paths
+# Map switching paths for dim fixed point
+path_results_dim = map_switching_paths(
+    fixed_point_map, 
+    kappa_cuts.dim_saddle, 
+    output_path, 
+    t_end=10.0,
+    endpoint_type=FixedPointType.DIM,
+)
+
+# Calculate actions for all switching paths
 fixed_point_map = FixedPointMap.load(output_path / "map.npz")
 fixed_point_map_with_actions = map_actions(fixed_point_map)
 fixed_point_map_with_actions.save(output_path / "map.npz")
@@ -187,28 +209,22 @@ fixed_point_map_with_actions.save(output_path / "map.npz")
 
 Key aspects of the implementation:
 
-1. **Parameter Selection**: We first choose a fixed value of $\epsilon$ and find the bistable range of $\kappa$ values.
+1. **Parameter Selection**: We first choose a fixed value of $\epsilon$ (using index 380) and find the bistable range of $\kappa$ values.
 
-2. **Boundary Conditions**: The `BoundaryLockParams` class configures how we enforce the boundary conditions at the fixed points:
-   - `stable_threshold`: Controls how close we need to be to the stable manifold
-   - `saddle_threshold`: Controls how close we need to be to the saddle manifold
-   - `stable_linear_coefficient` and `saddle_linear_coefficient`: Control the linear terms in the boundary conditions
+2. **Visualization Setup**: The code creates a bifurcation diagram and visualizes the parameter sweep regions.
 
-3. **Path Calculation**: The `map_switching_paths` function:
-   - Takes an initial guess (generated automatically)
-   - Uses SciPy's `solve_bvp` internally
-   - Handles the boundary value problem with our specified conditions
-   - Returns the calculated paths
+3. **Path Calculation**: Two separate calls to `map_switching_paths` calculate:
+   - Paths from bright fixed points to saddle points
+   - Paths from dim fixed points to saddle points
 
-4. **Action Calculation**: After finding the paths, we calculate the corresponding actions using `map_actions`.
+4. **Numerical Parameters**: 
+   - `t_end=10.0`: Integration time domain (from -10.0 to 10.0)
+   - `tol=1e-3`: Error tolerance for the bright-to-saddle paths
+   - `max_nodes=1000000`: Maximum number of collocation points for the bright paths
 
-The code handles all the technical details of:
-- Setting up the boundary value problem
-- Managing the numerical integration
-- Handling the boundary conditions
-- Calculating the actions
+5. **Action Calculation**: After finding the paths, the corresponding actions are calculated using `map_actions`.
 
-This implementation allows us to systematically explore the switching paths across different regions of parameter space.
+This implementation allows us to systematically explore the switching paths across different regions of parameter space and visualize the results together with the bifurcation structure.
 
 ## 4. Results
 
@@ -222,7 +238,7 @@ We continue to examine the system studied in [Stability Analysis](../fixed_point
    - Purple dash-dot line: Kramers (analytical) prediction for $R_{b\to u}$
    - Green dash-dot line: Kramers (analytical) prediction for $R_{d\to u}$
 
-The actions are scaled by $\lambda$ and plotted with a negative sign to match conventional energy barrier representations. The close agreement between the numerically computed Keldysh actions and the analytical Kramers predictions validates our numerical approach.
+The actions are measured relative to the scaled Planck cosntant $\lambda = \chi/\delta$. The close agreement between the numerically computed Keldysh actions and the analytical Kramers predictions [3, 4] validates our numerical approach close to the bifurcation points. Deeper into the bistable regime we see that the two methods diverge indicating the breakdown of the 1-D approximation on which the Kramers approach is based.
 
 <div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
     <iframe src="sweeps/kappa/kappa_sweep_with_actions.html" 
@@ -233,7 +249,7 @@ The actions are scaled by $\lambda$ and plotted with a negative sign to match co
 
 [Open visualization in new window](sweeps/kappa/kappa_sweep_with_actions.html)
 
-The switching paths were computed using boundary conditions that ensure proper alignment with the stable and unstable manifolds at each fixed point, with thresholds set to $10^{-3}$ for both stable and saddle points. The numerical integration was performed over a finite time domain $[-5.0, 5.0]$, which proved sufficient for convergence of the action values.
+The switching paths were computed using boundary conditions that ensure proper alignment with the stable and unstable manifolds at each fixed point, with thresholds set to $10^{-3}$ for both stable and saddle points. The numerical integration was performed over a finite time domain $ \( t_f - t_i \) \delta = 78.0$, which proved sufficient for convergence of the action values.
 
 Then as a function of $\epsilon$ at fixed $\kappa/\delta = 0.240$. The results are shown in the interactive visualization below, which consists of two panels:
 
@@ -245,7 +261,7 @@ Then as a function of $\epsilon$ at fixed $\kappa/\delta = 0.240$. The results a
    - Purple dash-dot line: Kramers (analytical) prediction for $R_{b\to u}$
    - Green dash-dot line: Kramers (analytical) prediction for $R_{d\to u}$
 
-The actions are scaled by $\lambda$ and plotted with a negative sign to match conventional energy barrier representations. The close agreement between the numerically computed Keldysh actions and the analytical Kramers predictions validates our numerical approach.
+As above, the agreement between the numerically computed Keldysh actions and the analytical Kramers predictions helps to validate our numerical approach.
 
 <div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
     <iframe src="sweeps/epsilon/epsilon_sweep_with_actions.html" 
@@ -256,11 +272,15 @@ The actions are scaled by $\lambda$ and plotted with a negative sign to match co
 
 [Open visualization in new window](sweeps/epsilon/epsilon_sweep_with_actions.html)
 
-The switching paths were computed using boundary conditions that ensure proper alignment with the stable and unstable manifolds at each fixed point, with thresholds set to $10^{-2}$ for both stable and saddle points. The numerical integration was performed over a finite time domain $[-5.5, 5.5]$, which proved sufficient for convergence of the action values close to the bifurcation points. However in the middle of the bistable regime convergence was not achieved.
+The switching paths were computed using boundary conditions that ensure proper alignment with the stable and unstable manifolds at each fixed point, with thresholds set to $10^{-2}$ for both stable and saddle points. The numerical integration was performed over a finite time domain $\( t_f - t_i \) \delta = 85.8$, which proved sufficient for convergence of the action values close to the bifurcation points. However in the middle of the bistable regime convergence was not achieved so actions are not plotted here.
 
 ## References
 
 [1] SciPy documentation, "scipy.integrate.solve_bvp", [https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_bvp.html](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_bvp.html).
 
 [2] J. Kierzenka, L. F. Shampine, "A BVP Solver Based on Residual Control and the Maltab PSE", ACM Trans. Math. Softw., Vol. 27, Number 3, pp. 299-316, 2001.
+
+[3] M. Dykman, "Critical exponents in metastable decay via quantum activation," Physical Review E—Statistical, Nonlinear, and Soft Matter Physics 75, 011101 (2007).
+
+[4] M. Dykman, "Fluctuating Nonlinear Oscillators: FromNanomechanics to Quantum Superconducting Circuits" (Oxford University Press, 2012).
 

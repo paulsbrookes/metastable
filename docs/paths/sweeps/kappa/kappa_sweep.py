@@ -52,23 +52,7 @@ if __name__ == "__main__":
     
     # Display the plot
     fig.show()
-    
-    # Configure boundary lock parameters for bright fixed point
-    bright_lock_params = BoundaryLockParams(
-        stable_threshold=1e-2,
-        stable_linear_coefficient=0.0,
-        saddle_threshold=1e-2,
-        saddle_linear_coefficient=0.0
-    )
-    
-    # Configure boundary lock parameters for dim fixed point
-    dim_lock_params = BoundaryLockParams(
-        stable_threshold=1e-2,
-        stable_linear_coefficient=0.0,
-        saddle_threshold=1e-2,
-        saddle_linear_coefficient=0.0
-    )
-    
+
     output_path = Path(__file__).parent / "sweep"
 
     # Map switching paths for bright fixed point
@@ -78,7 +62,6 @@ if __name__ == "__main__":
         output_path,
         t_end=10.0,
         endpoint_type=FixedPointType.BRIGHT,
-        lock_params=bright_lock_params,
         max_nodes=1000000,
         tol=1e-3
     )
@@ -90,7 +73,6 @@ if __name__ == "__main__":
         output_path, 
         t_end=10.0,
         endpoint_type=FixedPointType.DIM,
-        lock_params=dim_lock_params
     )
     
     # Calculate actions for all switching paths

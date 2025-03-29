@@ -2,9 +2,36 @@
 
 Here we study the switching dynamics of a driven nonlinear oscillator at zero temperature in the bistable regime. Switching refers to the process by which the system transitions from one metastable state to another, and below we will review three methods by which this may occur, before placing our focu on quantum activation. We will study this approach in more depth using an instanton approach based on Keldysh field theory [1].
 
+## System Description
+
+We study a driven-dissipative Kerr oscillator, described by the Hamiltonian:
+
+$$
+H = \delta\,a^\dagger a + \chi\,a^\dagger a^\dagger aa + i\varepsilon\,(a^\dagger - a)
+$$
+
+where:
+- $\delta$ is the detuning between the drive and oscillator frequency
+- $\chi$ is the Kerr nonlinearity strength
+- $\varepsilon$ is the drive strength
+- $a$ and $a^\dagger$ are the annihilation and creation operators
+
+The system is coupled to a zero-temperature bath with decay rate $\kappa$, leading to dissipation described by the Lindblad operator $L = \sqrt{2\kappa}\,a$.
+
 ## Fixed Points in the Bistable Regime
 
 In the bistable regime, the classical equations of motion exhibit three fixed points: an unstable saddle point and two stable nodes. The nodes are surrounded by basins of attraction, and the saddle point lies on the line in phase space which divides them, known as the separatrix.
+
+### Parameter Space
+
+The system exhibits bistability in a specific region of the $(\kappa, \epsilon, \delta)$ parameter space, where:
+- $\kappa$ is the decay rate
+- $\epsilon$ is the drive strength
+- $\delta$ is the detuning between the drive and oscillator frequency
+
+The bistable region is bounded by saddle-node bifurcations, where stable and unstable fixed points merge. Within this region, we find:
+- Two stable fixed points: a dim state (low amplitude) and bright state (high amplitude)
+- One unstable saddle point separating them
 
 ## Transition Mechanisms Between Nodes
 
@@ -16,11 +43,23 @@ In systems at finite temperature, thermal fluctuations from an external bath can
 
 ### 2. Quantum Tunneling
 
-At very low temperatures, quantum tunneling through the potential barrier may occur. While this process exists even at zero temperature, it becomes exponentially suppressed as the barrier height or width increases [3]. The tunneling rate takes the form $\exp(-2S_{\text{tun}}/\lambda)$, where $S_{\text{tun}}$ is the tunneling action. TO-DO: WHAT IS LAMBDA HERE
+At very low temperatures, quantum tunneling through the potential barrier may occur. While this process exists even at zero temperature, it becomes exponentially suppressed as the barrier height or width increases [3]. The tunneling rate takes the form $\exp(-2S_{\text{tun}}/\lambda)$, where $S_{\text{tun}}$ is the tunneling action and $\lambda=\chi/\delta$.
 
 ### 3. Quantum Activation
 
-In driven dissipative systems far from equilibrium, a distinct mechanism called quantum activation becomes dominant [4, 5]. This process arises from the quantum noise that accompanies relaxation due to coupling with a thermal bath. Unlike tunneling, quantum activation involves transitions over the effective barrier through these quantum fluctuations, even at zero temperature [6, 7]. The switching rate takes the form $W_{\text{sw}} \propto \exp(-R_A/\lambda)$, where $R_A$ is the effective activation energy and $\lambda$ is the effective Planck constant in the rotating frame. This process has no analog in equilibrium systems and yields exponentially larger switching rates compared to tunneling, making it the dominant switching mechanism unless the relaxation rate is exponentially small.
+In driven dissipative systems far from equilibrium, a distinct mechanism called quantum activation becomes dominant [4, 5]. This process arises from the quantum noise that accompanies relaxation due to coupling with a thermal bath. Unlike tunneling, quantum activation involves transitions over the effective barrier through quantum fluctuations, even at zero temperature [6, 7]. 
+
+The switching rate takes the form $W_{\text{sw}} \propto \exp(-R_A/\lambda)$, where:
+- $R_A$ is the effective activation energy
+- $\lambda$ is the effective Planck constant in the rotating frame
+
+Key features that distinguish quantum activation from thermal activation and tunneling:
+- Arises from intrinsic quantum noise in the dissipation
+- Occurs even at zero temperature
+- Involves transitions over (rather than through) the barrier
+- Yields exponentially larger switching rates compared to tunneling
+- Has no analog in equilibrium systems
+- Dominates the switching dynamics unless the relaxation rate is exponentially small
 
 ## Instanton Approach to Quantum Activation
 
@@ -57,6 +96,12 @@ To calculate the instanton solutions and their associated switching rates, we fo
 4. **Compute Switching Rates**
    - Calculate activation energy by integrating along optimal escape paths
    - Determine prefactor through comparison with numerical simulations
+
+## Key Results
+
+1. The authors develop a practical implementation for calculating switching paths using the instanton approach within Keldysh field theory and are able to calculate switching rates between bistable states in driven-dissipative nonlinear systems, specifically focusing on quantum fluctuation-induced switching.
+
+2. The method allows the calculation of the exponential dependency of switching rates far from bifurcation points where previous methods have focused [6].
 
 ## References
 

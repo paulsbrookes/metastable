@@ -16,7 +16,7 @@ import numpy as np
 if __name__ == "__main__":
 
     # Load the fixed point map
-    map_path = Path(__file__).parent.parent.parent.parent.parent / "fixed_points/examples/map-with-stability.npz"
+    map_path = Path(__file__).parent.parent.parent.parent / "fixed_points/examples/map-with-stability.npz"
     fixed_point_map = FixedPointMap.load(map_path)
 
     
@@ -78,7 +78,9 @@ if __name__ == "__main__":
         output_path,
         t_end=10.0,
         endpoint_type=FixedPointType.BRIGHT,
-        lock_params=bright_lock_params
+        lock_params=bright_lock_params,
+        max_nodes=1000000,
+        tol=1e-3
     )
     
     # Map switching paths for dim fixed point

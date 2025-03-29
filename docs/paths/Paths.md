@@ -128,33 +128,135 @@ Whether or not they are we have converged to a desired solution can be judged by
 
 The BVP solver requires an initial guess for the solution. This can be constructed by linear interpolation between the fixed points. This initial guess is most effective near the saddle-node bifurcations where the stable and saddle points are closest to each other. For more distant points with more complex paths, this linear guess may not converge to a solution, in which case we can reuse solutions from neighbouring points in the parameter space (numerical continuation).
 
+### 3.4. Implementation Example
+
+Here's an example of how to implement the switching paths calculation in Python using our codebase:
+
+```python
+from pathlib import Path
+from metastable.map.map import FixedPointMap, FixedPointType
+from metastable.paths import (
+    get_bistable_kappa_range, 
+    generate_sweep_index_pairs,
+    map_switching_paths
+)
+from metastable.action.map import map_actions
+from metastable.paths.boundary_conditions.boundary_conditions_lock import BoundaryLockParams
+
+# Load the fixed point map
+map_path = Path("fixed_points/examples/map-with-stability.npz")
+fixed_point_map = FixedPointMap.load(map_path)
+
+# Choose parameter values for the sweep
+epsilon_idx = 380  # Fixed epsilon value
+kappa_boundaries = get_bistable_kappa_range(fixed_point_map.bistable_region, epsilon_idx)
+
+# Generate parameter sweeps
+kappa_cuts = generate_sweep_index_pairs(
+    kappa_boundaries, 
+    bright_sweep_fraction=0.4,  # Sweep 40% of the way from bright to saddle
+    dim_sweep_fraction=0.95     # Sweep 95% of the way from dim to saddle
+)
+
+# Configure boundary conditions
+bright_lock_params = BoundaryLockParams(
+    stable_threshold=1e-2,      # Threshold for stable manifold
+    stable_linear_coefficient=0.0,
+    saddle_threshold=1e-2,      # Threshold for saddle manifold
+    saddle_linear_coefficient=0.0
+)
+
+# Calculate switching paths
+output_path = Path("sweep")
+path_results_bright = map_switching_paths(
+    fixed_point_map, 
+    kappa_cuts.bright_saddle, 
+    output_path,
+    t_end=10.0,                # Integration time
+    endpoint_type=FixedPointType.BRIGHT,
+    lock_params=bright_lock_params,
+    tol=1e-3,                  # Error tolerance
+    max_nodes=1000000          # Maximum number of collocation points
+)
+
+# Calculate actions for the paths
+fixed_point_map = FixedPointMap.load(output_path / "map.npz")
+fixed_point_map_with_actions = map_actions(fixed_point_map)
+fixed_point_map_with_actions.save(output_path / "map.npz")
+```
+
+Key aspects of the implementation:
+
+1. **Parameter Selection**: We first choose a fixed value of $\epsilon$ and find the bistable range of $\kappa$ values.
+
+2. **Boundary Conditions**: The `BoundaryLockParams` class configures how we enforce the boundary conditions at the fixed points:
+   - `stable_threshold`: Controls how close we need to be to the stable manifold
+   - `saddle_threshold`: Controls how close we need to be to the saddle manifold
+   - `stable_linear_coefficient` and `saddle_linear_coefficient`: Control the linear terms in the boundary conditions
+
+3. **Path Calculation**: The `map_switching_paths` function:
+   - Takes an initial guess (generated automatically)
+   - Uses SciPy's `solve_bvp` internally
+   - Handles the boundary value problem with our specified conditions
+   - Returns the calculated paths
+
+4. **Action Calculation**: After finding the paths, we calculate the corresponding actions using `map_actions`.
+
+The code handles all the technical details of:
+- Setting up the boundary value problem
+- Managing the numerical integration
+- Handling the boundary conditions
+- Calculating the actions
+
+This implementation allows us to systematically explore the switching paths across different regions of parameter space.
+
 ## 4. Results
 
-We continue to examine the system studied in [Stability Analysis](../fixed_points/StabilityAnalysis.md). We begin by finding the switching paths and actions as a function of $\kappa$ at ...
+We continue to examine the system studied in [Stability Analysis](../fixed_points/StabilityAnalysis.md). We begin by finding the switching paths and actions as a function of $\kappa$ at fixed $\epsilon/\delta = 2.44$. The results are shown in the interactive visualization below, which consists of two panels:
 
+1. **Upper Panel (Bifurcation Diagram)**: Shows the bifurcation structure in the $(\kappa/\delta, \epsilon/\delta)$ plane. The red and blue lines represent the unstable-bright and unstable-dim bifurcation boundaries respectively. The horizontal dashed black line indicates our chosen $\epsilon/\delta = 2.44$ cut, and the grey shaded region indicates the bistable region where switching paths exist.
+
+2. **Lower Panel (Action Values)**: Displays the calculated actions for the switching paths:
+   - Red line: Keldysh action $R_{b\to u}$ for the bright-to-unstable transition
+   - Blue line: Keldysh action $R_{d\to u}$ for the dim-to-unstable transition
+   - Purple dash-dot line: Kramers (analytical) prediction for $R_{b\to u}$
+   - Green dash-dot line: Kramers (analytical) prediction for $R_{d\to u}$
+
+The actions are scaled by $\lambda$ and plotted with a negative sign to match conventional energy barrier representations. The close agreement between the numerically computed Keldysh actions and the analytical Kramers predictions validates our numerical approach.
 
 <div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
-    <iframe src="kappa_sweep_with_actions.html" 
+    <iframe src="sweeps/kappa/kappa_sweep_with_actions.html" 
             style="position: absolute; width: 100%; height: 100%; border: none;"
             allowfullscreen>
     </iframe>
 </div>
 
-[Open visualization in new window](kappa_sweep_with_actions.html)
+[Open visualization in new window](sweeps/kappa/kappa_sweep_with_actions.html)
 
+The switching paths were computed using boundary conditions that ensure proper alignment with the stable and unstable manifolds at each fixed point, with thresholds set to $10^{-3}$ for both stable and saddle points. The numerical integration was performed over a finite time domain $[-5.0, 5.0]$, which proved sufficient for convergence of the action values.
 
-Then as a function of $\epsilon$ at ...
+Then as a function of $\epsilon$ at fixed $\kappa/\delta = 0.240$. The results are shown in the interactive visualization below, which consists of two panels:
+
+1. **Upper Panel (Bifurcation Diagram)**: Shows the bifurcation structure in the $(\kappa/\delta, \epsilon/\delta)$ plane. The red and blue lines represent the unstable-bright and unstable-dim bifurcation boundaries respectively. The vertical dashed black line indicates our chosen $\kappa/\delta = 0.240$ cut, and the grey shaded region indicates the bistable region where switching paths exist.
+
+2. **Lower Panel (Action Values)**: Displays the calculated actions for the switching paths:
+   - Red line: Keldysh action $R_{b\to u}$ for the bright-to-unstable transition
+   - Blue line: Keldysh action $R_{d\to u}$ for the dim-to-unstable transition
+   - Purple dash-dot line: Kramers (analytical) prediction for $R_{b\to u}$
+   - Green dash-dot line: Kramers (analytical) prediction for $R_{d\to u}$
+
+The actions are scaled by $\lambda$ and plotted with a negative sign to match conventional energy barrier representations. The close agreement between the numerically computed Keldysh actions and the analytical Kramers predictions validates our numerical approach.
 
 <div class="plotly-container" style="position: relative; width: 100%; height: 850px; margin: 0 auto;">
-    <iframe src="epsilon_sweep_with_actions.html" 
+    <iframe src="sweeps/epsilon/epsilon_sweep_with_actions.html" 
             style="position: absolute; width: 100%; height: 100%; border: none;"
             allowfullscreen>
     </iframe>
 </div>
 
-[Open visualization in new window](epsilon_sweep_with_actions.html)
+[Open visualization in new window](sweeps/epsilon/epsilon_sweep_with_actions.html)
 
-
+The switching paths were computed using boundary conditions that ensure proper alignment with the stable and unstable manifolds at each fixed point, with thresholds set to $10^{-2}$ for both stable and saddle points. The numerical integration was performed over a finite time domain $[-5.5, 5.5]$, which proved sufficient for convergence of the action values close to the bifurcation points. However in the middle of the bistable regime convergence was not achieved.
 
 ## References
 

@@ -12,14 +12,13 @@ kramdown:
 
 # Navigation
 nav:
-  - Overview: explain/Overview.md
-  - Original EoM: explain/OriginalEom.md
-  - Keldysh Lagrangian: explain/KeldyshLagrangian.md
-  - Keldysh Auxiliary Hamiltonian: explain/KeldyshAuxiliaryHamiltonian.md
-  - Quantum Imaginary Time: explain/QuantumImaginary.md
-  - Fixed Points: explain/FixedPoints.md
-  - Stability Analysis: explain/StabilityAnalysis.md
-  - Paths: paths/Paths.md
+  - Overview: /derivation/Overview
+  - Original EoM: /derivation/OriginalEom
+  - Keldysh Lagrangian: /derivation/KeldyshLagrangian
+  - Keldysh Auxiliary Hamiltonian: /derivation/KeldyshAuxiliaryHamiltonian
+  - Fixed Points: /fixed_points/FixedPoints
+  - Stability Analysis: /fixed_points/StabilityAnalysis
+  - Paths: /paths/Paths
 
 exclude:
   - "**/*.npz"    # Excludes all NPZ files in any directory

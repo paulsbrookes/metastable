@@ -1,0 +1,13 @@
+<div class="sidebar-content">
+  <h2>Navigation</h2>
+  <nav class="sidebar-nav">
+    <ul>
+      <li><a href="{{ '/' | relative_url }}">Home</a></li>
+      {% for nav_item in site.nav %}
+        {% for item in nav_item %}
+          <li><a href="{{ item[1] | relative_url }}">{{ item[0] }}</a></li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+  </nav>
+</div> 

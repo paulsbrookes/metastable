@@ -1,0 +1,35 @@
+The paper starts with my preferred phase for the drive term which makes the phase of the oscillator equivalent to the phase of the drive.
+
+\begin{equation}
+H = \delta a^\dagger a + \chi a^\dagger a^\dagger a a + i \epsilon (a^\dagger - a) \label{eq:quantum_duffing_oscillator_hamiltonian}
+\end{equation}
+
+
+But the Lagrangian is written with epsilon -> -epsilon.
+\begin{align}
+    S  = &  \!\int\! L~ dt, \\
+    L = & \,  a_{+}^{*} i \partial_t a_{+} - a_{-}^{*} i \partial_t a_{-} +i\varepsilon \left( a_{+}^{*}-a_{+}-a_{-}^{*}+a_{-}\right)  
+     \nonumber \\ & - \delta (a_{+}^{*} a_{+} - a_{-}^{*} a_{-} ) - \chi (a_{+}^{*2} a_{+}^2 - a_{-}^{*2} a_{-}^2 )     \nonumber \\
+    & - i \kappa \left( 2 a_{+} a_{-}^{*} - a_{+}^{*} a_{+}^{} - a_{-}^{*}a_{-}^{}\right), \label{eq:first_lagrangian}
+\end{align}
+
+The classical eom appear to be consistent with this:
+
+\begin{align}
+    \partial_t x_c =& \delta p_c - 2 \epsilon + 2 \kappa x_q - \kappa x_c \nonumber \\
+    &+ \frac{1}{2} \chi (p_c^3 - 3 p_c x_q^2 + p_c x_c^2 - p_c p_q^2 +2 x_q x_c p_q) \\
+    \partial_t p_c =& - \delta x_c - \kappa (p_c - 2 p_q) \nonumber \\
+    &- \frac{1}{2} \chi (p_c^2 x_c + 2 p_c x_q p_q - x_q^2 x_c + x_c^3 - 3 x_c p_q^2) \\
+    \partial_t x_q =& \frac{1}{2} \chi (p_q p_c^2 - p_q^3 + 3 p_q x_c^2 - p_q x_q^2 - x_c p_c x_q) \nonumber \\ &+ \delta p_q + \kappa x_q \\
+    \partial_t p_q =& \frac{1}{2} \chi (2 p_q p_c x_c + x_q p_q^2 + x_q^3 - x_q x_c^2 - 3 p_c^2 x_q) \nonumber \\ &- \delta X_q + \kappa p_q
+\end{align}
+
+
+Finally, the eom in the repo are consistent with Changwoo's original form of the paper.
+
+We have the mapping:
+x_1 = x_c
+x_2 = p_c
+p_1 = x_q
+p_2 = p_q
+

@@ -1,0 +1,16 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+/* Additional customizations can be added here */
+.page-header {
+  padding: 2rem 6rem;
+}
+
+/* Adjust main content width to accommodate sidebar */
+@media screen and (min-width: 801px) {
+  .main-content {
+    max-width: calc(100% - 260px);
+  }
+}

@@ -1,0 +1,24 @@
+title: Metastable States in Driven Nonlinear Systems
+description: Research documentation on quantum activation and switching dynamics in driven nonlinear oscillators
+theme: jekyll-theme-cayman
+
+# Show downloads
+show_downloads: true
+
+# Enable MathJax for LaTeX support
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
+
+# Navigation
+nav:
+  - Overview: /derivation/Overview
+  - Keldysh Lagrangian: /derivation/KeldyshLagrangian
+  - Auxiliary Hamiltonian: /derivation/KeldyshAuxiliaryHamiltonian
+  - Original EoM: /derivation/OriginalEom
+  - Fixed Points: /fixed_points/FixedPoints
+  - Stability Analysis: /fixed_points/StabilityAnalysis
+  - Paths: /paths/Paths
+
+exclude:
+  - "**/*.npz"    # Excludes all NPZ files in any directory

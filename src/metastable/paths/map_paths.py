@@ -62,7 +62,7 @@ def map_switching_paths(
     else:
         raise ValueError(f"Unsupported endpoint_type: {endpoint_type}.")
 
-    output_map_path = output_path / "output_map.npz"
+    output_map_path = output_path / "map.npz"
     log_path = output_path / "logs"
     
     # Set up logging directory once if needed

@@ -15,14 +15,14 @@ import numpy as np
 
 if __name__ == "__main__":
     # Load the fixed point map
-    map_path = Path(__file__).parent.parent.parent.parent.parent / "fixed_points/examples/map-with-stability.npz"
+    map_path = Path(__file__).parent.parent.parent.parent / "fixed_points/examples/map-with-stability.npz"
     fixed_point_map = FixedPointMap.load(map_path)
     
     # Create the bifurcation diagram
     fig = plot_bifurcation_diagram(fixed_point_map)
 
     # Choose a kappa index for the epsilon cut
-    kappa_idx = 150
+    kappa_idx = 100
     
     # Get the bistable epsilon range for this kappa
     epsilon_boundaries = get_bistable_epsilon_range(fixed_point_map.bistable_region, kappa_idx)
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         saddle_linear_coefficient=1.0
     )
 
-    output_path = Path(__file__).parent / "sweep"
+    output_path = Path(__file__).parent / "sweep_2"
     
     # Map switching paths for bright fixed point
     path_results_bright = map_switching_paths(

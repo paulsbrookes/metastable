@@ -217,7 +217,7 @@ Let's examine the key features of the eigenvalue spectrum:
    - The previously equal real parts take on different values.
    - One eigenvalue approaches zero while the other remains finite.
    - The vanishing eigenvalue reveals a soft mode connecting the fixed point to the saddle point
-   This regime corresponds to the one-dimensional Kramers problem discussed in [REFERENCE].
+   This regime corresponds to the one-dimensional Kramers problem discussed in [1].
 
 These points can be illustrated in more detail by examining specific trajectories near the fixed points:
 
@@ -298,3 +298,5 @@ Finally we plot the ratio of the eigenvalues of the Jacobian at the saddle point
 [Open visualization in new window](examples/saddle_eigenvalue_ratio.html)
 
 The vanishing of the $\lambda_0$ eigenvalue at the bifurcation point is indicative of the vanishing of the force pushing the system from the saddle point to the node as they merge.
+
+[1] M. Dykman, “Critical exponents in metastable decay via quantum activation,” Physical Review E—Statistical, Nonlinear, and Soft Matter Physics 75, 011101 (2007).

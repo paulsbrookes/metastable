@@ -1,4 +1,6 @@
-# Stability Analysis
+# Supplemental Material to A Real-time Instanton Approach to Quantum Activation
+
+# 1. Stability Analysis
 
 Using the classical equations of motion we are able to identify steady states of the system and classify them as either saddles or stable points. Our overall goal is to find the switching trajectories which allow the system to escape from the stable points and reach the saddle point, and then calculate the actions of these trajectories with a view to obtain the switching rates. These paths don't exist in the classical case, but they do in the full system including the quantum fields.
 
@@ -10,7 +12,7 @@ This stability analysis will be crucial for setting the boundary conditions for 
 
 ---
 
-## 1. Equations of Motion
+## 1.1. Equations of Motion
 
 The starting point for our analysis is the full Hamiltonian of the system, which we recall is given by
 
@@ -41,7 +43,7 @@ $$
 \mathbf{Z} = (x_c, p_c, x_q, p_q).
 $$
 
-## 2. Linearisation
+## 1.2. Linearisation
 
 In order to linearise the equation of motion, we write the state of the system as
 
@@ -88,7 +90,7 @@ We can now study the stability of any fixed point by finding the eigenvalues and
 
 ---
 
-## 3. Stability Analysis
+## 1.3. Stability Analysis
 
 ## Background
 
@@ -173,7 +175,7 @@ $$
 
 As above, the new eigenvectors obey a biorthogonality condition with the classical eigenvectors and in general will have components in both the classical and quantum sectors.
 
-## Numerical Results
+## 1.4. Numerical Results
 
 Now that we have an understanding of the eigenvalues and eigenvectors of the Jacobian, we can use this to study the dynamics of the system across parameter space. For this purpose we use the `generate_map.py` and `generate_jacobian_spectrum.py` scripts from [40].
 
@@ -198,7 +200,7 @@ The `generate_stability_map` function iterates over the fixed points stored in t
 
 Using a `FixedPointMap` produced at $\chi=-0.1$ and $\delta=7.8$, we now plot the real and imaginary parts of the $\lambda_0$ and $\lambda_1$ eigenvalues around the dim fixed point. We also plot the upper and lower bifurcation lines to clearly mark the limits of the bistable regime.
 
-![Jacobian spectrum of dim fixed point](supplemental_png/jacobian_spectrum_dim_fixed_point.png)
+![Jacobian spectrum of dim fixed point](fixed_points/supplemental_png/jacobian_spectrum_dim_fixed_point.png)
 
 Let's examine the key features of the eigenvalue spectrum:
 
@@ -214,7 +216,7 @@ Let's examine the key features of the eigenvalue spectrum:
 
 These points can be illustrated in more detail by examining specific trajectories near the fixed points:
 
-![Trajectories and bifurcation](supplemental_png/trajectories_and_bifurcation.png)
+![Trajectories and bifurcation](fixed_points/supplemental_png/trajectories_and_bifurcation.png)
 
 In the figure above we plot two classical trajectories of the system as it decays from the saddle point to the dim fixed point. In the top-left panel we choose to examine the system at small decay rate ($\kappa=0.1$, $\epsilon=10.0$) deep within the bistable regime. As mentioned above, this leads to a focus point with a decaying spiralling motion. The small value of the decay rate causes the motion to be almost circular. 
 
@@ -228,14 +230,14 @@ We also include a table of the eigenvalues and parameters, as well as the bottom
 
 Next we move on to the bright fixed point. As above we observe complex eigenvalues corresponding to focus points in the majority of the parameter space. At small decay rates the real components of the eigenvalues are close to zero and the motion is almost circular. Just as above we also see that close to the bifurcation point the imaginary components of the eigenvalues vanish and the fixed points become nodes.
 
-![Jacobian spectrum of bright fixed point](supplemental_png/jacobian_spectrum_bright_fixed_point.png)
+![Jacobian spectrum of bright fixed point](fixed_points/supplemental_png/jacobian_spectrum_bright_fixed_point.png)
 
 
 ### Saddle Point
 
 Next, we examine the eigenvalue spectrum around the saddle point. Unlike the stable fixed points, the saddle point has real eigenvalues of opposite signs throughout the bistable regime, reflecting its unstable nature. This is consistent with our earlier theoretical analysis where we predicted eigenvalues of the form $\lambda \in \{ -\kappa_1, +\kappa_2, +\kappa_1, -\kappa_2 \}$.
 
-![Jacobian spectrum of saddle fixed point](supplemental_png/jacobian_spectrum_saddle_fixed_point.png)
+![Jacobian spectrum of saddle fixed point](fixed_points/supplemental_png/jacobian_spectrum_saddle_fixed_point.png)
 
 The key features of the saddle point spectrum are:
 
@@ -250,10 +252,10 @@ The key features of the saddle point spectrum are:
 
 We note that the Jacobian spectra of both the dim and bright fixed points indicate that we will struggle to find escape trajectories at small decay rates. In the figure below we plot the ratio of the imaginary to real parts of the eigenvalues for the dim and bright fixed points. As expected, the ratio diverges as the decay rate approaches zero, but this can be counteracted to some extent by staying close to a bifurcation point.
 
-![Instability ratios](supplemental_png/instability_ratios.png)
+![Instability ratios](fixed_points/supplemental_png/instability_ratios.png)
 
 Finally we plot the ratio of the eigenvalues of the Jacobian at the saddle point to illustrate the onset of the soft mode.
 
-![Saddle eigenvalue ratio](supplemental_png/saddle_eigenvalue_ratio.png)
+![Saddle eigenvalue ratio](fixed_points/supplemental_png/saddle_eigenvalue_ratio.png)
 
 The vanishing of the $\lambda_0$ eigenvalue at the bifurcation point is indicative of the vanishing of the force pushing the system from the saddle point to the node as they merge.

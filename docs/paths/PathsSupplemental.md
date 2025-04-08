@@ -1,10 +1,10 @@
-# Switching Paths
+# 2. Switching Paths
 
 In this section we can now turn our attention to finding the switching paths connecting the stable fixed points to the saddle point. We will use our prevoius stability analysis to set the boundary conditions for the switching paths. We will then use a collocation method implemented in SciPy [41] to solve the resulting boundary value problem and find the switching paths.
 
-## 1. Problem Overview
+## 2.1. Problem Overview
 
-### 1.1. Path
+### 2.1.1. Path
 
 Our key objective is to find a path $\mathbf{Z}(t)$ that connects a **stable fixed point** $\mathbf{Z}_0$ (node or focus) to a **saddle point** $\mathbf{Z}_s$.
 
@@ -12,7 +12,7 @@ The key idea is to use the eigenvectors of the Jacobian at both points to set th
 
 At each fixed point the Jacobian has a pair of incoming and outgoing eigenvectors. We simply apply the condition that at the start of the path the deviation is purely along the eigenvectors leaving the stable point and at the end of the path the deviation is purely along the eigenvectors arriving at the saddle point.
 
-### 1.2. Action
+### 2.1.2. Action
 
 With these paths we can finally calculate the corresponding actions using:
 
@@ -29,9 +29,9 @@ S_{\mathrm{aux}} = -\int dt\Bigl[\dot{x}_c\,x_q + \dot{p}_c\,p_q\Bigr].
 $$
 
 
-## 2. Mathematical Framework
+## 2.2. Mathematical Framework
 
-### 2.1. At the Stable Fixed Point
+### 2.2.1. At the Stable Fixed Point
 
 Let $\mathbf{Z}_0$ denote the coordinates of the stable fixed point. Small deviations from $\mathbf{Z}_0$ can be expressed in the eigenvector basis of the Jacobian $J(\mathbf{Z}_0)$:
   
@@ -44,7 +44,7 @@ where:
   - $\lambda_i$ are the corresponding eigenvalues, ordered by their real parts with $\text{Re}(\lambda_1), \text{Re}(\lambda_2) < 0$ (stable) and $\text{Re}(\lambda_3), \text{Re}(\lambda_4) > 0$ (unstable),
   - $c_i$ are coefficients determined by the initial displacement.
 
-### 2.2. At the Saddle Point
+### 2.2.2. At the Saddle Point
 
 - Let $\mathbf{Z}_s$ denote the coordinates of the saddle point.
 - Near $\mathbf{Z}_s$, the deviation is similarly expressed in terms of the eigenvectors of the Jacobian $J(\mathbf{Z}_s)$:
@@ -60,9 +60,9 @@ where:
 
 ---
 
-## 3. Formulating the Boundary Value Problem
+## 2.3. Formulating the Boundary Value Problem
 
-### 3.1. Physical Interpretation of Boundary Conditions
+### 2.3.1. Physical Interpretation of Boundary Conditions
 
 The switching trajectory represents the optimal (least-action) path connecting a metastable fixed point to the saddle point. It is a solution to the equations of motion derived from the auxiliary Hamiltonian. Our stability analysis then provides natural boundary conditions:
 
@@ -88,7 +88,7 @@ $$
 
 Since the trajectory must *arrive* within the stable subspace, the final deviation $\Delta \mathbf{Z}(t)$ lies in the subspace of eigenvectors with $\text{Re}(\mu_j) < 0$. Therefore we can set $d_2 = 0$ and $d_3 = 0$. If we have chosen the correct initial trajectory, the system will follow a path that naturally arrives at the saddle point within this subspace.
 
-### 3.2 Projection
+### 2.3.2 Projection
 
 To enforce our asymptotic boundary conditions at finite times $t_i$ and $t_f$, we must project the deviations onto the eigenbasis of the Jacobian at the fixed points. This is achieved by using the left eigenvectors to extract the coefficients in the expansion of the deviation in terms of the right eigenvectors.
 
@@ -110,7 +110,7 @@ $$d_j = L_j \cdot [Z(t) - Z_s] = 0 \text{ for unstable modes.}$$
 
 By enforcing these constraints at $t_i$ and $t_f$, the finite-time boundary value problem inherits the correct asymptotic behavior, ensuring that the switching trajectory departs and arrives in the proper subspaces.
 
-### 3.3. Numerical Solution
+### 2.3.3. Numerical Solution
 
 The task of finding the switching paths is now cast as a boundary value problem (BVP). Our next task is apply a numerical method to find a solution. For this we will use SciPy's `solve_bvp` [41] implementation of a collocation method, meaning a numerical technique for solving differential equations by approximating the solution using a set of basis functions, such as cubic splines, and enforcing the differential equations are satisfied to a given tolerance at specific points called collocation points.
 
@@ -128,7 +128,7 @@ Whether or not they are we have converged to a desired solution can be judged by
 
 The BVP solver requires an initial guess for the solution. This can be constructed by linear interpolation between the fixed points. This initial guess is most effective near the saddle-node bifurcations where the stable and saddle points are closest to each other. For more distant points with more complex paths, this linear guess may not converge to a solution, in which case we can reuse solutions from neighbouring points in the parameter space (numerical continuation).
 
-### 3.4. Implementation Example
+### 2.3.4. Implementation Example
 
 Here's an example of how to implement the switching paths calculation in Python using our codebase [40]:
 
@@ -226,7 +226,7 @@ Key aspects of the implementation:
 
 This implementation allows us to systematically explore the switching paths across different regions of parameter space and visualize the results together with the bifurcation structure.
 
-## 4. Results
+## 2.4. Results
 
 We continue to examine the system studied in the stability analysis. We begin by finding the switching paths and actions as a function of $\kappa$ at fixed $\epsilon/\delta = 2.44$. The results are shown in the interactive visualization below, which consists of two panels:
 
@@ -240,7 +240,7 @@ We continue to examine the system studied in the stability analysis. We begin by
 
 The actions are measured relative to the scaled Planck cosntant $\lambda = \chi/\delta$. The close agreement between the numerically computed Keldysh actions and the analytical Kramers predictions [13, 14] validates our numerical approach close to the bifurcation points. Deeper into the bistable regime we see that the two methods diverge indicating the breakdown of the 1-D approximation on which the Kramers approach is based.
 
-![Kappa sweep with actions](supplemental_png/kappa_sweep_with_actions.png)
+![Kappa sweep with actions](paths/supplemental_png/kappa_sweep_with_actions.png)
 
 The switching paths were computed using boundary conditions that ensure proper alignment with the stable and unstable manifolds at each fixed point, with thresholds set to $10^{-3}$ for both stable and saddle points. The numerical integration was performed over a finite time domain $(t_f - t_i )\delta = 78.0$, which proved sufficient for convergence of the action values.
 
@@ -256,7 +256,7 @@ Then as a function of $\epsilon$ at fixed $\kappa/\delta = 0.240$. The results a
 
 As above, the agreement between the numerically computed Keldysh actions and the analytical Kramers predictions helps to validate our numerical approach.
 
-![Epsilon sweep with actions](supplemental_png/epsilon_sweep_with_actions.png)
+![Epsilon sweep with actions](paths/supplemental_png/epsilon_sweep_with_actions.png)
 
 The switching paths were computed using boundary conditions that ensure proper alignment with the stable and unstable manifolds at each fixed point, with thresholds set to $10^{-2}$ for both stable and saddle points. The numerical integration was performed over a finite time domain $( t_f - t_i ) \delta = 85.8$, which proved sufficient for convergence of the action values close to the bifurcation points. However in the middle of the bistable regime convergence was not achieved so actions are not plotted here.
 

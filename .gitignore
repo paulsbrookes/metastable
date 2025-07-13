@@ -1,5 +1,11 @@
-# Ignore .npz files
+# Ignore .npz files (except essential ones)
 *.npz
+
+# But track these essential files:
+!docs/fixed_points/examples/map.npz
+!docs/fixed_points/examples/map-with-stability.npz
+!docs/paths/sweeps/kappa/sweep/map.npz
+!docs/paths/sweeps/epsilon/sweep/map.npz
 
 # Ignore PyCharm project files
 .idea/

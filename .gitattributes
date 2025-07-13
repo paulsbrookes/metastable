@@ -1,0 +1,4 @@
+docs/fixed_points/examples/map.npz filter=lfs diff=lfs merge=lfs -text
+docs/fixed_points/examples/map-with-stability.npz filter=lfs diff=lfs merge=lfs -text
+docs/paths/sweeps/kappa/sweep/map.npz filter=lfs diff=lfs merge=lfs -text
+docs/paths/sweeps/epsilon/sweep/map.npz filter=lfs diff=lfs merge=lfs -text
